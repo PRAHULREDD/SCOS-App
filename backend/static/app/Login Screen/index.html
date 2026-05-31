@@ -178,21 +178,39 @@
 <!-- Role Selector -->
 <div class="space-y-sm">
 <label class="font-label-lg text-label-lg text-on-surface-variant px-xs">Identify your role</label>
-<div class="grid grid-cols-3 gap-sm p-base bg-surface-container-low rounded-full border border-outline-variant/20">
-<button class="flex items-center justify-center gap-xs py-sm px-md rounded-full bg-primary text-white shadow-sm transition-all">
+<div id="role-selector" class="grid grid-cols-3 gap-sm p-base bg-surface-container-low rounded-full border border-outline-variant/20">
+<button type="button" class="role-btn flex items-center justify-center gap-xs py-sm px-md rounded-full bg-primary text-white shadow-sm transition-all" data-role="CITIZEN">
 <span class="material-symbols-outlined text-[18px]" data-icon="person">person</span>
 <span class="font-label-sm text-label-sm">Citizen</span>
 </button>
-<button class="flex items-center justify-center gap-xs py-sm px-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-all">
+<button type="button" class="role-btn flex items-center justify-center gap-xs py-sm px-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-all" data-role="DRIVER">
 <span class="material-symbols-outlined text-[18px]" data-icon="local_shipping">local_shipping</span>
 <span class="font-label-sm text-label-sm">Driver</span>
 </button>
-<button class="flex items-center justify-center gap-xs py-sm px-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-all">
+<button type="button" class="role-btn flex items-center justify-center gap-xs py-sm px-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-all" data-role="ADMIN">
 <span class="material-symbols-outlined text-[18px]" data-icon="admin_panel_settings">admin_panel_settings</span>
 <span class="font-label-sm text-label-sm">Admin</span>
 </button>
 </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const roleButtons = document.querySelectorAll('.role-btn');
+        roleButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Remove active classes from all
+                roleButtons.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                    b.classList.add('text-on-surface-variant', 'hover:bg-surface-variant');
+                });
+                // Add active classes to the clicked button
+                btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant');
+                btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+            });
+        });
+    });
+</script>
 <!-- Input Fields -->
 <form id="login-form" class="flex flex-col gap-md">
 <!-- Email Input -->
