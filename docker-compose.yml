@@ -1,0 +1,74 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: scos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./infra/database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - scos-net
+
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/scos_db
+      - AI_ENGINE_URL=http://ai:8001
+    depends_on:
+      - db
+    networks:
+      - scos-net
+
+  ai:
+    build: ./ai
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/scos_db
+    depends_on:
+      - db
+    networks:
+      - scos-net
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./secrets/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+    networks:
+      - scos-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - scos-net
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - scos-net
+
+
+volumes:
+  pgdata:
+
+networks:
+  scos-net:
+    driver: bridge

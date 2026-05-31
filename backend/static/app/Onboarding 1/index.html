@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS Onboarding - Effortless Reporting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#a0f0f0",
+                        "surface": "#f9f9fc",
+                        "tertiary": "#006060",
+                        "secondary-container": "#d0e9d8",
+                        "primary-fixed": "#a3f5b2",
+                        "on-surface": "#1a1c1e",
+                        "outline": "#707a6f",
+                        "inverse-primary": "#87d898",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed-variant": "#364b3f",
+                        "surface-variant": "#e2e2e5",
+                        "primary-fixed-dim": "#87d898",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed": "#002020",
+                        "primary": "#096430",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#4d6356",
+                        "secondary-fixed-dim": "#b4ccbc",
+                        "on-primary-container": "#ccffd1",
+                        "outline-variant": "#bfc9bd",
+                        "tertiary-fixed-dim": "#84d4d3",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2d7d46",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0a1f15",
+                        "on-surface-variant": "#404940",
+                        "on-tertiary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#227a7a",
+                        "surface-bright": "#f9f9fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "surface-tint": "#186c37",
+                        "background": "#f9f9fc",
+                        "inverse-on-surface": "#f0f0f3",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#53695c",
+                        "on-tertiary-container": "#b9fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#005225",
+                        "on-background": "#1a1c1e",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed": "#d0e9d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- Header / Brand (Minimal for Onboarding) -->
+<header class="w-full flex justify-between items-center px-margin-mobile md:px-margin-desktop py-md">
+<div class="flex items-center gap-2">
+<span class="text-primary font-bold text-xl tracking-tight">SCOS</span>
+</div>
+<button class="text-secondary font-label-lg px-md py-sm hover:bg-secondary-container/20 rounded-full transition-colors">
+            Skip
+        </button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop text-center max-w-4xl mx-auto">
+<!-- Illustration Section -->
+<div class="relative w-full aspect-square max-w-[400px] mb-xxl flex items-center justify-center">
+<!-- Glassmorphism Background Shapes -->
+<div class="absolute inset-0 bg-primary-fixed/30 blur-3xl rounded-full scale-75 -z-10"></div>
+<!-- Main Content Illustration Container -->
+<div class="relative bg-white dark:bg-slate-800 rounded-[32px] shadow-2xl overflow-hidden p-gutter w-full h-full flex flex-col border border-white/20">
+<img alt="Effortless Waste Reporting" class="w-full h-full object-cover rounded-[24px]" data-alt="Modern high-tech city street with a user holding a smartphone snapping a photo of a smart waste bin, clean digital overlay" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGth309fwaLs3R8k8Q9NkX7OBf3T1M4t3Rd0rP5eQ6FaCEfOA2ua5ZhY9oUetNjSGQtM3IJWDDDWiZt-iml1g6Uf2ynTzWimsOdUaHYGRyy9rDReOBN7rVzZGTgmpqQWaW1_Xq4oF52HRyLISNXUyXBXLTLBfK7Aq7H0mYc0PZltVEH8JDHVlp3AwbsLCLpPtvWnoGJJrp6i4j0cm4KCYRHRwm-H460JRzmhqgkpY2vlU6596UpFivG9T7-ymDue4RHGvVDlr0j3OT"/>
+<!-- AI Location UI Overlay -->
+<div class="absolute bottom-10 left-10 right-10 bg-white/90 backdrop-blur-md rounded-xl p-md flex items-center gap-md shadow-lg border border-primary/10">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+</div>
+<div class="text-left">
+<p class="font-label-sm text-primary">AI Detection</p>
+<p class="font-title-md text-on-surface">Sector 4-B, Green Avenue</p>
+</div>
+<div class="ml-auto text-primary">
+<span class="material-symbols-outlined" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Text Section -->
+<div class="max-w-md">
+<h1 class="font-headline-lg text-on-surface mb-md">Effortless Reporting</h1>
+<p class="font-body-lg text-on-surface-variant px-md">
+                Snap a photo and report waste in seconds using AI-powered location detection.
+            </p>
+</div>
+</main>
+<!-- Footer Controls -->
+<footer class="w-full px-margin-mobile md:px-margin-desktop py-xxl flex flex-col items-center gap-xxl">
+<!-- Progress Indicators -->
+<div class="flex gap-sm">
+<span class="w-8 h-2 rounded-full bg-primary"></span>
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+</div>
+<!-- Action Buttons -->
+<div class="w-full max-w-md flex flex-col gap-md">
+<button class="bg-primary text-on-primary font-title-md py-md rounded-full shadow-lg hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-sm">
+                Next
+                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+<!-- Hidden Shell Components (Suppressed by Rule) -->
+<!-- The BottomNavBar and FAB are suppressed as per Onboarding/Linear journey rules. -->
+</body></html>

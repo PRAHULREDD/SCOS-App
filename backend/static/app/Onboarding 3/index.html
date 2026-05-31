@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS Onboarding - Optimized Pickups</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#a0f0f0",
+                    "surface": "#f9f9fc",
+                    "tertiary": "#006060",
+                    "secondary-container": "#d0e9d8",
+                    "primary-fixed": "#a3f5b2",
+                    "on-surface": "#1a1c1e",
+                    "outline": "#707a6f",
+                    "inverse-primary": "#87d898",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#00210b",
+                    "on-secondary-fixed-variant": "#364b3f",
+                    "surface-variant": "#e2e2e5",
+                    "primary-fixed-dim": "#87d898",
+                    "surface-container-low": "#f3f3f6",
+                    "on-tertiary-fixed": "#002020",
+                    "primary": "#096430",
+                    "surface-container-highest": "#e2e2e5",
+                    "secondary": "#4d6356",
+                    "secondary-fixed-dim": "#b4ccbc",
+                    "on-primary-container": "#ccffd1",
+                    "outline-variant": "#bfc9bd",
+                    "tertiary-fixed-dim": "#84d4d3",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#2d7d46",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#0a1f15",
+                    "on-surface-variant": "#404940",
+                    "on-tertiary-fixed-variant": "#004f4f",
+                    "tertiary-container": "#227a7a",
+                    "surface-bright": "#f9f9fc",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#dadadc",
+                    "surface-tint": "#186c37",
+                    "background": "#f9f9fc",
+                    "inverse-on-surface": "#f0f0f3",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#53695c",
+                    "on-tertiary-container": "#b9fffe",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2f3133",
+                    "on-primary-fixed-variant": "#005225",
+                    "on-background": "#1a1c1e",
+                    "surface-container": "#eeeef0",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e8e8ea",
+                    "secondary-fixed": "#d0e9d8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
+<header class="fixed top-0 w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300 font-['Inter']">SCOS</div>
+<div class="flex items-center gap-4">
+<button class="text-emerald-700 font-semibold font-label-lg text-label-lg">Skip</button>
+</div>
+</div>
+</header>
+<main class="min-h-screen pt-20 pb-32 flex flex-col items-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto">
+<section class="w-full flex flex-col items-center mb-12">
+<div class="relative w-full aspect-[4/3] max-w-lg mb-12 flex justify-center items-center">
+<div class="absolute inset-0 bg-emerald-50 rounded-[48px] rotate-3 scale-95 opacity-50"></div>
+<div class="absolute inset-0 bg-emerald-100/50 rounded-[48px] -rotate-2"></div>
+<div class="relative z-10 w-full h-full p-8 flex flex-col justify-center items-center">
+<div class="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl bg-slate-100 border-4 border-white">
+<img alt="Optimized Routing" class="w-full h-full object-cover grayscale-[0.2]" data-alt="Modern garbage collection truck interior dashboard view with a driver following a glowing digital smart route on a sleek tablet display during daytime." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR54iCFPdtepHz0_OqbymSCSzPuRVxS3EsxfHU2x9BVNgB-CkIQQHQVGAsMZox7PUYw0pMFCXKzSr_SPaOf2W72YLIAXHwwVoOJCAYnQ8Cgqea4hIHauUdJkY3QS90Xum5issUYCYIMZoWrrw3YCvHIvWx_l1v-d3vtJ1p8YE2qhR7bX5FOZhsVbVp-EzBw7SlvSQ5et602TLus3LuFyeNny8JeyhVEUURX6ZlZwtPayLZkwQT57EOzETT97fJrGEAyLOy2YBzcddy"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute top-6 right-6 flex flex-col gap-2">
+<div class="bg-white/90 backdrop-blur-sm p-3 rounded-2xl shadow-lg flex items-center gap-3 border border-emerald-100">
+<div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+<span class="material-symbols-outlined" data-icon="route">route</span>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Next Stop</p>
+<p class="font-bold text-slate-900">Greenway 12-A</p>
+</div>
+</div>
+<div class="bg-error-container/90 backdrop-blur-sm p-3 rounded-2xl shadow-lg flex items-center gap-3 border border-error/20">
+<div class="w-10 h-10 rounded-full bg-error/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="notifications_active" data-weight="fill">notifications_active</span>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-error tracking-wider">Live Alert</p>
+<p class="font-bold text-slate-900">Road Blockage</p>
+</div>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex items-center gap-4 text-white">
+<div class="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a smiling professional municipal worker in high visibility safety vest looking confident." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_8WUK9fDtlyE2yFwbrFsO6q3SC7mZ3LNt4VkdL4Mw940N4xz4mlEH0pLZ4wZgFe5ecJpjHcKHaljlLFU9xxYHMCmT3RfAJAZjcQXe0_9IohnUehOq35EiG7RzLtRneUmiAt55Y4Ev8IqIi8X-O9UDRehdTC4PWTQ8OH4tPixUWJhqISIY8tx2-GhrrMkia9swcJrBHAoJDQKpgcDz8PkzfCSvC69Fpe54iodNh-Aj7dS1njEO6xGFdvZD6C_OHhyXF6Pd0Y5bwc0h"/>
+</div>
+<div>
+<p class="text-title-md font-title-md leading-tight">Optimizing Route...</p>
+<p class="text-label-sm font-label-sm opacity-90">Saving 12.4km today</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="text-center space-y-4 max-w-md">
+<h1 class="text-headline-lg font-headline-lg text-emerald-900">Optimized Pickups</h1>
+<p class="text-body-lg font-body-lg text-secondary leading-relaxed">
+                    Dynamic routing and real-time alerts ensure efficient waste collection across the city.
+                </p>
+</div>
+</section>
+<section class="mt-auto w-full flex flex-col items-center gap-10">
+<div class="flex gap-3 items-center">
+<div class="w-2.5 h-2.5 rounded-full bg-emerald-200"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-emerald-200"></div>
+<div class="w-8 h-2.5 rounded-full bg-emerald-700"></div>
+</div>
+<button class="w-full md:w-64 py-4 px-8 bg-primary text-on-primary rounded-full font-label-lg text-label-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                Get Started
+                <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] hidden">
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[12px] font-medium font-['Inter']">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="text-[12px] font-medium font-['Inter']">Map</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="text-[12px] font-medium font-['Inter']">Tasks</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-[12px] font-medium font-['Inter']">Reports</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="text-[12px] font-medium font-['Inter']">Stats</span>
+</div>
+</nav>
+</body></html>

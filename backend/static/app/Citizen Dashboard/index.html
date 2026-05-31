@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pill-active {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#a0f0f0",
+                        "surface": "#f9f9fc",
+                        "tertiary": "#006060",
+                        "secondary-container": "#d0e9d8",
+                        "primary-fixed": "#a3f5b2",
+                        "on-surface": "#1a1c1e",
+                        "outline": "#707a6f",
+                        "inverse-primary": "#87d898",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed-variant": "#364b3f",
+                        "surface-variant": "#e2e2e5",
+                        "primary-fixed-dim": "#87d898",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed": "#002020",
+                        "primary": "#096430",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#4d6356",
+                        "secondary-fixed-dim": "#b4ccbc",
+                        "on-primary-container": "#ccffd1",
+                        "outline-variant": "#bfc9bd",
+                        "tertiary-fixed-dim": "#84d4d3",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2d7d46",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0a1f15",
+                        "on-surface-variant": "#404940",
+                        "on-tertiary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#227a7a",
+                        "surface-bright": "#f9f9fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "surface-tint": "#186c37",
+                        "background": "#f9f9fc",
+                        "inverse-on-surface": "#f0f0f3",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#53695c",
+                        "on-tertiary-container": "#b9fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#005225",
+                        "on-background": "#1a1c1e",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed": "#d0e9d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-100 ring-2 ring-emerald-500/10">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a smiling young professional man in a sustainable urban office setting with natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgXwQAbu7_Kix7MGyQaQ0zgYCScxyS_3ueVSTk1bBHe426PO_R8VUrl0tl8HZiZDGat2Op7WQ4SkzhRARtFgPeCASW80TZGz5Gsy4GtMl6ngqox32a4JeIFSdO7cVHzkdhe5bdGHofbDhfJXVobDAy8whJa2iJlpPetko_wkCe5pPjtYKQLGNxdm-Ez1db09vwN_ABcvC-82b_xLJZeViK1tOVZ47rrkLrhlOAz3T-KxcbAGLnZBkk3Y-QxBaufhWz2gXSatQaefUx"/>
+</div>
+<span class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS</span>
+</div>
+<div class="flex items-center gap-4">
+<button id="btn-notifications" class="material-symbols-outlined text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full transition-all active:opacity-70" data-icon="notifications">notifications</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-md">
+<!-- Hero / Stats Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Cleanliness Score Card -->
+<div class="md:col-span-8 bg-surface-container-low rounded-xl p-lg border border-outline-variant/30 flex flex-col justify-between min-h-[240px] relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-lg">
+<span class="material-symbols-outlined text-emerald-700/20 text-7xl select-none" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+</div>
+<div>
+<h2 class="font-title-lg text-title-lg text-primary mb-xs">Neighborhood Wellness</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">Your local area is performing better than 84% of the city. Keep it green!</p>
+</div>
+<div class="mt-xl flex items-end gap-md">
+<div class="flex flex-col">
+<span class="font-display-lg text-[64px] font-bold leading-none text-primary">92</span>
+<span class="font-label-lg text-label-lg text-secondary uppercase tracking-widest">Cleanliness Score</span>
+</div>
+<div class="flex-grow h-12 flex items-end gap-1 pb-1">
+<div class="w-2 bg-emerald-200 h-1/2 rounded-full"></div>
+<div class="w-2 bg-emerald-300 h-3/4 rounded-full"></div>
+<div class="w-2 bg-emerald-400 h-2/3 rounded-full"></div>
+<div class="w-2 bg-emerald-500 h-5/6 rounded-full"></div>
+<div class="w-2 bg-primary h-full rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- EcoPoints Balance Card -->
+<div class="md:col-span-4 bg-primary-container text-on-primary-container rounded-xl p-lg flex flex-col justify-between shadow-sm relative overflow-hidden">
+<div class="absolute -bottom-8 -right-8 w-32 h-32 bg-on-primary-container/10 rounded-full blur-2xl"></div>
+<div>
+<div class="flex justify-between items-start">
+<span class="font-label-lg text-label-lg uppercase tracking-wider opacity-80">EcoPoints Balance</span>
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="mt-sm">
+<span id="eco-points-display" class="font-headline-lg text-headline-lg font-extrabold tracking-tight">1,450</span>
+</div>
+</div>
+<div class="mt-xl">
+<button class="w-full py-3 px-4 bg-on-primary-container text-primary-container font-label-lg rounded-full flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+                        Redeem Rewards
+                        <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Recent Reports Section -->
+<div class="md:col-span-12 mt-md">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-title-md text-title-md text-on-surface">Recent Reports</h3>
+<button onclick="window.location.href='../Complaint History/index.html'" class="text-primary font-label-lg flex items-center gap-1 hover:underline">
+                        View all <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+<div id="complaints-list" class="space-y-sm">
+<!-- Report Item 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="delete_outline">delete_outline</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Overflowing Bin - Maple Ave</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Reported 2 hours ago</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-sm text-label-sm">In Progress</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Report Item 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="recycling">recycling</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Illegal Dumping - South Park</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Yesterday, 4:15 PM</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-label-sm text-label-sm">Resolved</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Report Item 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-error-container/30 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="report_problem">report_problem</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Broken Sensor - Bin #442</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Oct 24, 2023</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="bg-error/10 text-error px-3 py-1 rounded-full font-label-sm text-label-sm">Action Needed</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Contextual Map Snippet -->
+<div class="md:col-span-12 mt-md rounded-2xl overflow-hidden h-48 relative border border-outline-variant/20">
+<img alt="Local Map" class="w-full h-full object-cover grayscale opacity-50 contrast-125" data-alt="Stylized clean minimalist map of a city neighborhood with emerald green park markers and soft gray streets" data-location="Stockholm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Mrm3Kd-IyJl86c3X3s4p9Al2iXYzBxXss1oWDCEp5RzGa1I4x_6KNRlBCDIB1lWeN76OH-dYYe9C76qusbxqPHF6M8z0DXDzrWnrKsQGLKCxKr6k8lNq2jU8tfK1HshOWTELRhoV5wnWjOG_dUI1Zw2zUKmbd1vHvV2GlMyT_QNkXYGDsWlpvalQ1LVkQf_mfkFxT3R6C4u3N1iohVeL6ys772KxWjIhs7FB1RTFkKKHFPYWL98AAyLPX4tSQN08lCe5a_G2eBN1"/>
+<div class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-surface/80 to-transparent">
+<button onclick="window.location.href='../Cleanliness Heatmap/index.html'" class="bg-white px-md py-sm rounded-full shadow-lg flex items-center gap-2 font-label-lg text-primary border border-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                        Explore Nearby Bins
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-16 h-16 bg-primary text-on-primary rounded-full shadow-[0_4px_12px_rgba(9,100,48,0.3)] flex items-center justify-center active:scale-90 transition-transform z-40 group">
+<span class="material-symbols-outlined text-3xl" data-icon="add_a_photo" style="font-variation-settings: 'FILL' 1;">add_a_photo</span>
+<span class="absolute right-full mr-4 bg-inverse-surface text-inverse-on-surface px-3 py-1.5 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Report Waste</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined pill-active" data-icon="home">home</span>
+<span class="font-['Inter'] text-[12px] font-medium">Home</span>
+</a>
+<!-- Map -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-['Inter'] text-[12px] font-medium">Map</span>
+</a>
+<!-- Tasks -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
+</a>
+<!-- Reports -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
+</a>
+<!-- Stats -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+</a>
+</nav>
+<script src="../../js/toast.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/citizen.js"></script>
+</body></html>

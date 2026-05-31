@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS - Earn EcoPoints</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#a0f0f0",
+                        "surface": "#f9f9fc",
+                        "tertiary": "#006060",
+                        "secondary-container": "#d0e9d8",
+                        "primary-fixed": "#a3f5b2",
+                        "on-surface": "#1a1c1e",
+                        "outline": "#707a6f",
+                        "inverse-primary": "#87d898",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed-variant": "#364b3f",
+                        "surface-variant": "#e2e2e5",
+                        "primary-fixed-dim": "#87d898",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed": "#002020",
+                        "primary": "#096430",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#4d6356",
+                        "secondary-fixed-dim": "#b4ccbc",
+                        "on-primary-container": "#ccffd1",
+                        "outline-variant": "#bfc9bd",
+                        "tertiary-fixed-dim": "#84d4d3",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2d7d46",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0a1f15",
+                        "on-surface-variant": "#404940",
+                        "on-tertiary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#227a7a",
+                        "surface-bright": "#f9f9fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "surface-tint": "#186c37",
+                        "background": "#f9f9fc",
+                        "inverse-on-surface": "#f0f0f3",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#53695c",
+                        "on-tertiary-container": "#b9fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#005225",
+                        "on-background": "#1a1c1e",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed": "#d0e9d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col items-center justify-center overflow-x-hidden">
+<!-- Onboarding Container -->
+<main class="w-full max-w-[440px] px-margin-mobile md:px-margin-desktop py-lg flex flex-col items-center min-h-screen justify-between relative overflow-hidden">
+<!-- Background Ambient Accents -->
+<div class="absolute top-[-100px] left-[-100px] w-64 h-64 bg-primary-fixed opacity-20 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-[20%] right-[-100px] w-80 h-80 bg-tertiary-fixed opacity-20 blur-[100px] rounded-full"></div>
+<!-- Illustration Section (Bento Grid Style) -->
+<section class="w-full mt-xl mb-lg relative z-10 grid grid-cols-2 grid-rows-2 gap-sm h-[320px]">
+<!-- Hero Card: EcoPoints Counter -->
+<div class="col-span-2 row-span-1 bento-glass rounded-xl p-md shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Current Balance</span>
+<div class="flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-primary" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span class="font-headline-md text-headline-md text-primary">1,250</span>
+</div>
+</div>
+<div class="h-12 w-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+</div>
+<!-- Leaderboard Card -->
+<div class="col-span-1 row-span-1 bento-glass rounded-xl p-md shadow-sm flex flex-col justify-between">
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-lg text-label-lg text-on-surface">Top Teams</span>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm">District A</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+<span class="font-label-sm text-label-sm">District C</span>
+</div>
+</div>
+</div>
+<!-- Reward Item Card -->
+<div class="col-span-1 row-span-1 bg-primary-container rounded-xl p-md shadow-sm flex flex-col justify-center items-center text-center">
+<div class="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-on-primary-container text-[28px]" data-icon="redeem" style="font-variation-settings: 'FILL' 1;">redeem</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-primary-container">Unlock Rewards</span>
+</div>
+</section>
+<!-- Content Section -->
+<section class="w-full text-center relative z-10 px-sm">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-md">Earn EcoPoints</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[320px] mx-auto leading-relaxed">
+                Contribute to a cleaner city and earn EcoPoints to unlock exclusive rewards.
+            </p>
+</section>
+<!-- Navigation Section -->
+<footer class="w-full relative z-10 flex flex-col items-center gap-lg mb-xl mt-lg">
+<!-- Progress Dots -->
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="w-6 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+<!-- Actions -->
+<div class="w-full flex items-center justify-between gap-md">
+<button class="flex-1 px-lg py-md font-label-lg text-label-lg text-secondary bg-transparent rounded-full hover:bg-secondary-container/20 transition-colors active:scale-95">
+                    Skip
+                </button>
+<button class="flex-1 px-lg py-md font-label-lg text-label-lg text-on-primary bg-primary rounded-full shadow-lg hover:bg-primary-container transition-all active:scale-95 flex items-center justify-center gap-sm">
+                    Next
+                    <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+</main>
+</body></html>

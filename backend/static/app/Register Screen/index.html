@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS - Register</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#a0f0f0",
+                    "surface": "#f9f9fc",
+                    "tertiary": "#006060",
+                    "secondary-container": "#d0e9d8",
+                    "primary-fixed": "#a3f5b2",
+                    "on-surface": "#1a1c1e",
+                    "outline": "#707a6f",
+                    "inverse-primary": "#87d898",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#00210b",
+                    "on-secondary-fixed-variant": "#364b3f",
+                    "surface-variant": "#e2e2e5",
+                    "primary-fixed-dim": "#87d898",
+                    "surface-container-low": "#f3f3f6",
+                    "on-tertiary-fixed": "#002020",
+                    "primary": "#096430",
+                    "surface-container-highest": "#e2e2e5",
+                    "secondary": "#4d6356",
+                    "secondary-fixed-dim": "#b4ccbc",
+                    "on-primary-container": "#ccffd1",
+                    "outline-variant": "#bfc9bd",
+                    "tertiary-fixed-dim": "#84d4d3",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#2d7d46",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#0a1f15",
+                    "on-surface-variant": "#404940",
+                    "on-tertiary-fixed-variant": "#004f4f",
+                    "tertiary-container": "#227a7a",
+                    "surface-bright": "#f9f9fc",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#dadadc",
+                    "surface-tint": "#186c37",
+                    "background": "#f9f9fc",
+                    "inverse-on-surface": "#f0f0f3",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#53695c",
+                    "on-tertiary-container": "#b9fffe",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2f3133",
+                    "on-primary-fixed-variant": "#005225",
+                    "on-background": "#1a1c1e",
+                    "surface-container": "#eeeef0",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e8e8ea",
+                    "secondary-fixed": "#d0e9d8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "xl": "32px",
+                    "margin-desktop": "24px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .role-radio:checked + .role-card {
+            background-color: #2d7d46;
+            color: #ffffff;
+            border-color: #2d7d46;
+        }
+        .role-radio:checked + .role-card .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- Hero/Brand Section (Visual side) -->
+<div class="hidden lg:flex w-5/12 bg-primary relative overflow-hidden flex-col justify-between p-xl">
+<div class="relative z-10">
+<h1 class="text-on-primary font-headline-lg text-headline-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-[40px]" data-icon="eco">eco</span>
+                SCOS
+            </h1>
+<p class="text-on-primary/80 font-title-lg text-title-lg mt-md max-w-sm">
+                Smart City Operations System: Managing urban grit with technological harmony.
+            </p>
+</div>
+<div class="absolute bottom-0 right-0 w-full h-full opacity-20 pointer-events-none">
+<img alt="" class="w-full h-full object-cover grayscale" data-alt="Modern architectural abstract of clean lines and glass reflecting a sustainable urban environment at midday sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTUiY9n8vv6WohrwB6pUuNVJ9jt5ksjSaWx_eCQcuCbzW9WeeQwqmTc3R4PqZmsxYy3nNQ-mWYGll-UbeiPw77ZTahIUuRM-dBOGYU3NCHS82ABxMFJRAeZjbd3fc4PRgwuZrrtvnk5-S4nDysjebNclI2AR40SSTFNfnxAAztq9r01BgYY_Ubd4KI4sMTSA9qMX-QDRX5aJIEMtzAzheIoLkCuxFIGsnxlY0oB-OCOpRAaxvxYI8ijLRMHdME_fbbGTAGpYiz_Dqh"/>
+</div>
+<div class="relative z-10">
+<div class="flex gap-md items-center text-on-primary/60 font-label-lg text-label-lg">
+<span class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified">verified</span>
+                    Trusted by Municipalities
+                </span>
+<span class="w-1 h-1 bg-on-primary/40 rounded-full"></span>
+<span>v2.4.0</span>
+</div>
+</div>
+</div>
+<!-- Registration Form Section -->
+<main class="flex-1 flex flex-col items-center justify-center px-margin-mobile md:px-xl py-xxl">
+<div class="w-full max-w-[480px]">
+<!-- Mobile Header -->
+<div class="lg:hidden mb-xl text-center">
+<h1 class="text-emerald-800 font-bold text-[32px] tracking-tight">SCOS</h1>
+<p class="text-on-surface-variant font-body-md text-body-md">Efficiency, Ecology, Authority.</p>
+</div>
+<header class="mb-xl">
+<h2 class="text-on-surface font-headline-md text-headline-md mb-xs">Create Account</h2>
+<p class="text-on-surface-variant font-body-md text-body-md">Join the field logistics network for your city.</p>
+</header>
+<form id="register-form" class="space-y-lg">
+<!-- Name Field -->
+<div class="space-y-xs">
+<label class="block font-label-lg text-label-lg text-on-surface-variant ml-xs" for="full_name">Full Name</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="person">person</span>
+<input class="w-full pl-xl pr-md py-md bg-surface-container-low border border-outline-variant rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md text-body-md outline-none" id="full_name" placeholder="John Doe" type="text"/>
+</div>
+</div>
+<!-- Email Field -->
+<div class="space-y-xs">
+<label class="block font-label-lg text-label-lg text-on-surface-variant ml-xs" for="email">Email Address</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="mail">mail</span>
+<input class="w-full pl-xl pr-md py-md bg-surface-container-low border border-outline-variant rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md text-body-md outline-none" id="email" placeholder="j.doe@municipality.gov" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-xs">
+<label class="block font-label-lg text-label-lg text-on-surface-variant ml-xs" for="password">Password</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="lock">lock</span>
+<input class="w-full pl-xl pr-md py-md bg-surface-container-low border border-outline-variant rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md text-body-md outline-none" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Role Selection -->
+<div class="space-y-md">
+<label class="block font-label-lg text-label-lg text-on-surface-variant ml-xs">Select Role</label>
+<div class="grid grid-cols-3 gap-sm">
+<!-- Citizen -->
+<label class="cursor-pointer relative group">
+<input checked="" class="role-radio absolute opacity-0" name="role" type="radio" value="citizen"/>
+<div class="role-card flex flex-col items-center justify-center p-md border border-outline-variant rounded-xl bg-surface-container-lowest transition-all hover:border-primary group-hover:shadow-sm">
+<span class="material-symbols-outlined text-title-lg mb-xs" data-icon="group">group</span>
+<span class="font-label-lg text-label-lg">Citizen</span>
+</div>
+</label>
+<!-- Driver -->
+<label class="cursor-pointer relative group">
+<input class="role-radio absolute opacity-0" name="role" type="radio" value="driver"/>
+<div class="role-card flex flex-col items-center justify-center p-md border border-outline-variant rounded-xl bg-surface-container-lowest transition-all hover:border-primary group-hover:shadow-sm">
+<span class="material-symbols-outlined text-title-lg mb-xs" data-icon="local_shipping">local_shipping</span>
+<span class="font-label-lg text-label-lg">Driver</span>
+</div>
+</label>
+<!-- Admin -->
+<label class="cursor-pointer relative group">
+<input class="role-radio absolute opacity-0" name="role" type="radio" value="admin"/>
+<div class="role-card flex flex-col items-center justify-center p-md border border-outline-variant rounded-xl bg-surface-container-lowest transition-all hover:border-primary group-hover:shadow-sm">
+<span class="material-symbols-outlined text-title-lg mb-xs" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-label-lg text-label-lg">Admin</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Terms -->
+<div class="flex items-start gap-md py-xs">
+<div class="flex items-center h-5 mt-1">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" id="terms" type="checkbox"/>
+</div>
+<label class="font-body-md text-body-md text-on-surface-variant" for="terms">
+                        I agree to the <a class="text-primary font-medium hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-medium hover:underline" href="#">Privacy Policy</a> regarding municipal data usage.
+                    </label>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-primary text-on-primary py-md rounded-full font-title-md text-title-md shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-sm" type="submit">
+                    Create Account
+                    <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<footer class="mt-xxl text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Already have an account? 
+                    <a class="text-primary font-semibold hover:underline" href="../Login Screen/index.html">Sign In</a>
+</p>
+<div class="mt-lg pt-lg border-t border-outline-variant flex justify-center gap-xl grayscale opacity-50">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Eco-Cert v2</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Secure Gateway</span>
+</div>
+</footer>
+</div>
+</main>
+<!-- Decorative Gradient Mesh Background (Visible mostly on small screens background) -->
+<div class="fixed inset-0 -z-10 pointer-events-none opacity-40 lg:hidden">
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary-fixed/20 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-tertiary-fixed/20 blur-[80px] rounded-full"></div>
+</div>
+<script src="../../js/api.js"></script>
+<script src="../../js/auth.js"></script>
+</body></html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS Driver Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#a0f0f0",
+                      "surface": "#f9f9fc",
+                      "tertiary": "#006060",
+                      "secondary-container": "#d0e9d8",
+                      "primary-fixed": "#a3f5b2",
+                      "on-surface": "#1a1c1e",
+                      "outline": "#707a6f",
+                      "inverse-primary": "#87d898",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed": "#00210b",
+                      "on-secondary-fixed-variant": "#364b3f",
+                      "surface-variant": "#e2e2e5",
+                      "primary-fixed-dim": "#87d898",
+                      "surface-container-low": "#f3f3f6",
+                      "on-tertiary-fixed": "#002020",
+                      "primary": "#096430",
+                      "surface-container-highest": "#e2e2e5",
+                      "secondary": "#4d6356",
+                      "secondary-fixed-dim": "#b4ccbc",
+                      "on-primary-container": "#ccffd1",
+                      "outline-variant": "#bfc9bd",
+                      "tertiary-fixed-dim": "#84d4d3",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#2d7d46",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#0a1f15",
+                      "on-surface-variant": "#404940",
+                      "on-tertiary-fixed-variant": "#004f4f",
+                      "tertiary-container": "#227a7a",
+                      "surface-bright": "#f9f9fc",
+                      "on-tertiary": "#ffffff",
+                      "surface-dim": "#dadadc",
+                      "surface-tint": "#186c37",
+                      "background": "#f9f9fc",
+                      "inverse-on-surface": "#f0f0f3",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#53695c",
+                      "on-tertiary-container": "#b9fffe",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#2f3133",
+                      "on-primary-fixed-variant": "#005225",
+                      "on-background": "#1a1c1e",
+                      "surface-container": "#eeeef0",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#e8e8ea",
+                      "secondary-fixed": "#d0e9d8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "xl": "32px",
+                      "margin-desktop": "24px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "xxl": "48px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9fc;
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-slate-100 w-full">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary-container flex items-center justify-center">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional middle-aged male municipal worker in a clean high-visibility uniform with soft daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD564D0z-1qOsJag9FnKvt_hLR7Qpvq1urU2AIqubd4PRhFevPOsMVlwzHfF9wJBmNgHCSFR8PQphFot_EC-_zKKA_zr5d5zMERMcnJGerQfLRWP40mojqYGsHPf2cWGi2FG4whhwA4Uf8su3Zxn5J3GTlW8kZTk5Is-JPndfPYhMpc80-3siszoF_LDXW3q98uN5A1q7joJprraGy7XOehavwBPS9f9-PJ7CnEz2TPvpSVcikXd2uKAKm2qKoermiUK9kyy0Q4TdU8"/>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-emerald-800 font-['Inter']">SCOS</h1>
+</div>
+<div class="flex items-center gap-2">
+<button onclick="window.showToast('You have no new notifications.', 'info')" class="p-2 rounded-full hover:bg-slate-50 transition-colors active:opacity-70">
+<span class="material-symbols-outlined text-emerald-700">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 pt-6 pb-32 space-y-6">
+<!-- Welcome Section -->
+<section class="space-y-1">
+<h2 class="text-title-lg font-title-lg text-on-surface">Good Morning, Marcus</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Route 42-B • Vehicle #TRK-8821</p>
+</section>
+<!-- Bento Grid: Summary & Performance -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Today's Tasks Summary (Bento Large) -->
+<div class="md:col-span-2 bg-white rounded-xl p-6 shadow-[0_2px_8px_rgba(46,49,51,0.08)] border border-slate-50 relative overflow-hidden group">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary-container/10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-500"></div>
+<div class="relative z-10 space-y-6">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">Today's Progress</p>
+<h3 class="text-headline-md font-headline-md text-primary mt-1">24 of 32 Pickups</h3>
+</div>
+<div class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                            75% Complete
+                        </div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low rounded-lg p-4">
+<span class="material-symbols-outlined text-primary mb-2">route</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Distance Traveled</p>
+<p class="text-title-md font-title-md text-on-surface">42.8 km</p>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4">
+<span class="material-symbols-outlined text-tertiary mb-2">schedule</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Est. Finish</p>
+<p class="text-title-md font-title-md text-on-surface">15:45 PM</p>
+</div>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<!-- Performance Card -->
+<div class="bg-primary text-white rounded-xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-[80px]" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div>
+<p class="text-label-lg font-label-lg opacity-80">Efficiency Score</p>
+<h3 class="text-display-lg font-display-lg leading-none mt-2">98</h3>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-2 text-label-lg">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span>+4% from last week</span>
+</div>
+<button onclick="window.showToast('Loading detailed stats...', 'info')" class="w-full py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-label-lg font-label-lg transition-colors">
+                        View Detailed Stats
+                    </button>
+</div>
+</div>
+</div>
+<!-- Alerts Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-title-md font-title-md text-on-surface">Live Alerts</h3>
+<span class="px-2 py-0.5 bg-error-container text-on-error-container rounded text-label-sm font-label-sm">2 Urgent</span>
+</div>
+<div class="space-y-3">
+<!-- Alert Card 1 -->
+<div class="flex items-start gap-4 p-4 bg-white rounded-xl border-l-4 border-error shadow-sm">
+<div class="p-2 bg-error-container text-error rounded-lg">
+<span class="material-symbols-outlined">block</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="text-title-md font-title-md text-on-surface">Road Blockage: 5th Ave</h4>
+<span class="text-label-sm font-label-sm text-on-surface-variant">12m ago</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Sewer maintenance crew blocking access. Recalculating Route 42-B.</p>
+<button onclick="window.showToast('Route accepted and optimized!', 'success')" class="px-4 py-2 bg-primary text-on-primary font-label-lg rounded-lg transition-colors shadow-sm active:scale-95">Accept New Route</button>
+</div>
+</div>
+<!-- Alert Card 2 -->
+<div class="flex items-start gap-4 p-4 bg-white rounded-xl border-l-4 border-tertiary-container shadow-sm">
+<div class="p-2 bg-tertiary-fixed text-tertiary rounded-lg">
+<span class="material-symbols-outlined">priority_high</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="text-title-md font-title-md text-on-surface">Urgent Request: Central Park</h4>
+<span class="text-label-sm font-label-sm text-on-surface-variant">2h ago</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Overflow reported at Bin #CP-009 near West Gate. Requires immediate dispatch.</p>
+<div class="flex gap-2 mt-3">
+<button onclick="window.showToast('Incident acknowledged', 'success')" class="px-4 py-2 font-label-lg text-error hover:bg-error/10 rounded-lg transition-colors active:scale-95">Acknowledge</button>
+<button onclick="window.showToast('Loading details...', 'info')" class="px-4 py-2 bg-error text-on-error font-label-lg rounded-lg transition-colors shadow-sm active:scale-95">Details</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Current Route Preview (Glassmorphism Map Card) -->
+<section class="space-y-4">
+<h3 class="text-title-md font-title-md text-on-surface">Current Route</h3>
+<div class="h-64 rounded-2xl overflow-hidden relative shadow-lg group">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist 3D map interface showing urban grid streets in light gray tones with a vibrant green route line highlighting path" data-location="New York City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOo3Dctv_4vWwB3YLd5yyzBvFRLm54o1GFJpgg2WIm0PElBHqfGVycEYm0Gl5X1GJ0sPoxpBugKVg_LKx4mbdsHSxW5ZZ1dmy3aqwLpaoumX_6ij2z2ARMS1vP-AzI_vWne2x4Idbf_oNIFs4CRhyCzcSA_n367sWnXrvnDJ7V9AJ3RMQe8LjHzDmcJpE5mCE06Rf9_OC1QzoAl2pI63v18voX8cY5ryDATj6calnZQjIoyvlCQ5NMH0o_yuygq-0AdbY31-qRLK17"/>
+<div class="absolute inset-0 bg-black/5 pointer-events-none"></div>
+<div class="absolute bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md p-4 rounded-xl flex items-center justify-between border border-white/20">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined">navigation</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Next Stop</p>
+<p class="text-title-md font-title-md text-on-surface">882 Riverside Dr.</p>
+</div>
+</div>
+<span class="text-title-lg font-title-lg text-primary">0.8 km</span>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB: New Task/Report -->
+<button onclick="window.showToast('Opening quick task creation...', 'info')" class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform z-40 flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 0;">add_location_alt</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-slate-200 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] pb-safe">
+<div class="flex justify-around items-center px-2 py-3 w-full">
+<a class="flex flex-col items-center justify-center bg-emerald-100 text-emerald-900 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Stats</span>
+</a>
+</div>
+</nav>
+<script src="../../js/toast.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/driver.js"></script>
+</body></html>

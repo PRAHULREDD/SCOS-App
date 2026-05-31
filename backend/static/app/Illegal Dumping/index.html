@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS - Illegal Dumping Detection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#a0f0f0",
+                      "surface": "#f9f9fc",
+                      "tertiary": "#006060",
+                      "secondary-container": "#d0e9d8",
+                      "primary-fixed": "#a3f5b2",
+                      "on-surface": "#1a1c1e",
+                      "outline": "#707a6f",
+                      "inverse-primary": "#87d898",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed": "#00210b",
+                      "on-secondary-fixed-variant": "#364b3f",
+                      "surface-variant": "#e2e2e5",
+                      "primary-fixed-dim": "#87d898",
+                      "surface-container-low": "#f3f3f6",
+                      "on-tertiary-fixed": "#002020",
+                      "primary": "#096430",
+                      "surface-container-highest": "#e2e2e5",
+                      "secondary": "#4d6356",
+                      "secondary-fixed-dim": "#b4ccbc",
+                      "on-primary-container": "#ccffd1",
+                      "outline-variant": "#bfc9bd",
+                      "tertiary-fixed-dim": "#84d4d3",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#2d7d46",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#0a1f15",
+                      "on-surface-variant": "#404940",
+                      "on-tertiary-fixed-variant": "#004f4f",
+                      "tertiary-container": "#227a7a",
+                      "surface-bright": "#f9f9fc",
+                      "on-tertiary": "#ffffff",
+                      "surface-dim": "#dadadc",
+                      "surface-tint": "#186c37",
+                      "background": "#f9f9fc",
+                      "inverse-on-surface": "#f0f0f3",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#53695c",
+                      "on-tertiary-container": "#b9fffe",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#2f3133",
+                      "on-primary-fixed-variant": "#005225",
+                      "on-background": "#1a1c1e",
+                      "surface-container": "#eeeef0",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#e8e8ea",
+                      "secondary-fixed": "#d0e9d8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "xl": "32px",
+                      "margin-desktop": "24px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "xxl": "48px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center active:opacity-70 transition-all">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="professional corporate headshot of a municipal officer in a clean office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7-nLWYMeo0AL-nGNO0yQIHODCPxM4-XpM6BHN0nqAfCLpYUKSWgrGHm6gLW5kfT-TlHHHLR08mSu_MFCx3ZSRc-BDDonz3B8WBJ0pW3u1sv6mMn30TjkjK1-sBBvPAWCdrvW9RkZgXS98Zk7B9rq1YJd4YWUKSUBW3e4OC9GDNC9WmOnetMdmuREDLI9ezDrQmgIX6UEIAMImHbmdNiilnSXMJ-lfRhFj1Zoecd5zLqxHSlN8pG8ULfJ4EZNQsnuovYQ5wS9jBxVt"/>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:opacity-70 transition-all text-emerald-700 dark:text-emerald-400">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="min-h-[calc(100vh-140px)] relative w-full overflow-hidden">
+<!-- Map Interface Background -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-slate-100 relative">
+<img alt="City Map" class="w-full h-full object-cover opacity-80" data-alt="clean top-down satellite view of an urban district with clearly defined streets and green spaces" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7BvO04AYSqMChxP2JNIicllIC0IC3jjo5jBxvlF--vU2xEoTrGSSGEU2uOwgCeT2n9Vtd9IXz10-XU_Ub_n4RjtiOhjL-bS_wlwBwaOi686TtAS92Thsqcfavh9HOHBD6TJnV3b05SAhjrBvQmYC7w_chFqyBCgbDmltJmNtmcbBRRQ0m49B43ddqm7bzheGHFJl1ImDTB8DIPGlL2LkFh-5HVl_U7XmD9h6RuMxCsn_ei0l6f46Q0XK8rr_FsZuk39eL55OJ3U6n"/>
+<!-- Map Markers (Clustered points) -->
+<!-- Critical Warning Marker -->
+<div class="absolute top-[30%] left-[45%] group cursor-pointer">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-12 h-12 bg-error/20 rounded-full animate-ping"></div>
+<div class="w-10 h-10 bg-error border-2 border-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-[20px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+</div>
+</div>
+<!-- Moderate Marker -->
+<div class="absolute top-[55%] left-[60%] group cursor-pointer">
+<div class="w-8 h-8 bg-primary border-2 border-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-[16px]" data-icon="delete_sweep" style="font-variation-settings: 'FILL' 1;">delete_sweep</span>
+</div>
+</div>
+<!-- Clustered Marker -->
+<div class="absolute top-[40%] left-[25%] group cursor-pointer">
+<div class="w-12 h-12 bg-tertiary border-2 border-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="font-bold text-white text-sm">8+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- UI Overlays -->
+<div class="relative z-10 p-4 md:p-8 flex flex-col gap-6 max-w-7xl mx-auto h-full pointer-events-none">
+<!-- Analysis Summary Floating Panel -->
+<div class="w-full md:w-96 pointer-events-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-title-lg font-title-lg text-on-surface">Illegal Dumping AI</h2>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-label-sm">LIVE MONITORING</span>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Active Incidents</p>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md text-on-surface">24</span>
+<span class="text-error font-medium text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> 12%
+                            </span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container p-3 rounded-2xl">
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">High Risk</p>
+<span class="text-title-md font-title-md text-error">04</span>
+</div>
+<div class="bg-surface-container p-3 rounded-2xl">
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">Average Clear</p>
+<span class="text-title-md font-title-md text-primary">2.4h</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Details Panel & Dispatch Tool (Bento Style) -->
+<div class="mt-auto grid grid-cols-1 md:grid-cols-3 gap-4 pointer-events-auto">
+<!-- Prediction Card -->
+<div class="col-span-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-5 shadow-lg border border-white/10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+<h3 class="text-title-md font-title-md">AI Prediction</h3>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-body-md font-body-md">
+<span class="text-on-surface-variant">Predicted Culprits:</span>
+<span class="font-semibold text-on-surface">Private Contractors</span>
+</div>
+<div class="flex justify-between items-center text-body-md font-body-md">
+<span class="text-on-surface-variant">Common Time:</span>
+<span class="font-semibold text-on-surface">02:00 AM - 04:00 AM</span>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-primary w-[85%] rounded-full"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant">85% Confidence in pattern matching</p>
+</div>
+</div>
+<!-- Frequency Heatmap Summary -->
+<div class="col-span-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-5 shadow-lg border border-white/10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="calendar_month">calendar_month</span>
+<h3 class="text-title-md font-title-md">Weekly Frequency</h3>
+</div>
+<div class="flex items-end gap-2 h-20 px-2">
+<div class="flex-1 bg-surface-container rounded-t-lg h-[40%]"></div>
+<div class="flex-1 bg-surface-container rounded-t-lg h-[60%]"></div>
+<div class="flex-1 bg-primary rounded-t-lg h-[90%]"></div>
+<div class="flex-1 bg-error rounded-t-lg h-[100%]"></div>
+<div class="flex-1 bg-surface-container rounded-t-lg h-[50%]"></div>
+<div class="flex-1 bg-surface-container rounded-t-lg h-[30%]"></div>
+<div class="flex-1 bg-surface-container rounded-t-lg h-[45%]"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant px-1">
+<span>MON</span><span>WED</span><span>FRI</span><span>SUN</span>
+</div>
+</div>
+<!-- Dispatching Action Card -->
+<div class="col-span-1 bg-primary-container text-on-primary-container rounded-3xl p-5 shadow-lg border border-primary/20 flex flex-col justify-between">
+<div>
+<h3 class="text-title-lg font-title-lg mb-2">Cluster #412 Alert</h3>
+<p class="text-body-md opacity-90 leading-snug">Multiple unauthorized disposals detected at Mission District Perimeter. Critical block detected.</p>
+</div>
+<button class="mt-4 w-full bg-white text-primary font-bold py-3 px-6 rounded-full flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+                        Dispatching Team
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for Emergency -->
+<div class="fixed bottom-24 right-6 z-40 md:hidden">
+<button class="w-14 h-14 bg-error text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[12px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-['Inter'] text-[12px] font-medium">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+</a>
+</nav>
+<script src="../../js/toast.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/admin.js"></script>
+</body></html>

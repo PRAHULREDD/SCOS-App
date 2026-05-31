@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-scos_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./infra/database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata_prod:/var/lib/postgresql/data
+    networks:
+      - scos-prod-net
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata_prod:/data
+    networks:
+      - scos-prod-net
+
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-scos_db}
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=production
+    depends_on:
+      - db
+      - redis
+    networks:
+      - scos-prod-net
+
+volumes:
+  pgdata_prod:
+  redisdata_prod:
+
+networks:
+  scos-prod-net:
+    driver: bridge

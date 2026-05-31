@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#a0f0f0",
+                        "surface": "#f9f9fc",
+                        "tertiary": "#006060",
+                        "secondary-container": "#d0e9d8",
+                        "primary-fixed": "#a3f5b2",
+                        "on-surface": "#1a1c1e",
+                        "outline": "#707a6f",
+                        "inverse-primary": "#87d898",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed-variant": "#364b3f",
+                        "surface-variant": "#e2e2e5",
+                        "primary-fixed-dim": "#87d898",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed": "#002020",
+                        "primary": "#096430",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#4d6356",
+                        "secondary-fixed-dim": "#b4ccbc",
+                        "on-primary-container": "#ccffd1",
+                        "outline-variant": "#bfc9bd",
+                        "tertiary-fixed-dim": "#84d4d3",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2d7d46",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0a1f15",
+                        "on-surface-variant": "#404940",
+                        "on-tertiary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#227a7a",
+                        "surface-bright": "#f9f9fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "surface-tint": "#186c37",
+                        "background": "#f9f9fc",
+                        "inverse-on-surface": "#f0f0f3",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#53695c",
+                        "on-tertiary-container": "#b9fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#005225",
+                        "on-background": "#1a1c1e",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed": "#d0e9d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top AppBar Component -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="professional headshot of a friendly man in his 30s with short hair and a warm smile, soft daylight studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGdYFLOlwXhc_b2OBx2UIc3bx4Ds0bWUPWaTTP4N-HR7WBo82sj1IcIB6xEw6zzZUAUiN0wtPDEPTVaqR3fWaYtG4gP4rtwU_xIFIVX5SjN2qtsoep6W866AR6xujN1IfgoqymRrmQZlOMO2O24b9WF5ZbQY1p_3YDRJm3tTuVLqEzidf8TnQu5VMSBO15sw-1UAjE1wqSwqebq7ADZPMxf7LMzSZzApgGOMG2RPQoce3nW6oMynyb89q1AbnowXNJFNdy5T3aLJxu"/>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-emerald-700 dark:text-emerald-400 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:opacity-70" data-icon="notifications">notifications</button>
+</div>
+</div>
+</header>
+<main class="relative min-h-[calc(100vh-128px)] overflow-hidden">
+<!-- Interactive Heatmap Canvas -->
+<div class="absolute inset-0 z-0">
+<img alt="City Map Background" class="w-full h-full object-cover opacity-80" data-alt="high altitude detailed satellite map of a modern urban city with streets, buildings, and parks, soft color grading" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8vWjVCaHjo_EZGMlIy7iyXzKxgI5oTd08b-beQJusxUfF20jUXwnyK7aHr3r2FQRFbDihFOG06vpjUEFEVbchdZTbNT5kKzwi-0KXsgMckcQJGbRBoOh7hOaIUsfMcufEfjJht3uo5nxCrtY7gC0zT7DFuDyWex-CRHx-LGc5mYz0zyO3nIifuJczRWWQp4OT2Z-s2GTqr5bBzVP6_t8Pcd5z6nYYay3OsSgZsFm4yxCqXwdIzniAJnBFXMjQteN3baVCB2dLjk-w"/>
+<!-- Heatmap Overlays (Simulated) -->
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+<div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-error/20 rounded-full blur-[80px]"></div>
+<div class="absolute top-1/2 left-1/2 w-72 h-72 bg-amber-400/20 rounded-full blur-3xl"></div>
+</div>
+<!-- Map Markers -->
+<!-- Critical Bin -->
+<div class="absolute top-[40%] left-[60%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer">
+<div class="relative">
+<div class="w-10 h-10 bg-error rounded-full flex items-center justify-center text-white border-2 border-white shadow-lg transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</div>
+<div class="absolute top-full mt-2 bg-white px-2 py-1 rounded-lg shadow-md border border-slate-100 whitespace-nowrap hidden group-hover:block">
+<p class="font-label-lg text-on-surface">Central Plaza • 95% Full</p>
+</div>
+</div>
+</div>
+<!-- Clean Bin -->
+<div class="absolute top-[25%] left-[35%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer">
+<div class="relative">
+<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white border-2 border-white shadow-lg transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</div>
+<div class="absolute top-full mt-2 bg-white px-2 py-1 rounded-lg shadow-md border border-slate-100 whitespace-nowrap hidden group-hover:block">
+<p class="font-label-lg text-on-surface">Oak Street • 12% Full</p>
+</div>
+</div>
+</div>
+<!-- Attention Bin -->
+<div class="absolute bottom-[45%] left-[20%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer">
+<div class="relative">
+<div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white border-2 border-white shadow-lg transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</div>
+<div class="absolute top-full mt-2 bg-white px-2 py-1 rounded-lg shadow-md border border-slate-100 whitespace-nowrap hidden group-hover:block">
+<p class="font-label-lg text-on-surface">Riverside Walk • 65% Full</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Search Bar Floating UI -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-lg z-10">
+<div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-full shadow-lg border border-slate-100 dark:border-slate-800 flex items-center px-4 py-2">
+<span class="material-symbols-outlined text-slate-400 mr-2" data-icon="search">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md text-on-surface placeholder:text-slate-400" placeholder="Search for neighborhood or bin..." type="text"/>
+<button class="material-symbols-outlined text-emerald-700 ml-2" data-icon="my_location">my_location</button>
+</div>
+</div>
+<!-- Heatmap Legend Floating UI -->
+<div class="absolute bottom-28 left-4 z-10">
+<div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-100 dark:border-slate-800">
+<h3 class="font-title-md mb-3 text-on-surface">Cleanliness Level</h3>
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-label-lg text-slate-600">Green (Clean)</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-amber-500"></div>
+<span class="font-label-lg text-slate-600">Yellow (Attention)</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<span class="font-label-lg text-slate-600">Red (Critical)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side Floating Actions -->
+<div class="absolute bottom-28 right-4 z-10 flex flex-col gap-3">
+<button class="w-14 h-14 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center text-emerald-800 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="w-14 h-14 bg-primary text-white rounded-2xl shadow-lg flex items-center justify-center transform active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="add_report">report</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Bar Component -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 z-50 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] rounded-t-2xl">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Home</span>
+</a>
+<!-- Map (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Map</span>
+</a>
+<!-- Tasks -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Tasks</span>
+</a>
+<!-- Reports -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Reports</span>
+</a>
+<!-- Stats -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Stats</span>
+</a>
+</nav>
+<script src="../../js/toast.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/admin.js"></script>
+</body></html>

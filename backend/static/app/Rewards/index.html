@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9fc;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#a0f0f0",
+                        "surface": "#f9f9fc",
+                        "tertiary": "#006060",
+                        "secondary-container": "#d0e9d8",
+                        "primary-fixed": "#a3f5b2",
+                        "on-surface": "#1a1c1e",
+                        "outline": "#707a6f",
+                        "inverse-primary": "#87d898",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed-variant": "#364b3f",
+                        "surface-variant": "#e2e2e5",
+                        "primary-fixed-dim": "#87d898",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed": "#002020",
+                        "primary": "#096430",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#4d6356",
+                        "secondary-fixed-dim": "#b4ccbc",
+                        "on-primary-container": "#ccffd1",
+                        "outline-variant": "#bfc9bd",
+                        "tertiary-fixed-dim": "#84d4d3",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2d7d46",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0a1f15",
+                        "on-surface-variant": "#404940",
+                        "on-tertiary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#227a7a",
+                        "surface-bright": "#f9f9fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "surface-tint": "#186c37",
+                        "background": "#f9f9fc",
+                        "inverse-on-surface": "#f0f0f3",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#53695c",
+                        "on-tertiary-container": "#b9fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#005225",
+                        "on-background": "#1a1c1e",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed": "#d0e9d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface mb-24">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-secondary-container flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a smiling man in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBStnmUts5sqFca-wG5ivqoxn3NNGb7iRcL6huk8NARYT2L3dvbDH6ObSF5yFxv3IGQGSc3EHx1smicVdeDV7jvclZDGwEvdM0yjnrhHsTmV7Pu5qXUQMh7AT9nZYSu0C-n08S3cUaD_LynAtqZKZ_QJIKCY85Hw-T_zhuD4LcDrow_qWqTHc_WMz4ZDoT5Ry_qW1kG3NEGfHuLG844U4qq7ihMkrtlI1d0NL0N-BGVw2of3-XmiTpVuSkzy0p10ThOc6QXmFBVBSlH"/>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-2 rounded-full active:opacity-70 transition-all">
+<span class="material-symbols-outlined text-emerald-700 dark:text-emerald-400">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 py-6 space-y-8">
+<!-- EcoPoints Hero & Progress -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-primary-container text-on-primary-container p-8 rounded-3xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="relative z-10">
+<h2 class="font-label-lg text-label-lg uppercase tracking-wider opacity-90">Current EcoPoints</h2>
+<div class="flex items-baseline gap-2 mt-2">
+<span id="eco-points-display" class="font-display-lg text-6xl font-bold">1,240</span>
+<span class="font-title-md opacity-80">pts</span>
+</div>
+</div>
+<div class="mt-12 relative z-10">
+<div class="flex justify-between items-end mb-3">
+<div>
+<p class="font-title-md font-semibold text-white">Elite Recycler Tier</p>
+<p class="font-body-md opacity-80">260 points to Champion</p>
+</div>
+<span class="font-title-md font-bold">82%</span>
+</div>
+<div class="w-full h-3 bg-black/20 rounded-full overflow-hidden">
+<div class="h-full bg-white rounded-full w-[82%]"></div>
+</div>
+</div>
+<!-- Decorative element -->
+<div class="absolute -right-12 -top-12 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Quick Stats Bento -->
+<div class="bg-surface-container rounded-3xl p-6 flex flex-col justify-center space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div>
+<p class="font-label-sm text-on-surface-variant">CO2 Saved</p>
+<p class="font-title-lg font-bold">42.5 kg</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-tertiary-fixed-dim flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">delete_sweep</span>
+</div>
+<div>
+<p class="font-label-sm text-on-surface-variant">Waste Sorted</p>
+<p class="font-title-lg font-bold">184 kg</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Leaderboard & Rewards Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Rewards Grid -->
+<div class="lg:col-span-8 space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-on-surface">Available Rewards</h2>
+<button class="text-primary font-label-lg flex items-center gap-1 hover:underline">
+                        View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div id="rewards-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Reward Card 1 -->
+<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="vibrant local coffee shop interior with warm wooden tables and green plants in hanging pots" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsMnCTZR9dq1_Dffs3O-4vc_Ae-UjP19BnWlJpAEvBNXWCY89M-CYOeu1srWAXsWyCt98q_X0aYUTCerhrRXOf4mv-kSd73BZPvMKOXG5_aj_y2HCd9D6ctqjQx6W8nWtffwKbJpatjZcrrezGWxypflYSjeXLEWoIjErc1s3RH8W1A9F4DU18YTzw1y2BeN0oJYzwdwcKFSfI0SyTPxmg3QjuvkFqM_e5ZpUY0bJs9-jQb9N58U4gJObpNSZZFEQZkrB3C0wuYz0x"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<p class="font-label-sm text-primary uppercase font-bold">Local Shop</p>
+<h3 class="font-title-md font-bold leading-tight">Free Oat Latte</h3>
+<p class="font-body-md text-on-surface-variant mt-1">The Green Bean</p>
+</div>
+<div class="flex items-center gap-1 text-emerald-700 font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-sm">450 pts</span>
+</div>
+</div>
+</div>
+<!-- Reward Card 2 -->
+<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="lush urban park with green grass and modern wooden benches under a bright blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGJg8R-5zq-5XjFD8eqhidXrfI8VW0Rv7DgQSA8zH8wPFM7o9a_roDWLaUK3wAm7-FJ1n7vy2-EkyohXVHXc1Jf6td69d1bABwbU8NSbpUjEF43W4WTq676ejrdFX2_ivULWrnNC12OfeR6OUVRtk-if0fY_OOUTDVp3gGMmyZh3z-MSiG6hBqkfq21_xaNqycPCpbx6-Awfh19s-XiiaFV94ZYX0L_G7AYX5hfPKlQe_3ooopglGnuje5nT6dQTG15qZ5WX-MiZ3u"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<p class="font-label-sm text-primary uppercase font-bold">Public Service</p>
+<h3 class="font-title-md font-bold leading-tight">Botanic Garden Pass</h3>
+<p class="font-body-md text-on-surface-variant mt-1">City Parks Dept</p>
+</div>
+<div class="flex items-center gap-1 text-emerald-700 font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-sm">800 pts</span>
+</div>
+</div>
+</div>
+<!-- Reward Card 3 -->
+<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="close-up of fresh organic vegetables in a rustic wooden crate at a community market" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6-D8_U6KC8anRi_dhyBmXhNo0aXlXD7sXt5q8RPpPG9z3Ghq3zojIqSdlydPFFVxibzIdw8IekbYK4c2z2OoxNzPTm2LiKfZn2lcJB2W3yqI2j4KiuVLn9fnf-y8ER8ZycNAIzxZMekhz0kFKN2HZi_ANdQcvsGbZ25mWTsslT2RuST4U9I-EQgVIsGSUzgCnTYLVH1L11feUXm63cf90o3E10hvZvromfSr6etcKyTXJT3fjcxSyeUZnXuRiSLpgKAEy24q32cL0"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<p class="font-label-sm text-primary uppercase font-bold">Discount</p>
+<h3 class="font-title-md font-bold leading-tight">15% Off Organic Box</h3>
+<p class="font-body-md text-on-surface-variant mt-1">Farm-to-Door</p>
+</div>
+<div class="flex items-center gap-1 text-emerald-700 font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-sm">300 pts</span>
+</div>
+</div>
+</div>
+<!-- Reward Card 4 -->
+<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="modern city bus at a sunlit terminal with clean glass architecture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGBq2DVPMh8YCOjlZyzmoeh3cKijdTqqLwIh3AWwN-8_eqSw075TI7lH4J6eFRqjOzmJsL-OxxiUFNf-dQIGi-mVwhEoZZVT53FWR1v7-mK53j_VJ_Fw07aAwqwOQ5FOelojJYK_5uSOBopJJjoA5UBF9mrAo3Tvy8jrvKvMnPx-X5UKlBbfCREiBBQYRGD35Ogph7kRQgDy6IojY_UOHueyg0IWnM1sh5XOfUy5isQpwSRQOJr8NTqabjcFw60Z-CSlB7qpL7NrMp"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<p class="font-label-sm text-primary uppercase font-bold">Transport</p>
+<h3 class="font-title-md font-bold leading-tight">Weekly Transit Pass</h3>
+<p class="font-body-md text-on-surface-variant mt-1">Metro Transit</p>
+</div>
+<div class="flex items-center gap-1 text-emerald-700 font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-sm">1,500 pts</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Leaderboard Side Panel -->
+<div class="lg:col-span-4 bg-white border border-slate-100 rounded-3xl p-6 shadow-sm h-fit">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-title-lg font-bold">District Ranking</h2>
+<span class="font-label-sm px-3 py-1 bg-secondary-container text-secondary rounded-full">Riverside</span>
+</div>
+<div class="space-y-4">
+<!-- Rank 1 -->
+<div class="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center font-bold text-emerald-800">1</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
+<img class="w-full h-full object-cover" data-alt="portrait of a confident woman with curly hair and professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYi0jmEehaHvPYrrMUc_k0GWXtfRnyHBHw87A9qceU6n274zWuMD08dXg_8T9z31Klp0UjR2QTk7BmPBtEGe_a4S0B3GpPP6OeOTvt2sMPcwkYagn3gaHcHm3vr9fExs5TSyW1pP06GE2f70Wk_g1b2MLsUl1bFwzI8k8hEYxhTjRuPM40iJb0bO_hQ3ZiZ6mDfjAto2d7dWwcQFDqdglFGQ5FG7GQy2wPqz4jqRObXLejJ0bVAnlf-9NdUN_Lg4-st3Vs2OUMrbGd"/>
+</div>
+<div>
+<p class="font-title-md font-bold text-on-surface">Elena S.</p>
+<p class="font-label-sm text-on-surface-variant">2,410 pts</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-yellow-500" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center font-bold text-slate-400">2</div>
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a man with a friendly smile wearing casual business attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDugaMwz_nHj810wIH4j9fNm7-zNDZ6jSVe8wCLbvyR2HkmUJa2x2kfPimjcVUx0lKKkeVQabd7j8wLrVTyesLMgpqPCjw5-1qG8i0bZ8yiTBRiGdg9SiMxNf_6RLP9RZdapuwSAxbncM2AgDbCvWkWq7Jea0NzmuqKI1IBKAzlcBzzmaGLMyC-h_i3yUezMdm8Kv-U4UlVONEiZCjNHHdJsz0XBSnyWxeOjJXveB08M-2U3B27qRKDTj-3yn60vnhzEnXTvxha79ft"/>
+</div>
+<div>
+<p class="font-title-md font-bold text-on-surface">Marcus R.</p>
+<p class="font-label-sm text-on-surface-variant">2,185 pts</p>
+</div>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center font-bold text-slate-400">3</div>
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a woman in a bright office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATKfrQqBkDFe28reXzyaQgjxWOfQrg_fgXvAGmmn2aI6Nflx-r_hlmf_Kr3CeMHqfh16igUiS4FTGl39X2Sxwvv00w9WyktzdZQ3JPcekAp8eG8h2soY6E625BaK7_t5Mssri12vlwXNUkznX0K46ErOOKcnI2VgfySyhzWSAgHCGW42w_5j8hOVaivQ7E-3R6b7h09cHNobxHONMI3jl0uOLoX27IGJojIezvfjURDdK98wKeFkKHDMuxKyC-ERJrCCX6i9xXtnQ8"/>
+</div>
+<div>
+<p class="font-title-md font-bold text-on-surface">Sarah K.</p>
+<p class="font-label-sm text-on-surface-variant">1,940 pts</p>
+</div>
+</div>
+</div>
+<!-- User's Rank -->
+<div class="mt-4 pt-4 border-t border-slate-100">
+<div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center font-bold text-emerald-700">12</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a smiling man in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU4KYj0-My0pbKZ7JkS6MOJ_NdepBoMfyB6lLh0M77gfHUtTXrd9Tsbw97vkolQ-0fF8GFICGTmgFry3iB5RK_kHcd5cJLxTZPSTevnF62A3jvwDhp7uu6qUCiRE6STCMANvIT0OiMCyOyZH2bXt0oa8FEhS2oC1m6v5bWLzqI4qN8dJu2Pbd69jzb8BaKPM5BzbQ5xMs05xY7I09VilslPHfHHZ5_79fWvfGcyi3Uhj-PmY643bjd_fgV0pBSKJeW_g1j8ipxrtLz"/>
+</div>
+<div>
+<p class="font-title-md font-bold text-on-surface">You</p>
+<p class="font-label-sm text-on-surface-variant">1,240 pts</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 bg-secondary-container text-secondary font-label-lg rounded-2xl hover:opacity-90 transition-opacity">
+                    View Full Leaderboard
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Stats</span>
+</a>
+</nav>
+<script src="../../js/api.js"></script>
+<script src="../../js/citizen.js"></script>
+</body></html>

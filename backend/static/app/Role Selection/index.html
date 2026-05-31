@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS - Role Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#a0f0f0",
+                        "surface": "#f9f9fc",
+                        "tertiary": "#006060",
+                        "secondary-container": "#d0e9d8",
+                        "primary-fixed": "#a3f5b2",
+                        "on-surface": "#1a1c1e",
+                        "outline": "#707a6f",
+                        "inverse-primary": "#87d898",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed-variant": "#364b3f",
+                        "surface-variant": "#e2e2e5",
+                        "primary-fixed-dim": "#87d898",
+                        "surface-container-low": "#f3f3f6",
+                        "on-tertiary-fixed": "#002020",
+                        "primary": "#096430",
+                        "surface-container-highest": "#e2e2e5",
+                        "secondary": "#4d6356",
+                        "secondary-fixed-dim": "#b4ccbc",
+                        "on-primary-container": "#ccffd1",
+                        "outline-variant": "#bfc9bd",
+                        "tertiary-fixed-dim": "#84d4d3",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2d7d46",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0a1f15",
+                        "on-surface-variant": "#404940",
+                        "on-tertiary-fixed-variant": "#004f4f",
+                        "tertiary-container": "#227a7a",
+                        "surface-bright": "#f9f9fc",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "surface-tint": "#186c37",
+                        "background": "#f9f9fc",
+                        "inverse-on-surface": "#f0f0f3",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#53695c",
+                        "on-tertiary-container": "#b9fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "on-primary-fixed-variant": "#005225",
+                        "on-background": "#1a1c1e",
+                        "surface-container": "#eeeef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary-fixed": "#d0e9d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-tonal-layer {
+            background-color: rgba(9, 100, 48, 0.05);
+        }
+        .elevation-1 {
+            box-shadow: 0 2px 8px rgba(46, 49, 51, 0.08);
+        }
+        .elevation-2 {
+            box-shadow: 0 4px 12px rgba(46, 49, 51, 0.08);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- Onboarding Flow: Navigation is suppressed as per Rule -->
+<main class="flex-grow flex items-center justify-center px-margin-mobile md:px-margin-desktop py-xxl">
+<div class="max-w-5xl w-full">
+<!-- Hero Header Section -->
+<header class="text-center mb-xl">
+<div class="inline-flex items-center justify-center p-md mb-md bg-primary-container text-on-primary-container rounded-full elevation-1">
+<span class="material-symbols-outlined text-3xl" data-icon="eco">eco</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-primary mb-sm">Who are you?</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-lg mx-auto">
+                    Select your profile type to customize your Smart City Operational System experience.
+                </p>
+</header>
+<!-- Role Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Citizen Role -->
+<button class="group relative flex flex-col items-center text-center p-xl bg-surface-container-low rounded-xl border-2 border-transparent hover:border-primary hover:bg-surface-container transition-all duration-300 elevation-1 active:scale-95">
+<div class="w-24 h-24 mb-lg rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl" data-icon="person">person</span>
+</div>
+<h2 class="text-title-lg font-title-lg text-on-surface mb-sm">Citizen</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                        Report waste issues, track community bins, and view local eco-stats.
+                    </p>
+<div class="mt-xl opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="bg-primary text-on-primary px-lg py-sm rounded-full font-label-lg text-label-lg">
+                            Get Started
+                        </div>
+</div>
+</button>
+<!-- Driver Role -->
+<button class="group relative flex flex-col items-center text-center p-xl bg-surface-container-low rounded-xl border-2 border-transparent hover:border-primary hover:bg-surface-container transition-all duration-300 elevation-1 active:scale-95">
+<div class="w-24 h-24 mb-lg rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl" data-icon="local_shipping">local_shipping</span>
+</div>
+<h2 class="text-title-lg font-title-lg text-on-surface mb-sm">Driver</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                        Access route logistics, bin sensor data, and collection task lists.
+                    </p>
+<div class="mt-xl opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="bg-primary text-on-primary px-lg py-sm rounded-full font-label-lg text-label-lg">
+                            Log In
+                        </div>
+</div>
+</button>
+<!-- Admin Role -->
+<button class="group relative flex flex-col items-center text-center p-xl bg-surface-container-low rounded-xl border-2 border-transparent hover:border-primary hover:bg-surface-container transition-all duration-300 elevation-1 active:scale-95">
+<div class="w-24 h-24 mb-lg rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-5xl" data-icon="dashboard">dashboard</span>
+</div>
+<h2 class="text-title-lg font-title-lg text-on-surface mb-sm">Admin</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                        Manage fleet operations, analyze system efficiency, and oversee city-wide data.
+                    </p>
+<div class="mt-xl opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="bg-primary text-on-primary px-lg py-sm rounded-full font-label-lg text-label-lg">
+                            Admin Portal
+                        </div>
+</div>
+</button>
+</div>
+<!-- Footer Help Section -->
+<footer class="mt-xxl text-center">
+<div class="inline-flex flex-col items-center gap-base">
+<p class="text-label-lg font-label-lg text-outline">Need help with your credentials?</p>
+<a class="text-primary font-title-md text-title-md hover:underline decoration-2 underline-offset-4" href="#">Contact Municipal Support</a>
+</div>
+</footer></div>
+</main>
+<!-- Decorative Background Elements -->
+<div class="fixed top-0 right-0 -z-10 w-1/3 h-1/3 opacity-20 pointer-events-none">
+<div class="w-full h-full bg-gradient-to-bl from-primary-fixed to-transparent rounded-full blur-3xl"></div>
+</div>
+<div class="fixed bottom-0 left-0 -z-10 w-1/4 h-1/4 opacity-10 pointer-events-none">
+<div class="w-full h-full bg-gradient-to-tr from-tertiary-fixed to-transparent rounded-full blur-3xl"></div>
+</div>
+<!-- Background Illustration Placeholder -->
+<div class="fixed inset-0 -z-20 overflow-hidden pointer-events-none">
+<div class="absolute bottom-0 right-0 w-full h-64 opacity-5 translate-y-12">
+<img alt="abstract cityscape" class="w-full h-full object-cover grayscale" data-alt="Minimalist abstract architectural silhouettes of a modern smart city skyline with clean geometric lines and soft morning fog atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_KdBNMKVVGLhBOnyumPwIzJNpm-YNh95sJOsz9ez47RXp83G-GW_E26OKvGXu4DG1cgKlMfO8WysvH77kYNQbYWwXVyzNhJRc5kgAIk2apj_3D8J6bgD6HB8W-0xTEq_SN_k16rl1nlY-snZCyJ_xjHPpLL1DlVNbnVWwgbZuwURKHq6birrI51ojnKWvJ8mB5yisrlL7KP88mdyK0_N75a4KbXISk83odrgODagOxuqyI3OkgDTcgtAZgQndpa1535yGNjy7STCy"/>
+</div>
+</div>
+</body></html>

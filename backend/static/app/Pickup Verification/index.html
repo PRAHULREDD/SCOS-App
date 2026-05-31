@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCOS Pickup Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#a0f0f0",
+                      "surface": "#f9f9fc",
+                      "tertiary": "#006060",
+                      "secondary-container": "#d0e9d8",
+                      "primary-fixed": "#a3f5b2",
+                      "on-surface": "#1a1c1e",
+                      "outline": "#707a6f",
+                      "inverse-primary": "#87d898",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed": "#00210b",
+                      "on-secondary-fixed-variant": "#364b3f",
+                      "surface-variant": "#e2e2e5",
+                      "primary-fixed-dim": "#87d898",
+                      "surface-container-low": "#f3f3f6",
+                      "on-tertiary-fixed": "#002020",
+                      "primary": "#096430",
+                      "surface-container-highest": "#e2e2e5",
+                      "secondary": "#4d6356",
+                      "secondary-fixed-dim": "#b4ccbc",
+                      "on-primary-container": "#ccffd1",
+                      "outline-variant": "#bfc9bd",
+                      "tertiary-fixed-dim": "#84d4d3",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#2d7d46",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#0a1f15",
+                      "on-surface-variant": "#404940",
+                      "on-tertiary-fixed-variant": "#004f4f",
+                      "tertiary-container": "#227a7a",
+                      "surface-bright": "#f9f9fc",
+                      "on-tertiary": "#ffffff",
+                      "surface-dim": "#dadadc",
+                      "surface-tint": "#186c37",
+                      "background": "#f9f9fc",
+                      "inverse-on-surface": "#f0f0f3",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#53695c",
+                      "on-tertiary-container": "#b9fffe",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#2f3133",
+                      "on-primary-fixed-variant": "#005225",
+                      "on-background": "#1a1c1e",
+                      "surface-container": "#eeeef0",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#e8e8ea",
+                      "secondary-fixed": "#d0e9d8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "xl": "32px",
+                      "margin-desktop": "24px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "xxl": "48px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md font-['Inter'] font-semibold text-lg docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl" data-icon="recycling">recycling</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:opacity-70">
+<span class="material-symbols-outlined text-slate-500" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional municipal worker in a reflective safety vest, warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcjoQd575aQDV93CuDHGtYwN4asoyVzP2KmXnQDxPynvWCyA20dZGo0JFIthK0oN9F5Kr737iZobb97zA3YA9jkHxJVeUwr28bc-Gm8oC7v7sdTVlTetqEe9o_KpnKsi1WQYMWUmr9refpsgJw9prWi04qsaDOMwKQbM0btyuMDVzX0MUkHq_ICNVHVp-FNqbGnZ1lRzYeTne1NnWg5l496N-v8ho7cjk1_UNw5tw_0w_AiEH2-UinUfD8LOde8CznvC8G8tMGuzJS"/>
+</div>
+</div>
+</div>
+</header>
+<form id="pickup-verification-form" class="max-w-xl mx-auto px-margin-mobile py-lg space-y-lg">
+<input type="file" id="proof-image" accept="image/*" class="hidden">
+<input type="hidden" id="complaint-id" value="1">
+<!-- Task Header Card -->
+<section class="bg-surface-container-low rounded-xl p-md shadow-sm border border-outline-variant/30">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Current Task</span>
+<h1 class="font-headline-md text-headline-md text-on-surface">Bin #4429-B</h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                        Oak Ridge Residential Complex
+                    </p>
+</div>
+<div class="bg-error-container text-on-error-container px-3 py-1 rounded-full font-label-lg text-label-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-sm fill-icon" data-icon="warning">warning</span>
+                    95% Full
+                </div>
+</div>
+<div class="flex gap-md mt-md">
+<div class="flex-1 bg-white p-sm rounded-lg border border-outline-variant/20">
+<span class="block font-label-sm text-label-sm text-outline">Type</span>
+<span class="font-title-md text-title-md">Recyclables</span>
+</div>
+<div class="flex-1 bg-white p-sm rounded-lg border border-outline-variant/20">
+<span class="block font-label-sm text-label-sm text-outline">Scheduled</span>
+<span class="font-title-md text-title-md">09:45 AM</span>
+</div>
+</div>
+</section>
+<!-- Image Upload Section -->
+<section class="space-y-sm">
+<h2 class="font-title-md text-title-md px-1">Upload Proof</h2>
+<button class="w-full aspect-video bg-secondary-container/30 border-2 border-dashed border-primary/30 rounded-2xl flex flex-col items-center justify-center gap-md hover:bg-secondary-container/50 transition-all active:scale-[0.98]">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-white text-3xl" data-icon="photo_camera" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+<div class="text-center">
+<p class="font-title-md text-title-md text-primary">Tap to Capture Photo</p>
+<p class="font-label-lg text-label-lg text-on-surface-variant">Required for verification</p>
+</div>
+</button>
+<script>
+    document.querySelector('button.aspect-video').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('proof-image').click();
+    });
+    document.getElementById('proof-image').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            document.querySelector('button.aspect-video p.text-primary').innerText = file.name;
+            document.querySelector('button.aspect-video p.text-on-surface-variant').innerText = "Tap again to change";
+        }
+    });
+</script>
+<!-- Mock Thumbnail of Captured Image (Hidden state logic simulated) -->
+<div class="hidden grid-cols-2 gap-md mt-sm">
+<div class="relative rounded-xl overflow-hidden aspect-square border border-outline-variant shadow-sm">
+<img alt="Waste bin" class="w-full h-full object-cover" data-alt="Close-up of an overflowing green municipal recycling bin in an urban residential parking area during daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGw9Qq36Ts5VS5-qm8EjI9WIkCLZV-uKpWI5QMVn8tz7Q5y3YQgB_uL6lZHZdEL0_Obf3V3Jg2QmaztQI4b8w9Z1YPUlIFjmxTL7T1uIIOAWwV_Hv65rbQkO6SOy_OqDrp3dCy53ZEcb2imz7KRQsc-5hrg7ncewq7cYjybSZXkAJPjvWxhCmMUxW3wqBfP96Yr924uNloGaz-1yg_cn6JvtzVIzq2mXQA7gw33R45mnvHbh8WrW4ASakgt2chWthxNWtn7f6DJvdq"/>
+<button class="absolute top-2 right-2 bg-on-surface/80 text-surface p-1 rounded-full backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Waste Level Selection -->
+<section class="space-y-sm">
+<h2 class="font-title-md text-title-md px-1">Current Waste Level</h2>
+<div class="grid grid-cols-3 gap-sm">
+<!-- Level: Empty -->
+<button class="flex flex-col items-center gap-sm p-md rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors">
+<div class="w-12 h-2 bg-slate-200 rounded-full overflow-hidden"></div>
+<span class="font-label-lg text-label-lg text-slate-500">Empty</span>
+</button>
+<!-- Level: Partial -->
+<button class="flex flex-col items-center gap-sm p-md rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors">
+<div class="w-12 h-2 bg-primary/20 rounded-full overflow-hidden">
+<div class="w-1/2 h-full bg-primary"></div>
+</div>
+<span class="font-label-lg text-label-lg text-slate-500">Partial</span>
+</button>
+<!-- Level: Full (Active State) -->
+<button class="flex flex-col items-center gap-sm p-md rounded-2xl border-2 border-primary bg-primary-container/10">
+<div class="w-12 h-2 bg-error/20 rounded-full overflow-hidden">
+<div class="w-full h-full bg-error"></div>
+</div>
+<span class="font-label-lg text-label-lg text-primary font-bold">Full</span>
+</button>
+</div>
+</section>
+<!-- Dropdown for Issues -->
+<section class="space-y-sm">
+<label class="font-title-md text-title-md px-1 block">Report an Issue (Optional)</label>
+<div class="relative">
+<select class="w-full h-14 pl-md pr-xl bg-surface border border-outline-variant rounded-xl appearance-none focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-md">
+<option>None / No issues</option>
+<option>Bin Damaged</option>
+<option>Contaminated Waste</option>
+<option>Area Blocked / No Access</option>
+<option>Illegal Dumping Nearby</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</section>
+<!-- Confirm Action -->
+<div class="pt-lg">
+<button type="submit" class="w-full h-14 bg-primary text-on-primary rounded-full font-title-lg text-title-lg shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined fill-icon" data-icon="check_circle">check_circle</span>
+                Confirm Pickup
+            </button>
+<p class="text-center font-label-sm text-label-sm text-outline mt-md">Verified GPS: 40.7128° N, 74.0060° W</p>
+</div>
+</form>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[12px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-['Inter'] text-[12px] font-medium">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined fill-icon" data-icon="assignment">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+</a>
+</nav>
+<script src="../../js/toast.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/driver.js"></script>
+</body></html>
