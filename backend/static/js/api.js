@@ -107,6 +107,39 @@ class API {
             method: 'GET'
         });
     }
+
+    static async fetchRewards() {
+        return this.request('/api/citizen/rewards', {
+            method: 'GET'
+        });
+    }
+
+    static async redeemReward(rewardId) {
+        const formData = new FormData();
+        formData.append("reward_id", rewardId);
+        return this.request('/api/citizen/redeem_reward', {
+            method: 'POST',
+            body: formData
+        });
+    }
+
+    static async fetchAdminOverview() {
+        return this.request('/api/admin/overview', {
+            method: 'GET'
+        });
+    }
+
+    static async fetchAdminHeatmap() {
+        return this.request('/api/admin/waste_heatmap', {
+            method: 'GET'
+        });
+    }
+
+    static async fetchIllegalDumping() {
+        return this.request('/api/admin/illegal_dumping', {
+            method: 'GET'
+        });
+    }
 }
 
 window.API = API;

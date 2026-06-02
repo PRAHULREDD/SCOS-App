@@ -296,6 +296,43 @@ def init_db():
         try:
             Base.metadata.create_all(bind=engine)
             print("Database tables synchronized.")
+            
+            # Auto-seed initial data if empty
+            db = SessionLocal()
+            if db.query(Reward).count() == 0:
+                rewards = [
+                    Reward(title="Free Oat Latte", provider="The Green Bean", cost=450, points_cost=450, category="Local Shop"),
+                    Reward(title="Botanic Garden Pass", provider="City Parks Dept", cost=800, points_cost=800, category="Public Service"),
+                    Reward(title="15% Off Organic Box", provider="Farm-to-Door", cost=300, points_cost=300, category="Discount"),
+                    Reward(title="Weekly Transit Pass", provider="Metro Transit", cost=1500, points_cost=1500, category="Transport")
+                ]
+                db.add_all(rewards)
+            
+            if db.query(Contractor).count() == 0:
+                contractors = [
+                    Contractor(name="GreenFleet Logistics", completion_rate=98.2, satisfaction_score=4.8, response_time_hours=2.4, active_drivers=12),
+                    Contractor(name="CityWorks Sanitation", completion_rate=94.5, satisfaction_score=4.2, response_time_hours=4.1, active_drivers=8)
+                ]
+                db.add_all(contractors)
+                
+            if db.query(DumpingIncident).count() == 0:
+                incidents = [
+                    DumpingIncident(zone="Zone A", cluster_id="CL-409", description="Construction debris on sidewalk", severity="HIGH", predicted_culprit="Unlicensed Contractor", confidence=0.88, lat=12.9716, lng=77.5946),
+                    DumpingIncident(zone="Zone C", cluster_id="CL-112", description="Household waste in alleyway", severity="MEDIUM", predicted_culprit="Local Residents", confidence=0.65, lat=12.9780, lng=77.5990)
+                ]
+                db.add_all(incidents)
+                
+            if db.query(Complaint).count() == 0:
+                complaints = [
+                    Complaint(citizen_id=1, lat=12.9716, lng=77.5946, zone="Zone A", area="Downtown", waste_type="General", severity_level="High", status="PENDING"),
+                    Complaint(citizen_id=1, lat=12.9750, lng=77.5980, zone="Zone B", area="Northside", waste_type="Recyclable", severity_level="Medium", status="RESOLVED"),
+                    Complaint(citizen_id=1, lat=12.9720, lng=77.5900, zone="Zone C", area="West End", waste_type="Hazardous", severity_level="High", status="PENDING")
+                ]
+                db.add_all(complaints)
+                
+            db.commit()
+            db.close()
+            
             break
         except Exception as e:
             print(f"Waiting for database... ({i+1}/10) Error: {e}")

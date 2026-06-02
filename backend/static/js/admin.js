@@ -101,4 +101,47 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // ---- Dynamic Admin Data Fetching ----
+    
+    // Safely update text if a preceding label matches
+    const updateStatByLabel = (labelText, value) => {
+        const elements = document.querySelectorAll('p.text-label-sm');
+        elements.forEach(el => {
+            if (el.textContent.includes(labelText)) {
+                if (el.nextElementSibling) {
+                    el.nextElementSibling.textContent = value;
+                }
+            }
+        });
+    };
+
+    const loadAdminData = async () => {
+        const path = window.location.pathname;
+        
+        try {
+            if (path.includes('Waste Heatmap') || path.includes('Cleanliness Heatmap')) {
+                const stats = await API.fetchAdminOverview();
+                updateStatByLabel('Total Bins', stats.total_complaints * 12); // Simulated total based on DB
+                updateStatByLabel('Critical', stats.pending_complaints);
+                updateStatByLabel('Collection Efficiency', `${stats.collection_rate}%`);
+                
+                const heatmapData = await API.fetchAdminHeatmap();
+                // Optionally update heatmap UI if specific lists exist
+            }
+            
+            if (path.includes('Illegal Dumping')) {
+                const dumpData = await API.fetchIllegalDumping();
+                updateStatByLabel('Active Reports', dumpData.active_incidents);
+                updateStatByLabel('High Severity', dumpData.high_risk_count);
+                updateStatByLabel('Avg Clear Time', `${dumpData.avg_clear_hours}h`);
+            }
+            
+        } catch (err) {
+            console.error("Failed to fetch live admin stats:", err);
+            // Non-blocking failure, keeps existing UI intact
+        }
+    };
+    
+    loadAdminData();
 });

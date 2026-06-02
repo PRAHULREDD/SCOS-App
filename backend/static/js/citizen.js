@@ -222,55 +222,65 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ---- Rewards List Loader & Mock Redemption ----
-    const loadRewards = () => {
+    // ---- Dynamic Rewards List Loader & Redemption ----
+    const loadRewards = async () => {
         const rewardsList = document.getElementById('rewards-list');
         if (rewardsList) {
-            const availableRewards = [
-                { id: 1, title: "Free Oat Latte", provider: "The Green Bean", cost: 450, category: "Local Shop" },
-                { id: 2, title: "Botanic Garden Pass", provider: "City Parks Dept", cost: 800, category: "Public Service" },
-                { id: 3, title: "15% Off Organic Box", provider: "Farm-to-Door", cost: 300, category: "Discount" },
-                { id: 4, title: "Weekly Transit Pass", provider: "Metro Transit", cost: 1500, category: "Transport" }
-            ];
+            try {
+                const data = await API.fetchRewards();
+                const availableRewards = data.rewards || [];
 
-            rewardsList.innerHTML = availableRewards.map(r => `
-                <div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
-                    <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-emerald-50 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-emerald-600 text-4xl">redeem</span>
-                    </div>
-                    <div class="flex flex-col justify-between py-1 flex-grow">
-                        <div>
-                            <p class="font-label-sm text-primary uppercase font-bold text-left">${r.category}</p>
-                            <h3 class="font-title-md font-bold leading-tight text-left">${r.title}</h3>
-                            <p class="font-body-md text-on-surface-variant mt-1 text-left">${r.provider}</p>
+                if (availableRewards.length === 0) {
+                    rewardsList.innerHTML = '<p class="text-on-surface-variant">No rewards currently available.</p>';
+                    return;
+                }
+
+                rewardsList.innerHTML = availableRewards.map(r => `
+                    <div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
+                        <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-emerald-50 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-emerald-600 text-4xl">redeem</span>
                         </div>
-                        <div class="flex items-center justify-between mt-2">
-                            <div class="flex items-center gap-1 text-emerald-700 font-bold">
-                                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
-                                <span class="text-sm">${r.cost} pts</span>
+                        <div class="flex flex-col justify-between py-1 flex-grow">
+                            <div>
+                                <p class="font-label-sm text-primary uppercase font-bold text-left">${r.category || 'Reward'}</p>
+                                <h3 class="font-title-md font-bold leading-tight text-left">${r.title}</h3>
+                                <p class="font-body-md text-on-surface-variant mt-1 text-left">${r.provider}</p>
                             </div>
-                            <button onclick="redeemReward(${r.id}, ${r.cost}, '${r.title}')" class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:opacity-90 active:scale-95 transition-transform">
-                                Redeem
-                            </button>
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center gap-1 text-emerald-700 font-bold">
+                                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+                                    <span class="text-sm">${r.points_cost} pts</span>
+                                </div>
+                                <button onclick="redeemReward(${r.id}, ${r.points_cost}, '${r.title}')" class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:opacity-90 active:scale-95 transition-transform">
+                                    Redeem
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (err) {
+                console.error("Failed to load rewards:", err);
+                rewardsList.innerHTML = '<p class="text-error">Failed to load rewards from server.</p>';
+            }
         }
     };
     loadRewards();
 
     // Redeem handler exposed to window so onclick works
-    window.redeemReward = (rewardId, cost, title) => {
+    window.redeemReward = async (rewardId, cost, title) => {
         const currentPoints = Number(localStorage.getItem('eco_points') || "0");
         if (currentPoints < cost) {
             window.showToast(`Insufficient points! You need ${cost} points.`, "error");
             return;
         }
 
-        const newPoints = currentPoints - cost;
-        localStorage.setItem('eco_points', newPoints);
-        updatePointsUI();
-        window.showToast(`Successfully redeemed: ${title}!`, "success");
+        try {
+            const response = await API.redeemReward(rewardId);
+            localStorage.setItem('eco_points', response.remaining_points);
+            updatePointsUI();
+            window.showToast(`Successfully redeemed: ${title}!`, "success");
+        } catch (err) {
+            window.showToast(err.message, "error");
+        }
     };
 });
