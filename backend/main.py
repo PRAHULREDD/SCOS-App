@@ -305,10 +305,10 @@ def init_db():
             db = SessionLocal()
             if db.query(Reward).count() == 0:
                 rewards = [
-                    Reward(title="Free Oat Latte", provider="The Green Bean", cost=450, points_cost=450, category="Local Shop"),
-                    Reward(title="Botanic Garden Pass", provider="City Parks Dept", cost=800, points_cost=800, category="Public Service"),
-                    Reward(title="15% Off Organic Box", provider="Farm-to-Door", cost=300, points_cost=300, category="Discount"),
-                    Reward(title="Weekly Transit Pass", provider="Metro Transit", cost=1500, points_cost=1500, category="Transport")
+                    Reward(title="Free Oat Latte", provider="The Green Bean", points_cost=450, category="Local Shop"),
+                    Reward(title="Botanic Garden Pass", provider="City Parks Dept", points_cost=800, category="Public Service"),
+                    Reward(title="15% Off Organic Box", provider="Farm-to-Door", points_cost=300, category="Discount"),
+                    Reward(title="Weekly Transit Pass", provider="Metro Transit", points_cost=1500, category="Transport")
                 ]
                 db.add_all(rewards)
             
