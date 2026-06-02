@@ -136,7 +136,11 @@ app.mount("/js", StaticFiles(directory="static/js"), name="js")
 
 @app.get("/")
 def read_root():
-    return RedirectResponse(url="/app/index.html")
+    return RedirectResponse(url="/app/Login%20Screen/index.html")
+
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}
 
 # Enable CORS for the Admin Dashboard HTML frontend
 CORS_ORIGINS_ENV = os.getenv("CORS_ORIGINS")
