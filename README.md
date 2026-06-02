@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/PRAHULREDD/SCOS-App/main/backend/static/img/hero-banner.png" alt="SCOS Banner" onerror="this.style.display='none'"/>
   
-  <h1>♻️ SCOS: Smart Waste Collection Optimization System</h1>
+  <h1> SCOS: Smart Waste Collection Optimization System</h1>
   <p><i>A Next-Generation Municipal Waste Management & Civic Engagement Platform</i></p>
 
   [![Deployment](https://img.shields.io/badge/Live_Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://scos-app.onrender.com)
@@ -13,18 +13,18 @@
 
 ---
 
-## 🌐 Live Demonstration
+##  Live Demonstration
 Experience the fully interactive platform live at: **[https://scos-app.onrender.com](https://scos-app.onrender.com)**
 
 > **Note on Cloud Hosting**: SCOS is currently deployed on Render's free tier. We have engineered a lightweight `/api/health` heartbeat endpoint that can be paired with UptimeRobot or Cron-job.org to prevent container sleep, ensuring 24/7 zero-latency availability.
 
 ---
 
-## 🚀 Overview
+##  Overview
 
 SCOS is engineered to modernize municipal waste management by transitioning from static, scheduled collection routes to a **dynamic, data-driven operational model**. By gamifying citizen reporting and optimizing driver logistics, SCOS drastically improves fleet efficiency, reduces carbon footprints, and ensures city cleanliness.
 
-### 🏗️ Technical Architecture
+###  Technical Architecture
 SCOS utilizes a highly decoupled monolithic architecture optimized for rapid horizontal scaling:
 - **Backend Core**: Python `FastAPI` serving high-concurrency asynchronous REST APIs.
 - **Data Persistence**: `SQLite` (Development/Demo) scaling seamlessly to `PostgreSQL` via SQLAlchemy ORM. Includes an intelligent **Auto-Seeder** to instantly provision mock data (complaints, incidents, rewards) on cold boots.
@@ -33,26 +33,26 @@ SCOS utilizes a highly decoupled monolithic architecture optimized for rapid hor
 
 ---
 
-## 🌟 Key Features by Role
+##  Key Features by Role
 
-### 👥 1. Citizen Portal & Gamification
+### 1. Citizen Portal & Gamification
 - **Civic Incident Reporting**: Users can upload geotagged photos of illegal dumping or overflowing bins.
 - **Eco-Rewards System (Live)**: Citizens earn `EcoPoints` for validated reports. The integrated Rewards Store fetches dynamic incentives (e.g., Transit Passes, Coffee Vouchers) directly from the database for real-time redemption.
 - **Live Tracking**: Citizens monitor the lifecycle of their reports (Pending → Dispatched → Resolved) via an intuitive timeline.
 
-### 🚛 2. Driver Logistics Interface
+### 2. Driver Logistics Interface
 - **Dynamic Routing**: Drivers receive real-time, proximity-based task assignments.
 - **Visual Verification**: Mandatory on-site photographic proof capture ensures bins are successfully cleared before a task is marked resolved.
 - **Turn-by-Turn Navigation**: Embedded GPS wayfinding and emergency dispatch toggles.
 
-### 📊 3. Admin Command Center
+### 3. Admin Command Center
 - **Live Geospatial Heatmaps**: Real-time visualization of waste clusters, illegal dumping hotspots, and overall cleanliness metrics aggregated by municipal wards.
 - **Fleet Analytics**: Monitor active contractor performance, driver completion rates, and average response times.
 - **Automated Dispatching**: One-click rapid response unit deployment for high-severity or hazardous waste incidents.
 
 ---
 
-## 💻 Quick Start (Local Development)
+## Quick Start (Local Development)
 
 ### 1. Clone the repository
 ```bash
@@ -75,7 +75,7 @@ python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
 ---
 
-## ☁️ Zero-Config Deployment (Render)
+## Zero-Config Deployment (Render)
 
 SCOS is fully containerized and structurally optimized for immediate cloud deployment:
 1. Connect this repository to Render.
@@ -85,7 +85,7 @@ SCOS is fully containerized and structurally optimized for immediate cloud deplo
 
 ---
 
-## 🤝 Contributing & License
+## Contributing & License
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for pull request guidelines.
 - Licensed under the MIT License - see [LICENSE](LICENSE) for details.
 
