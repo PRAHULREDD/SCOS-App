@@ -38,7 +38,7 @@ def test_read_root_redirects_to_app():
     """Verify that root URL redirects to index.html app preview page."""
     response = client.get("/", follow_redirects=False)
     assert response.status_code == 307
-    assert response.headers["location"] == "/app/index.html"
+    assert response.headers["location"] == "/app/Login%20Screen/index.html"
 
 def test_cleanliness_score_empty_db():
     """Verify cleanliness score handles empty db correctly returning 100."""
