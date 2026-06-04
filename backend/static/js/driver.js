@@ -52,41 +52,52 @@ window.showToast = window.showToast || function (msg, type) {
  */
 async function loadDriverDashboard() {
     try {
-        const stats = await API.request('/api/driver/dashboard');
+        const stats = await API.fetchDriverDashboard();
 
         // Update greeting
-        const greetingEl = Array.from(document.querySelectorAll('h2')).find(el => el.textContent.includes('Good Morning'));
+        const greetingEl = document.getElementById('driver-welcome-text');
         if (greetingEl) greetingEl.textContent = `Good Morning, ${stats.driver_name}`;
 
-        const vehicleEl = document.querySelector('p.text-on-surface-variant');
-        if (vehicleEl && vehicleEl.textContent.includes('Route')) {
-            vehicleEl.textContent = `${stats.sector} • Vehicle #${stats.vehicle_id}`;
-        }
-
         // Update "24 of 32 Pickups" Progress
-        const progressEls = document.querySelectorAll('h3');
-        const progressEl = Array.from(progressEls).find(el => el.textContent.includes('Pickups'));
+        const progressEl = document.getElementById('driver-progress-text');
         if (progressEl) {
             progressEl.textContent = `${stats.completed_today} of ${stats.total_tasks} Pickups`;
         }
 
         // Update percentage badge
         let percentage = stats.total_tasks > 0 ? Math.round((stats.completed_today / stats.total_tasks) * 100) : 0;
-        const percentageBadge = document.querySelector('.bg-primary-container.text-on-primary-container');
+        const percentageBadge = document.getElementById('driver-progress-percent');
         if (percentageBadge) percentageBadge.textContent = `${percentage}% Complete`;
 
         // Update progress bar
-        const progressBar = document.querySelector('.bg-primary.h-2.rounded-full');
+        const progressBar = document.getElementById('driver-progress-bar');
         if (progressBar) progressBar.style.width = `${percentage}%`;
 
-        // Distance text
-        const distEl = Array.from(document.querySelectorAll('p.text-title-md')).find(el => el.textContent.includes('km'));
-        if (distEl) distEl.textContent = `${stats.next_pickup_km} km`;
-
-        // Try to fetch performance score
-        const perf = await API.request('/api/driver/performance');
-        const scoreEl = document.querySelector('h3.text-display-lg');
-        if (scoreEl) scoreEl.textContent = perf.efficiency || 0;
+        // Load Alerts
+        const alertsList = document.getElementById('driver-alerts-list');
+        if (alertsList) {
+            const complaints = await API.request('/api/driver/active_complaints', { method: 'GET' });
+            if (!complaints || complaints.length === 0) {
+                alertsList.innerHTML = `<div class="py-4 text-center opacity-50"><span class="material-symbols-outlined text-4xl mb-2">check_circle</span><p>No active alerts.</p></div>`;
+            } else {
+                alertsList.innerHTML = complaints.slice(0, 2).map(c => `
+                    <div class="flex items-start gap-4 p-4 bg-white rounded-xl border-l-4 border-error shadow-sm">
+                        <div class="p-2 bg-error-container text-error rounded-lg">
+                            <span class="material-symbols-outlined">priority_high</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="text-title-md font-title-md text-on-surface">${c.waste_type || 'Urgent'} - ${c.area}</h4>
+                            </div>
+                            <p class="text-body-md font-body-md text-on-surface-variant mt-1">Requires immediate dispatch.</p>
+                            <div class="flex gap-2 mt-3">
+                                <button onclick="window.showToast('Incident acknowledged', 'success')" class="px-4 py-2 font-label-lg text-error hover:bg-error/10 rounded-lg transition-colors active:scale-95">Acknowledge</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
 
     } catch (e) {
         console.error("Error loading driver dashboard:", e);
@@ -101,8 +112,11 @@ async function loadAssignedTasks() {
         const tasksList = document.getElementById('tasks-list');
         if (!tasksList) return;
 
-        const tasks = await API.request('/api/driver/assigned_tasks');
+        const tasks = await API.fetchAssignedTasks();
         tasksList.innerHTML = ''; // clear mock entries
+
+        const assignedCountEl = document.getElementById('assigned-count');
+        if (assignedCountEl) assignedCountEl.textContent = tasks.length;
 
         if (tasks.length === 0) {
             tasksList.innerHTML = '<p class="text-center text-outline p-md font-body-md">No tasks assigned currently. Have a great day!</p>';

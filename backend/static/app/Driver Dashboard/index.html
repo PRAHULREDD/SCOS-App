@@ -140,8 +140,8 @@
 <main class="max-w-7xl mx-auto px-4 pt-6 pb-32 space-y-6">
 <!-- Welcome Section -->
 <section class="space-y-1">
-<h2 class="text-title-lg font-title-lg text-on-surface">Good Morning, Marcus</h2>
-<p class="text-body-md font-body-md text-on-surface-variant">Route 42-B • Vehicle #TRK-8821</p>
+<h2 id="driver-welcome-text" class="text-title-lg font-title-lg text-on-surface">Good Morning</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Route Active</p>
 </section>
 <!-- Bento Grid: Summary & Performance -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -152,10 +152,10 @@
 <div class="flex justify-between items-start">
 <div>
 <p class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">Today's Progress</p>
-<h3 class="text-headline-md font-headline-md text-primary mt-1">24 of 32 Pickups</h3>
+<h3 id="driver-progress-text" class="text-headline-md font-headline-md text-primary mt-1">-- of -- Pickups</h3>
 </div>
-<div class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
-                            75% Complete
+<div id="driver-progress-percent" class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-label-sm font-label-sm">
+                            --% Complete
                         </div>
 </div>
 <div class="grid grid-cols-2 gap-4">
@@ -171,7 +171,7 @@
 </div>
 </div>
 <div class="w-full bg-surface-variant rounded-full h-2">
-<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+<div id="driver-progress-bar" class="bg-primary h-2 rounded-full" style="width: 0%"></div>
 </div>
 </div>
 </div>
@@ -201,38 +201,11 @@
 <h3 class="text-title-md font-title-md text-on-surface">Live Alerts</h3>
 <span class="px-2 py-0.5 bg-error-container text-on-error-container rounded text-label-sm font-label-sm">2 Urgent</span>
 </div>
-<div class="space-y-3">
-<!-- Alert Card 1 -->
-<div class="flex items-start gap-4 p-4 bg-white rounded-xl border-l-4 border-error shadow-sm">
-<div class="p-2 bg-error-container text-error rounded-lg">
-<span class="material-symbols-outlined">block</span>
-</div>
-<div class="flex-1">
-<div class="flex justify-between items-start">
-<h4 class="text-title-md font-title-md text-on-surface">Road Blockage: 5th Ave</h4>
-<span class="text-label-sm font-label-sm text-on-surface-variant">12m ago</span>
-</div>
-<p class="text-body-md font-body-md text-on-surface-variant mt-1">Sewer maintenance crew blocking access. Recalculating Route 42-B.</p>
-<button onclick="window.showToast('Route accepted and optimized!', 'success')" class="px-4 py-2 bg-primary text-on-primary font-label-lg rounded-lg transition-colors shadow-sm active:scale-95">Accept New Route</button>
-</div>
-</div>
-<!-- Alert Card 2 -->
-<div class="flex items-start gap-4 p-4 bg-white rounded-xl border-l-4 border-tertiary-container shadow-sm">
-<div class="p-2 bg-tertiary-fixed text-tertiary rounded-lg">
-<span class="material-symbols-outlined">priority_high</span>
-</div>
-<div class="flex-1">
-<div class="flex justify-between items-start">
-<h4 class="text-title-md font-title-md text-on-surface">Urgent Request: Central Park</h4>
-<span class="text-label-sm font-label-sm text-on-surface-variant">2h ago</span>
-</div>
-<p class="text-body-md font-body-md text-on-surface-variant mt-1">Overflow reported at Bin #CP-009 near West Gate. Requires immediate dispatch.</p>
-<div class="flex gap-2 mt-3">
-<button onclick="window.showToast('Incident acknowledged', 'success')" class="px-4 py-2 font-label-lg text-error hover:bg-error/10 rounded-lg transition-colors active:scale-95">Acknowledge</button>
-<button onclick="window.showToast('Loading details...', 'info')" class="px-4 py-2 bg-error text-on-error font-label-lg rounded-lg transition-colors shadow-sm active:scale-95">Details</button>
-</div>
-</div>
-</div>
+<div id="driver-alerts-list" class="space-y-3">
+    <div class="py-4 text-center opacity-50">
+        <span class="material-symbols-outlined text-4xl mb-2">sync</span>
+        <p>Loading alerts...</p>
+    </div>
 </div>
 </section>
 <!-- Current Route Preview (Glassmorphism Map Card) -->

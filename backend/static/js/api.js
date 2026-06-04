@@ -108,6 +108,24 @@ class API {
         });
     }
 
+    static async fetchCitizenDashboard() {
+        return this.request('/api/citizen/dashboard', {
+            method: 'GET'
+        });
+    }
+
+    static async fetchDriverDashboard() {
+        return this.request('/api/driver/dashboard', {
+            method: 'GET'
+        });
+    }
+
+    static async fetchAssignedTasks() {
+        return this.request('/api/driver/assigned_tasks', {
+            method: 'GET'
+        });
+    }
+
     static async fetchRewards() {
         return this.request('/api/citizen/rewards', {
             method: 'GET'

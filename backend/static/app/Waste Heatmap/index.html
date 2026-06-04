@@ -196,19 +196,19 @@
 <div class="grid grid-cols-2 gap-3">
 <div class="bg-surface-container-low p-3 rounded-xl border border-outline-variant">
 <p class="text-label-sm text-on-surface-variant">Total Bins</p>
-<p class="text-title-lg font-headline-md text-primary">1,284</p>
+<p id="admin-total-bins" class="text-title-lg font-headline-md text-primary">--</p>
 </div>
 <div class="bg-error-container/30 p-3 rounded-xl border border-error/20">
 <p class="text-label-sm text-on-error-container">Critical</p>
-<p class="text-title-lg font-headline-md text-error">42</p>
+<p id="admin-critical-bins" class="text-title-lg font-headline-md text-error">--</p>
 </div>
 <div class="col-span-2 bg-secondary-container/30 p-3 rounded-xl border border-secondary/20">
 <div class="flex justify-between items-center">
 <p class="text-label-sm text-on-secondary-container">Collection Efficiency</p>
-<span class="text-primary font-bold">94%</span>
+<span id="admin-collection-efficiency" class="text-primary font-bold">--%</span>
 </div>
 <div class="w-full bg-white/50 h-1.5 rounded-full mt-2">
-<div class="bg-primary h-full rounded-full w-[94%]"></div>
+<div id="admin-collection-bar" class="bg-primary h-full rounded-full w-[0%]"></div>
 </div>
 </div>
 </div>

@@ -143,11 +143,11 @@
 </div>
 <div>
 <h2 class="font-title-lg text-title-lg text-primary mb-xs">Neighborhood Wellness</h2>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">Your local area is performing better than 84% of the city. Keep it green!</p>
+<p id="cleanliness-message" class="font-body-md text-body-md text-on-surface-variant max-w-xs">Loading neighborhood data...</p>
 </div>
 <div class="mt-xl flex items-end gap-md">
 <div class="flex flex-col">
-<span class="font-display-lg text-[64px] font-bold leading-none text-primary">92</span>
+<span id="cleanliness-score-display" class="font-display-lg text-[64px] font-bold leading-none text-primary">--</span>
 <span class="font-label-lg text-label-lg text-secondary uppercase tracking-widest">Cleanliness Score</span>
 </div>
 <div class="flex-grow h-12 flex items-end gap-1 pb-1">
@@ -187,54 +187,10 @@
 </button>
 </div>
 <div id="complaints-list" class="space-y-sm">
-<!-- Report Item 1 -->
-<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-shadow">
-<div class="flex items-center gap-md">
-<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary" data-icon="delete_outline">delete_outline</span>
-</div>
-<div>
-<h4 class="font-title-md text-on-surface">Overflowing Bin - Maple Ave</h4>
-<p class="font-body-md text-body-md text-on-surface-variant">Reported 2 hours ago</p>
-</div>
-</div>
-<div class="flex items-center gap-md">
-<span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-sm text-label-sm">In Progress</span>
-<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
-</div>
-</div>
-<!-- Report Item 2 -->
-<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-shadow">
-<div class="flex items-center gap-md">
-<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary" data-icon="recycling">recycling</span>
-</div>
-<div>
-<h4 class="font-title-md text-on-surface">Illegal Dumping - South Park</h4>
-<p class="font-body-md text-body-md text-on-surface-variant">Yesterday, 4:15 PM</p>
-</div>
-</div>
-<div class="flex items-center gap-md">
-<span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-label-sm text-label-sm">Resolved</span>
-<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
-</div>
-</div>
-<!-- Report Item 3 -->
-<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-shadow">
-<div class="flex items-center gap-md">
-<div class="w-12 h-12 bg-error-container/30 rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-error" data-icon="report_problem">report_problem</span>
-</div>
-<div>
-<h4 class="font-title-md text-on-surface">Broken Sensor - Bin #442</h4>
-<p class="font-body-md text-body-md text-on-surface-variant">Oct 24, 2023</p>
-</div>
-</div>
-<div class="flex items-center gap-md">
-<span class="bg-error/10 text-error px-3 py-1 rounded-full font-label-sm text-label-sm">Action Needed</span>
-<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
-</div>
-</div>
+    <div class="py-4 flex flex-col items-center justify-center text-center opacity-50">
+        <span class="material-symbols-outlined text-4xl animate-spin mb-2" data-icon="sync">sync</span>
+        <p class="text-sm">Loading recent reports...</p>
+    </div>
 </div>
 </div>
 <!-- Contextual Map Snippet -->

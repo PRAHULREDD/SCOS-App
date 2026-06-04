@@ -17,3 +17,7 @@ sentry-sdk
 prometheus-fastapi-instrumentator
 websockets
 
+alembic
+asyncpg
+aiosqlite
+greenlet

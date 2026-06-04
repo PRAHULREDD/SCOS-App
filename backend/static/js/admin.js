@@ -122,9 +122,16 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (path.includes('Waste Heatmap') || path.includes('Cleanliness Heatmap')) {
                 const stats = await API.fetchAdminOverview();
-                updateStatByLabel('Total Bins', stats.total_complaints * 12); // Simulated total based on DB
-                updateStatByLabel('Critical', stats.pending_complaints);
-                updateStatByLabel('Collection Efficiency', `${stats.collection_rate}%`);
+                
+                const totalBins = document.getElementById('admin-total-bins');
+                const criticalBins = document.getElementById('admin-critical-bins');
+                const efficiencyEl = document.getElementById('admin-collection-efficiency');
+                const efficiencyBar = document.getElementById('admin-collection-bar');
+
+                if (totalBins) totalBins.textContent = stats.total_complaints * 12; // Simulated total
+                if (criticalBins) criticalBins.textContent = stats.pending_complaints || 0;
+                if (efficiencyEl) efficiencyEl.textContent = `${stats.collection_rate || 0}%`;
+                if (efficiencyBar) efficiencyBar.style.width = `${stats.collection_rate || 0}%`;
                 
                 const heatmapData = await API.fetchAdminHeatmap();
                 // Optionally update heatmap UI if specific lists exist
@@ -132,9 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (path.includes('Illegal Dumping')) {
                 const dumpData = await API.fetchIllegalDumping();
-                updateStatByLabel('Active Reports', dumpData.active_incidents);
-                updateStatByLabel('High Severity', dumpData.high_risk_count);
-                updateStatByLabel('Avg Clear Time', `${dumpData.avg_clear_hours}h`);
+                
+                const activeEl = document.getElementById('dumping-active-count');
+                const highRiskEl = document.getElementById('dumping-high-risk');
+                const avgClearEl = document.getElementById('dumping-avg-clear');
+
+                if (activeEl) activeEl.textContent = dumpData.active_count || dumpData.active_incidents || 0;
+                if (highRiskEl) highRiskEl.textContent = dumpData.high_risk_count || "0";
+                if (avgClearEl) avgClearEl.textContent = `${dumpData.avg_clear_time || dumpData.avg_clear_hours || "2.4"}h`;
             }
             
         } catch (err) {

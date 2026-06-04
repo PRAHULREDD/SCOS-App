@@ -156,6 +156,34 @@ document.addEventListener('DOMContentLoaded', () => {
         loadComplaints();
     }
 
+    // ---- Dynamic Dashboard Stats Renderer ----
+    const loadCitizenDashboard = async () => {
+        const scoreDisplay = document.getElementById('cleanliness-score-display');
+        const messageDisplay = document.getElementById('cleanliness-message');
+        
+        if (scoreDisplay && messageDisplay) {
+            try {
+                const data = await API.fetchCitizenDashboard();
+                
+                // Update Cleanliness Score & Message
+                scoreDisplay.innerText = Math.round(data.cleanliness_score || 0);
+                messageDisplay.innerText = "Your local area is performing better than the city average. Keep it green!";
+                
+                // Update EcoPoints dynamically
+                localStorage.setItem('eco_points', data.eco_points);
+                updatePointsUI();
+            } catch (err) {
+                console.error("Failed to load citizen dashboard", err);
+                scoreDisplay.innerText = "--";
+                messageDisplay.innerText = "Error loading score.";
+            }
+        }
+    };
+    
+    if (window.location.pathname.includes('Citizen Dashboard')) {
+        loadCitizenDashboard();
+    }
+
     // ---- Report Waste Form Submit ----
     const reportForm = document.getElementById('report-waste-form');
     if (reportForm) {
