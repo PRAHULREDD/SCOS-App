@@ -1,0 +1,5 @@
+{
+  "appId": "com.scos.app",
+  "appName": "SCOS",
+  "webDir": "../backend/static"
+}

@@ -2,7 +2,7 @@
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>SCOS Onboarding - Effortless Reporting</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -117,7 +117,11 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+  
+    <script src="https://cdn.jsdelivr.net/npm/@capacitor/core/dist/capacitor.js"></script>
+    <script src="../../js/mobile.js"></script>
+    <style>body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }</style>
+</head>
 <body class="bg-surface text-on-surface min-h-screen flex flex-col">
 <!-- Header / Brand (Minimal for Onboarding) -->
 <header class="w-full flex justify-between items-center px-margin-mobile md:px-margin-desktop py-md">

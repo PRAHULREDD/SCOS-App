@@ -1,7 +1,9 @@
 /**
  * Central API Handler for SCOS Frontend
  */
-const BASE_URL = window.location.origin;
+const BASE_URL = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.origin.includes('localhost') || window.location.protocol === 'file:' 
+    ? 'https://scos-app.onrender.com' 
+    : window.location.origin;
 
 class API {
     static getToken() {

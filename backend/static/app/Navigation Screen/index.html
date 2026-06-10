@@ -118,7 +118,11 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+  
+    <script src="https://cdn.jsdelivr.net/npm/@capacitor/core/dist/capacitor.js"></script>
+    <script src="../../js/mobile.js"></script>
+    <style>body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }</style>
+</head>
 <body class="bg-surface font-body-md text-on-surface overflow-hidden">
 <!-- Top Navigation Header (Shared Component: TopAppBar) -->
 <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md font-['Inter'] font-semibold text-lg docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
