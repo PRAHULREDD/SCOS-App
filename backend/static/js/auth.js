@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Store state
                 localStorage.setItem('token', response.access_token);
                 localStorage.setItem('user_role', response.role);
+                localStorage.setItem('user_id', response.user_id);
                 localStorage.setItem('eco_points', response.eco_points || 0);
                 
                 showToast("Login successful!", "success");

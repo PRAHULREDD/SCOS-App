@@ -51,5 +51,6 @@ async def login(
         "refresh_token": refresh_token,
         "token_type": "bearer",
         "role": user.role,
-        "name": user.name
+        "name": user.name,
+        "user_id": user.id
     }

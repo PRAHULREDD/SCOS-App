@@ -59,3 +59,17 @@ else:
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "version": "2.0.0"}
+
+from fastapi import WebSocket, WebSocketDisconnect
+from app.websocket.manager import manager
+
+@app.websocket("/api/ws/driver/{driver_id}")
+async def websocket_driver_endpoint(websocket: WebSocket, driver_id: int):
+    await manager.connect(websocket, driver_id)
+    try:
+        while True:
+            # We just need to keep the connection alive
+            # If the client sends a message, we can just log it or ignore
+            data = await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(driver_id)

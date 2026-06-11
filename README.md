@@ -13,7 +13,7 @@
 
 ---
 
-## 🌐 Live Demonstrations
+##  Live Demonstrations
 
 * **Web Platform**: [https://scos-app.onrender.com](https://scos-app.onrender.com)
 * **Mobile App (Android)**: Generate the `.apk` using Capacitor by pulling the `/mobile` directory in this repository.
@@ -22,7 +22,7 @@
 
 ---
 
-## 🏢 System Architecture
+##  System Architecture
 
 SCOS utilizes a highly decoupled, cross-platform architecture built to scale horizontally:
 
@@ -39,7 +39,7 @@ SCOS uses a single, unified codebase to serve both standard web traffic and nati
 
 ---
 
-## 🔄 The SCOS Workflow (Use Cases)
+##  The SCOS Workflow (Use Cases)
 
 SCOS gamifies municipal cleanliness and streamlines contractor logistics in a continuous 3-step loop:
 
@@ -57,7 +57,7 @@ Municipal administrators supervise the entire ecosystem from a centralized dashb
 
 ---
 
-## 🚀 Quick Start & Deployment
+##  Quick Start & Deployment
 
 ### 1. Local Development
 ```bash
@@ -101,6 +101,6 @@ SCOS maintains a strict CI/CD pipeline via GitHub Actions. **100% of our API end
 
 ---
 
-## 🤝 Contributing & License
+##  Contributing & License
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for pull request guidelines.
 - Licensed under the MIT License - see [LICENSE](LICENSE) for details.

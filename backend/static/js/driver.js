@@ -25,6 +25,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
             }
         }, 5000); // Update every 5 seconds
+        
+        // ---- Real-time WebSocket Push Notifications ----
+        const userId = localStorage.getItem('user_id');
+        if (userId) {
+            const protocol = window.location.protocol === 'https:' || window.location.href.includes('onrender') ? 'wss:' : 'ws:';
+            const wsBaseUrl = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.origin.includes('localhost') || window.location.protocol === 'file:' 
+                ? 'scos-app.onrender.com' 
+                : window.location.host;
+            
+            const wsUrl = `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}`;
+            const ws = new WebSocket(wsUrl);
+            
+            ws.onmessage = async (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'NEW_TASK') {
+                    // Trigger capacitor push notification if native
+                    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+                        try {
+                            const { LocalNotifications } = window.Capacitor.Plugins;
+                            const { Haptics, ImpactStyle } = window.Capacitor.Plugins;
+                            
+                            await Haptics.impact({ style: ImpactStyle.Heavy });
+                            
+                            await LocalNotifications.schedule({
+                                notifications: [
+                                    {
+                                        title: "New Pickup Assigned! 🚨",
+                                        body: data.message,
+                                        id: new Date().getTime(),
+                                        schedule: { at: new Date(Date.now() + 100) },
+                                        sound: null, // Default
+                                        attachments: null,
+                                        actionTypeId: "",
+                                        extra: null
+                                    }
+                                ]
+                            });
+                        } catch (e) {
+                            console.error("Capacitor Native Alert Failed", e);
+                        }
+                    } else {
+                        // Standard web fallback
+                        window.showToast("🚨 New Pickup Assigned: " + data.message, "error");
+                    }
+                    
+                    // Reload dashboard or assigned tasks if on those screens
+                    if (window.location.pathname.includes('Driver Dashboard')) loadDriverDashboard();
+                    if (window.location.pathname.includes('Assigned Pickups')) loadAssignedTasks();
+                }
+            };
+            ws.onopen = () => console.log("Live WebSocket connection established");
+            ws.onerror = (e) => console.log("WebSocket error", e);
+        }
     }
 
     // Route logic based on current page
