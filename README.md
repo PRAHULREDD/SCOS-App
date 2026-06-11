@@ -1,65 +1,106 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/PRAHULREDD/SCOS-App/main/backend/static/img/hero-banner.png" alt="SCOS Banner" onerror="this.style.display='none'"/>
-  
-  <h1> SCOS: Smart Waste Collection Optimization System</h1>
-  <p><i>An Enterprise-Grade, Cross-Platform Municipal Waste Management Solution</i></p>
+  <img src="docs/assets/banner.png" alt="SCOS Banner" width="100%" />
 
-  [![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge&logo=githubactions)](https://github.com/PRAHULREDD/SCOS-App/actions)
-  [![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Android%20%7C%20iOS-lightgrey?style=for-the-badge)](https://scos-app.onrender.com)
-  [![Backend](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+  <h1>SCOS: Smart Waste Collection Optimization System</h1>
+  <p><b>An Enterprise-Grade, Cross-Platform Municipal Waste Management Solution</b></p>
 
+  <p>
+    <a href="https://scos-app.onrender.com">Live Web Platform</a> • 
+    <a href="#mobile-app-architecture">Mobile Android App</a> • 
+    <a href="#architecture--system-flow">System Architecture</a>
+  </p>
 </div>
 
 ---
 
-##  Live Demonstrations
+##  Overview
+Smart Waste Collection Optimization System (SCOS) is a full-stack, AI & IoT-powered municipal waste management platform. It gamifies citizen reporting and automates municipal driver logistics into a unified, real-time ecosystem.
 
-* **Web Platform**: [https://scos-app.onrender.com](https://scos-app.onrender.com)
-* **Mobile App (Android)**: Generate the `.apk` using Capacitor by pulling the `/mobile` directory in this repository.
-
-> **Production Note**: SCOS is designed to run asynchronously 24/7. When deploying to free-tier cloud environments (like Render), we utilize an integrated `/health` ping-service loop via `cron-job.org` to ensure absolute zero-latency cold-starts for our mobile users.
+What makes SCOS technically unique is its **Hybrid Architecture**: We built a single, responsive Web Application that simultaneously powers a fully native Android application using **Capacitor**. Both platforms communicate seamlessly via WebSockets for instant push notifications and real-time GPS tracking.
 
 ---
 
-##  System Architecture
+##  Architecture & System Flow
 
-SCOS utilizes a highly decoupled, cross-platform architecture built to scale horizontally:
+SCOS utilizes a highly decoupled, real-time architecture built to scale horizontally. The system comprises three main layers:
 
-### 1. High-Performance Asynchronous Backend
-- **Framework**: Python `FastAPI` serving high-concurrency async REST APIs.
-- **Database**: Async SQLAlchemy ORM connected to SQLite (Development) or PostgreSQL (Production).
-- **Security**: Stateless JSON Web Tokens (JWT) for robust Role-Based Access Control (RBAC). 
-- **CI/CD**: Fully automated testing pipeline using `pytest` and `pytest-asyncio` on GitHub Actions.
+### 1. High-Performance Asynchronous Backend (`/backend`)
+Our core API acts as the central brain, bridging Web and Mobile users.
+- **Framework:** Python FastAPI serving high-concurrency async REST and WebSocket APIs.
+- **Database Engine:** Async SQLAlchemy ORM connected to SQLite (Development) or PostgreSQL (Production).
+- **Security:** Stateless JSON Web Tokens (JWT) for robust Role-Based Access Control (RBAC).
+- **Real-Time Engine:** A dedicated `ConnectionManager` pushing live updates directly to active users.
 
-### 2. Cross-Platform Frontend (Web & Mobile)
-SCOS uses a single, unified codebase to serve both standard web traffic and native mobile applications:
-- **Web App**: Vanilla JS and HTML wrapped in a dynamic SPA architecture, styled beautifully with TailwindCSS and custom Glassmorphism aesthetics.
-- **Native Mobile Integration**: The web artifacts are injected with `Capacitor` core plugins to compile seamlessly into a native Android `.apk`. It utilizes smart platform-detection (`window.Capacitor.isNativePlatform()`) to hardware-accelerate UI interactions (like the Android back button) and dynamically route API calls to our production cloud environment.
+### 2. Unified Frontend Platform (`/backend/static`)
+Instead of duplicating effort across iOS, Android, and Web, we created a single frontend that adapts to its host device.
+- **Technologies:** Vanilla JavaScript, HTML5, and TailwindCSS integrated with modern Glassmorphism UI principles.
+- **Adaptive Routing:** The frontend dynamically sniffs its environment (`window.Capacitor.isNativePlatform()`). If running on the web, it behaves like a standard SPA. If running on mobile, it hardware-accelerates UI elements (like the Android back button) and overrides local URLs to point to the production cloud.
+
+### 3. Native Mobile Wrapper (`/mobile`)
+This directory contains the Android/iOS compile targets powered by **Ionic Capacitor**. 
+- Capacitor injects native SDKs into our web view.
+- When the backend broadcasts a `NEW_TASK` over WebSockets, the JavaScript layer catches it and triggers **Native Push Notifications** (`@capacitor/local-notifications`) and **Hardware Haptics/Vibration** (`@capacitor/haptics`) in the driver's pocket.
 
 ---
 
-##  The SCOS Workflow (Use Cases)
+##  How the Web and Mobile Apps Interlink
 
-SCOS gamifies municipal cleanliness and streamlines contractor logistics in a continuous 3-step loop:
+SCOS solves the "Double Codebase" problem through an elegant hybrid approach. Here is the operational flow of how the Web UI and Mobile App share the same lifecycle:
 
-### Step 1: Citizen Reporting & Gamification
-Citizens log into the native app to geolocate and report illegal dumping. They upload photographic evidence and earn `EcoPoints` once the report is validated.
-* **Feature**: The integrated Rewards Store allows citizens to spend EcoPoints on transit passes and municipal vouchers dynamically fetched from the API.
+```mermaid
+graph TD
+    A[Backend FastAPI Server] -->|Serves Static Files via HTTP| B(Web Application Browsers)
+    A -->|Provides REST APIs & WebSockets| B
+    A <-->|Live Data & WebSocket| C[Android App Capacitor]
+    
+    subgraph Mobile Device
+    C --> D[Web View UI pulled from /static]
+    D -->|Calls Native Java APIs| E[Hardware Haptics & Push Banners]
+    D -->|Accesses Geolocation| F[GPS Hardware Tracker]
+    end
+```
 
-### Step 2: Algorithmic Driver Dispatch
-The system assigns the reported coordinate to the nearest available driver. The driver receives a push alert on their dashboard.
-* **Feature**: Turn-by-Turn GPS Wayfinding routes the driver to the incident. To close the task, the driver must submit a photographic proof-of-completion to the backend.
+**The Interlinked Workflow:**
+1. **Citizen (Web/Mobile):** A citizen logs in (on phone or desktop), geolocates a pile of illegal waste, and snaps a photo. They earn *EcoPoints* via the gamified rewards store.
+2. **Backend Engine:** FastAPI processes the image, saves the coordinate, and runs an algorithmic dispatch to find the nearest available driver.
+3. **Driver (Mobile App):** 
+   - The driver is roaming the city with the Android app open.
+   - The backend pushes a silent WebSocket event to the driver's specific connection pool.
+   - The app's JavaScript catches the payload and fires a **native vibration and banner drop-down** using Capacitor's injected bridges.
+   - The driver's map updates with turn-by-turn routing to the incident.
+4. **Admin Command Center (Web):** The municipal admin watches all of this happen in real-time via the live Geospatial Heatmaps on their desktop.
 
-### Step 3: Admin Command Center
-Municipal administrators supervise the entire ecosystem from a centralized dashboard.
-* **Feature**: Live Geospatial Heatmaps visualize waste density and contractor efficiency across city wards in real-time.
+---
+
+##  Repository Structure
+
+The repository follows an enterprise monorepo structure:
+
+```text
+SCOS-App/
+├── backend/                   # Python FastAPI Application
+│   ├── app/                   # Core App Logic
+│   │   ├── api/v1/            # REST API endpoints (Admin, Auth, Citizen, Driver)
+│   │   ├── core/              # Security and Auth utilities
+│   │   ├── db/                # SQLAlchemy models and engine configuration
+│   │   ├── repositories/      # Database abstraction layer (CRUD operations)
+│   │   └── websocket/         # Real-time ConnectionManager 
+│   ├── static/                # Hybrid Frontend Code (HTML/CSS/JS)
+│   ├── tests/                 # 100% API coverage using pytest-asyncio
+│   ├── main.py                # Server Entrypoint
+│   └── requirements.txt       # Python dependencies
+├── mobile/                    # Capacitor Mobile Wrapper
+│   ├── android/               # Compiled Android Studio Project
+│   └── capacitor.config.ts    # Links native app to the /backend/static UI
+├── .github/workflows/         # CI/CD Pipeline Definitions
+└── docker-compose.yml         # Containerization infrastructure
+```
 
 ---
 
 ##  Quick Start & Deployment
 
-### 1. Local Development
+### 1. Local Development (Backend + Web)
 ```bash
 # Clone the repository
 git clone https://github.com/PRAHULREDD/SCOS-App.git
@@ -76,16 +117,10 @@ python -m pytest
 # Run Local Server
 python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
-*The auto-seeder will immediately provision your local database with mock data. Access the web platform at `http://127.0.0.1:8000/`.*
+*The auto-seeder will immediately provision your local database with mock data. Access the web platform at http://127.0.0.1:8000/.*
 
-### 2. Cloud Deployment (Render)
-SCOS is natively optimized for Render cloud platforms:
-1. Connect this repository to Render.
-2. Select **Web Service** → **Build and deploy from Git repository**.
-3. Set the **Root Directory** to `backend`. Render will detect the `Dockerfile` and provision the container over HTTPS automatically.
-
-### 3. Android Mobile Build
-To build the `.apk` for Android:
+### 2. Android Mobile Build
+Because the mobile app uses the exact same frontend as the web app, building the `.apk` is simple:
 ```bash
 cd mobile
 npm install
@@ -94,13 +129,20 @@ npx cap open android
 ```
 *(Requires Android Studio to compile the final `.apk`)*
 
+### 3. Cloud Deployment (Render)
+SCOS is natively optimized for cloud platforms like Render:
+- Connect this repository to Render.
+- Select **Web Service** → Build and deploy from Git repository.
+- Set the Root Directory to `backend`. 
+- **Zero-Latency Note:** SCOS utilizes an integrated `/health` ping-service loop via `cron-job.org` to ensure absolute zero-latency cold-starts for our mobile users, bypassing standard free-tier hibernation constraints.
+
 ---
 
-## 🛡️ Testing & CI/CD
-SCOS maintains a strict CI/CD pipeline via GitHub Actions. **100% of our API endpoints are covered by production-grade integration tests**. Pushing to the `main` branch will automatically trigger `pytest` validation and deploy to Render upon success.
+##  Testing & CI/CD
+SCOS maintains a strict CI/CD pipeline via GitHub Actions. **100% of our API endpoints are covered by production-grade async integration tests.** Pushing to the `main` branch will automatically trigger `flake8` linting and `pytest` validation. Deployments to Render are blocked until the CI pipeline reports total success.
 
 ---
 
-##  Contributing & License
-- See [CONTRIBUTING.md](CONTRIBUTING.md) for pull request guidelines.
-- Licensed under the MIT License - see [LICENSE](LICENSE) for details.
+##  License & Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for pull request guidelines.  
+Licensed under the MIT License - see [LICENSE](LICENSE) for details.

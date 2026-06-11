@@ -12,6 +12,7 @@ bcrypt
 slowapi
 httpx
 pytest
+pytest-asyncio
 structlog
 sentry-sdk
 prometheus-fastapi-instrumentator
