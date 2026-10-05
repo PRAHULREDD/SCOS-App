@@ -11,18 +11,37 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     payload = decode_access_token(token)
     if not payload:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
     email = payload.get("sub")
-    
+
     user = await user_repo.get_by_email(db, email)
     if not user:
-        raise HTTPException(status_code=401, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
 
 async def verify_admin(current_user: User = Depends(get_current_user)):
     if current_user.role != "ADMIN":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin authorization required"
         )
     return current_user
+
+async def verify_driver(current_user: User = Depends(get_current_user)):
+    """Only DRIVER role may access driver endpoints."""
+    if current_user.role != "DRIVER":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Driver authorization required"
+        )
+    return current_user
+
+async def verify_citizen(current_user: User = Depends(get_current_user)):
+    """Only CITIZEN role may access citizen endpoints."""
+    if current_user.role != "CITIZEN":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Citizen authorization required"
+        )
+    return current_user
+

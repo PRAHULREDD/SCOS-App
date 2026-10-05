@@ -3,6 +3,16 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ---- Auth guard: redirect non-drivers to login ----
+    const _token = localStorage.getItem('token');
+    const _role  = localStorage.getItem('user_role');
+    if (!_token || _role !== 'DRIVER') {
+        localStorage.clear();
+        const _isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+        window.location.href = _isNative ? '../Login Screen/index.html' : '/app/Login%20Screen/index.html';
+        return;
+    }
+
     const isDriverPage = window.location.pathname.includes('Driver Dashboard') ||
         window.location.pathname.includes('Pickup Verification') ||
         window.location.pathname.includes('Assigned Pickups') ||
@@ -25,60 +35,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
             }
         }, 5000); // Update every 5 seconds
+
+        // Clean up interval on page hide to prevent leaks
+        window.addEventListener('pagehide', () => {
+            clearInterval(gpsInterval);
+        });
         
         // ---- Real-time WebSocket Push Notifications ----
         const userId = localStorage.getItem('user_id');
-        if (userId) {
+        const wsToken = localStorage.getItem('token');
+        if (userId && wsToken) {
             const protocol = window.location.protocol === 'https:' || window.location.href.includes('onrender') ? 'wss:' : 'ws:';
-            const wsBaseUrl = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.origin.includes('localhost') || window.location.protocol === 'file:' 
-                ? 'scos-app.onrender.com' 
-                : window.location.host;
-            
-            const wsUrl = `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}`;
+            // Use local server for localhost dev; only fall back to Render for Capacitor/file://
+            const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+            const wsBaseUrl = isNative ? 'scos-app.onrender.com' : window.location.host;
+
+            const wsUrl = `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`;
             const ws = new WebSocket(wsUrl);
-            
+
             ws.onmessage = async (event) => {
                 const data = JSON.parse(event.data);
                 if (data.type === 'NEW_TASK') {
-                    // Trigger capacitor push notification if native
                     if (window.Capacitor && window.Capacitor.isNativePlatform()) {
                         try {
                             const { LocalNotifications } = window.Capacitor.Plugins;
                             const { Haptics, ImpactStyle } = window.Capacitor.Plugins;
-                            
                             await Haptics.impact({ style: ImpactStyle.Heavy });
-                            
                             await LocalNotifications.schedule({
-                                notifications: [
-                                    {
-                                        title: "New Pickup Assigned! 🚨",
-                                        body: data.message,
-                                        id: new Date().getTime(),
-                                        schedule: { at: new Date(Date.now() + 100) },
-                                        sound: null, // Default
-                                        attachments: null,
-                                        actionTypeId: "",
-                                        extra: null
-                                    }
-                                ]
+                                notifications: [{
+                                    title: "New Pickup Assigned! 🚨",
+                                    body: data.message,
+                                    id: new Date().getTime(),
+                                    schedule: { at: new Date(Date.now() + 100) },
+                                    sound: null,
+                                    attachments: null,
+                                    actionTypeId: "",
+                                    extra: null
+                                }]
                             });
                         } catch (e) {
                             console.error("Capacitor Native Alert Failed", e);
                         }
                     } else {
-                        // Standard web fallback
                         window.showToast("🚨 New Pickup Assigned: " + data.message, "error");
                     }
-                    
-                    // Reload dashboard or assigned tasks if on those screens
                     if (window.location.pathname.includes('Driver Dashboard')) loadDriverDashboard();
                     if (window.location.pathname.includes('Assigned Pickups')) loadAssignedTasks();
                 }
             };
             ws.onopen = () => console.log("Live WebSocket connection established");
             ws.onerror = (e) => console.log("WebSocket error", e);
+
+            // Close WebSocket cleanly on page hide
+            window.addEventListener('pagehide', () => {
+                ws.close();
+            });
         }
     }
+
+
 
     // Route logic based on current page
     if (window.location.pathname.includes('Driver Dashboard')) {
@@ -165,7 +180,9 @@ async function loadAssignedTasks() {
         const tasksList = document.getElementById('tasks-list');
         if (!tasksList) return;
 
-        const tasks = await API.fetchAssignedTasks();
+        const response = await API.fetchAssignedTasks();
+        // Backend returns { tasks: [...] }
+        const tasks = response.tasks || [];
         tasksList.innerHTML = ''; // clear mock entries
 
         const assignedCountEl = document.getElementById('assigned-count');
@@ -175,6 +192,7 @@ async function loadAssignedTasks() {
             tasksList.innerHTML = '<p class="text-center text-outline p-md font-body-md">No tasks assigned currently. Have a great day!</p>';
             return;
         }
+
 
         tasks.forEach(task => {
             let priorityClass = 'bg-surface-container-high text-on-surface-variant';
@@ -267,15 +285,18 @@ function setupPickupVerification() {
             const submitBtn = pickupForm.querySelector('button[type="submit"]');
 
             const imageInput = document.getElementById('proof-image');
-            const targetComplaintId = document.getElementById('complaint-id')?.value || 1;
+            const targetComplaintId = document.getElementById('complaint-id')?.value || complaintId || 1;
 
-            if (!imageInput.files[0]) {
-                window.showToast("Please select a proof photo", "error");
+            if (!targetComplaintId) {
+                window.showToast("No complaint ID found. Please navigate from the task list.", "error");
                 return;
             }
 
             const formData = new FormData();
-            formData.append('proof_photo', imageInput.files[0]);
+            // Include photo if selected (optional — backend does not store it)
+            if (imageInput && imageInput.files[0]) {
+                formData.append('proof_photo', imageInput.files[0]);
+            }
             formData.append('complaint_id', targetComplaintId);
 
             const originalText = submitBtn.innerText;
@@ -285,14 +306,9 @@ function setupPickupVerification() {
             try {
                 const response = await API.completePickup(formData);
                 window.showToast(response.message || "Pickup verified!", "success");
-
-                if (response.fraud_check && response.fraud_check.is_fraud) {
-                    window.showToast("Warning: Potential fraud detected.", "error");
-                } else {
-                    setTimeout(() => {
-                        window.location.href = '../Driver Dashboard/index.html';
-                    }, 1500);
-                }
+                setTimeout(() => {
+                    window.location.href = '../Driver Dashboard/index.html';
+                }, 1500);
             } catch (err) {
                 window.showToast(err.message, "error");
             } finally {
@@ -302,6 +318,7 @@ function setupPickupVerification() {
         });
     }
 }
+
 
 /**
  * Universal Driver Bottom Navigation Router

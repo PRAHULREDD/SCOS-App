@@ -1,9 +1,13 @@
 /**
  * Central API Handler for SCOS Frontend
  */
-const BASE_URL = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.origin.includes('localhost') || window.location.protocol === 'file:' 
-    ? 'https://scos-app.onrender.com' 
+// For native Capacitor or file:// contexts there is no local backend,
+// so we fall back to the production deployment.
+// For localhost/127.0.0.1 we use the same origin (the local FastAPI server).
+const BASE_URL = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:'
+    ? 'https://scos-app.onrender.com'
     : window.location.origin;
+
 
 class API {
     static getToken() {
@@ -32,9 +36,15 @@ class API {
             });
 
             if (response.status === 401) {
-                // Token might be expired, redirect to login
+                // Token might be expired — clear and redirect to login.
+                // Use a path that works for both web (/app/...) and Capacitor (file:// or custom origin).
                 localStorage.removeItem('token');
-                window.location.href = '/app/Login Screen/index.html';
+                const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+                if (isNative) {
+                    window.location.href = '../Login Screen/index.html';
+                } else {
+                    window.location.href = '/app/Login%20Screen/index.html';
+                }
                 throw new Error("Session expired. Please login again.");
             }
 
@@ -64,12 +74,10 @@ class API {
     }
 
     static async registerUser(data) {
-        const formData = new FormData();
-        Object.keys(data).forEach(key => formData.append(key, data[key]));
-        
         return this.request('/api/auth/register', {
             method: 'POST',
-            body: formData
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
         });
     }
 
@@ -105,7 +113,7 @@ class API {
     }
 
     static async fetchDashboardStats() {
-        return this.request('/api/admin/dashboard_stats', {
+        return this.request('/api/admin/overview', {
             method: 'GET'
         });
     }
@@ -135,11 +143,10 @@ class API {
     }
 
     static async redeemReward(rewardId) {
-        const formData = new FormData();
-        formData.append("reward_id", rewardId);
         return this.request('/api/citizen/redeem_reward', {
             method: 'POST',
-            body: formData
+            body: JSON.stringify({ reward_id: rewardId }),
+            headers: { 'Content-Type': 'application/json' }
         });
     }
 
@@ -160,6 +167,32 @@ class API {
             method: 'GET'
         });
     }
+
+    static async fetchAdminComplaints() {
+        return this.request('/api/admin/complaints', {
+            method: 'GET'
+        });
+    }
+
+    static async fetchDrivers() {
+        return this.request('/api/admin/drivers', {
+            method: 'GET'
+        });
+    }
+
+    static async assignTask(complaintId, driverId, wasteType, address) {
+        return this.request('/api/admin/assign_task', {
+            method: 'POST',
+            body: JSON.stringify({
+                complaint_id: complaintId,
+                driver_id: driverId,
+                waste_type: wasteType || 'General',
+                address: address || 'Unknown'
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
 }
 
 window.API = API;

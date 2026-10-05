@@ -1,6 +1,11 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 from app.db.database import Base
+
+def _utcnow():
+    """Timezone-aware UTC timestamp for SQLAlchemy Column defaults."""
+    return datetime.now(timezone.utc)
+
 
 class User(Base):
     __tablename__ = "users"
@@ -22,7 +27,7 @@ class Complaint(Base):
     status = Column(String, default="PENDING")
     lat = Column(Float)
     lng = Column(Float)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=_utcnow)
 
 class DriverLocation(Base):
     __tablename__ = "driver_locations"
@@ -30,7 +35,7 @@ class DriverLocation(Base):
     driver_id = Column(Integer)
     lat = Column(Float)
     lng = Column(Float)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=_utcnow)
 
 class Reward(Base):
     __tablename__ = "rewards"
@@ -47,7 +52,7 @@ class RewardRedemption(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
     reward_id = Column(Integer)
-    redeemed_at = Column(DateTime, default=datetime.utcnow)
+    redeemed_at = Column(DateTime, default=_utcnow)
 
 class DriverTask(Base):
     __tablename__ = "driver_tasks"
@@ -60,7 +65,7 @@ class DriverTask(Base):
     bin_fill_percent = Column(Integer, default=50)
     distance_km = Column(Float, default=0)
     status = Column(String, default="ASSIGNED")
-    assigned_at = Column(DateTime, default=datetime.utcnow)
+    assigned_at = Column(DateTime, default=_utcnow)
     completed_at = Column(DateTime, nullable=True)
 
 class DumpingIncident(Base):
@@ -76,7 +81,7 @@ class DumpingIncident(Base):
     lat = Column(Float)
     lng = Column(Float)
     status = Column(String, default="ACTIVE")
-    detected_at = Column(DateTime, default=datetime.utcnow)
+    detected_at = Column(DateTime, default=_utcnow)
     dispatched_at = Column(DateTime, nullable=True)
 
 class Contractor(Base):

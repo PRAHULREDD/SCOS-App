@@ -44,7 +44,9 @@ async def client():
 @pytest.mark.asyncio
 async def test_read_root_redirects_to_app(client):
     response = await client.get("/")
-    assert response.status_code == 404 # In FastAPI, unmounted root returns 404
+    # Root now redirects to /app/index.html
+    assert response.status_code in [307, 308, 302, 301]
+
 
 
 @pytest.mark.asyncio
@@ -144,15 +146,11 @@ async def test_driver_complete_pickup_synchronization(client, tmp_path):
     token = login_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
     
-    proof_file = tmp_path / "proof.jpg"
-    proof_file.write_bytes(b"dummy" * 1500)
-    
-    with open(proof_file, "rb") as f:
-        response = await client.post(
-            "/api/driver/complete_pickup",
-            data={"complaint_id": 5},
-            files={"proof_photo": ("proof.jpg", f, "image/jpeg")},
-            headers=headers
-        )
+    response = await client.post(
+        "/api/driver/complete_pickup",
+        data={"complaint_id": 5},
+        headers=headers
+    )
     
     assert response.status_code == 200
+

@@ -99,7 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const complaintsList = document.getElementById('complaints-list');
         if (complaintsList) {
             try {
-                const complaints = await API.fetchComplaints();
+                const response = await API.fetchComplaints();
+                // Backend returns { reports: [...] }
+                const complaints = response.reports || [];
                 
                 // If on dashboard, show only top 2
                 const isDashboard = window.location.pathname.includes('Citizen Dashboard');
@@ -134,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                                 <div>
                                     <h4 class="font-title-md text-on-surface text-left">${c.waste_type || "General"} Waste - ${c.area || "Area"}</h4>
-                                    <p class="font-body-md text-body-md text-on-surface-variant text-left">${new Date(c.created_at).toLocaleDateString()}</p>
+                                    <p class="font-body-md text-body-md text-on-surface-variant text-left">${c.created_at ? new Date(c.created_at).toLocaleDateString() : 'Unknown date'}</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-md">
@@ -155,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('Citizen Dashboard') || window.location.pathname.includes('Complaint History')) {
         loadComplaints();
     }
+
 
     // ---- Dynamic Dashboard Stats Renderer ----
     const loadCitizenDashboard = async () => {
@@ -209,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = reportForm.querySelector('button[type="submit"]');
             const imageInput = document.getElementById('waste-image');
             
-            if (!imageInput.files[0]) {
+            if (!imageInput || !imageInput.files[0]) {
                 window.showToast("Please capture or select an image", "error");
                 return;
             }
@@ -219,25 +222,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const zone = document.getElementById('zone')?.value || "Zone A";
-            const area = document.getElementById('area')?.value || "Downtown";
+            const area = (document.getElementById('area')?.value || "").trim();
 
-            const formData = new FormData();
-            formData.append('file', imageInput.files[0]);
-            formData.append('lat', currentLocation.lat);
-            formData.append('lng', currentLocation.lng);
-            formData.append('zone', zone);
-            formData.append('area', area);
+            if (!area) {
+                window.showToast("Please enter an area or locality", "error");
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+                return;
+            }
+            
+            // Get selected waste type from radio buttons
+            const wasteTypeRadio = reportForm.querySelector('input[name="waste_type"]:checked');
+            const wasteType = wasteTypeRadio 
+                ? wasteTypeRadio.closest('label')?.querySelector('span.font-label-sm')?.textContent?.trim() || "General"
+                : "General";
 
             const originalText = submitBtn.innerText;
             submitBtn.innerText = "Submitting Report...";
             submitBtn.disabled = true;
 
             try {
-                const response = await API.reportWaste(formData);
-                window.showToast("Waste reported successfully!", "success");
+                // Backend expects JSON for the Pydantic model
+                const response = await API.request('/api/citizen/report_issue', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        zone: zone,
+                        area: area,
+                        lat: currentLocation.lat,
+                        lng: currentLocation.lng,
+                        waste_type: wasteType,
+                        severity_level: "MEDIUM"
+                    }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                window.showToast("Waste reported successfully! +10 EcoPoints", "success");
                 
-                // Update local points
-                localStorage.setItem('eco_points', response.points);
+                // Update local points from response
+                if (response.points !== undefined) {
+                    localStorage.setItem('eco_points', response.points);
+                }
                 
                 setTimeout(() => {
                     window.location.href = '../Citizen Dashboard/index.html';
@@ -247,6 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.innerText = originalText;
                 submitBtn.disabled = false;
             }
+
         });
     }
 
@@ -256,7 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (rewardsList) {
             try {
                 const data = await API.fetchRewards();
-                const availableRewards = data.rewards || [];
+                const availableRewards = data.available_rewards || data.rewards || [];
+
 
                 if (availableRewards.length === 0) {
                     rewardsList.innerHTML = '<p class="text-on-surface-variant">No rewards currently available.</p>';

@@ -1,9 +1,10 @@
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models.domain import DriverLocation, DriverTask
 from app.repositories.base import BaseRepository
+
 
 class DriverLocationRepository(BaseRepository[DriverLocation]):
     async def upsert_location(self, db: AsyncSession, driver_id: int, lat: float, lng: float) -> DriverLocation:
@@ -13,9 +14,10 @@ class DriverLocationRepository(BaseRepository[DriverLocation]):
         if location:
             location.lat = lat
             location.lng = lng
-            location.updated_at = datetime.utcnow()
+            location.updated_at = datetime.now(timezone.utc)
         else:
             location = DriverLocation(driver_id=driver_id, lat=lat, lng=lng)
+
             
         db.add(location)
         await db.commit()
@@ -38,7 +40,8 @@ class DriverTaskRepository(BaseRepository[DriverTask]):
         if task:
             task.status = status
             if status == "COMPLETED":
-                task.completed_at = datetime.utcnow()
+                task.completed_at = datetime.now(timezone.utc)
+
             db.add(task)
             await db.commit()
             await db.refresh(task)

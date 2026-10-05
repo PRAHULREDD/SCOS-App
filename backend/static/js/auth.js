@@ -84,15 +84,13 @@ function redirectBasedOnRole(role) {
     } else if (role === 'DRIVER') {
         window.location.href = '../Driver Dashboard/index.html';
     } else if (role === 'ADMIN') {
-        // Portal has been consolidated; redirect admin to Role Selection page
-        showToast("Admin logged in successfully!", "success");
-        setTimeout(() => {
-            window.location.href = '../Role Selection/index.html';
-        }, 1500);
+        // Admin command center is the Waste Heatmap view
+        window.location.href = '../Waste Heatmap/index.html';
     } else {
         showToast("Unknown role assignment", "error");
     }
 }
+
 
 // Simple Toast implementation
 function showToast(message, type="info") {

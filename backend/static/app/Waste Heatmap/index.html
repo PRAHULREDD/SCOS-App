@@ -219,6 +219,45 @@
 </div>
 </div>
 </main>
+
+<!-- ── Complaints Management Panel (Admin Demo Flow) ── -->
+<div id="complaints-panel" class="relative z-10 bg-white border-t border-outline-variant px-4 pt-4 pb-28">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="font-title-lg text-on-surface mb-3 flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary">assignment</span>
+      Complaint Management
+    </h2>
+    <div id="complaints-list-admin" class="space-y-3">
+      <p class="text-on-surface-variant text-sm">Loading complaints…</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Assign Driver Modal ── -->
+<div id="assign-modal" class="fixed inset-0 bg-black/50 z-[100] flex items-end justify-center hidden">
+  <div class="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-10 space-y-4">
+    <h3 class="font-title-md text-on-surface">Assign Driver</h3>
+    <p class="text-sm text-on-surface-variant">Complaint: <span id="modal-complaint-desc" class="font-medium text-on-surface"></span></p>
+    <input type="hidden" id="modal-complaint-id">
+    <input type="hidden" id="modal-waste-type">
+    <input type="hidden" id="modal-address">
+    <label class="block text-sm font-medium text-on-surface-variant">Select Driver</label>
+    <select id="modal-driver-select" class="w-full border border-outline rounded-xl px-4 py-3 bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary">
+      <option value="">Loading drivers…</option>
+    </select>
+    <div class="flex gap-3">
+      <button onclick="document.getElementById('assign-modal').classList.add('hidden')"
+              class="flex-1 border border-outline px-4 py-3 rounded-full text-on-surface font-label-lg">
+        Cancel
+      </button>
+      <button id="modal-confirm-btn"
+              class="flex-1 bg-primary text-on-primary px-4 py-3 rounded-full font-label-lg active:scale-95 transition-transform">
+        Assign
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
 <!-- Home -->

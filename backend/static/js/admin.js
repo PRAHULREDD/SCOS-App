@@ -3,6 +3,16 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ---- Auth guard: redirect non-admins to login ----
+    const _token = localStorage.getItem('token');
+    const _role  = localStorage.getItem('user_role');
+    if (!_token || _role !== 'ADMIN') {
+        localStorage.clear();
+        const _isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+        window.location.href = _isNative ? '../Login Screen/index.html' : '/app/Login%20Screen/index.html';
+        return;
+    }
+
     // Mount toast.js listeners onto static admin buttons to make them feel interactive
     
     // 1. Dropdown Filters
@@ -156,4 +166,122 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     loadAdminData();
+
+    // ---- Admin Complaints Management Panel ----
+    // Only runs on the Waste Heatmap page (where the panel is embedded)
+    if (window.location.pathname.includes('Waste Heatmap')) {
+        loadAdminComplaints();
+    }
+
+    // Modal confirm handler
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', async () => {
+            const complaintId = parseInt(document.getElementById('modal-complaint-id').value);
+            const driverId = parseInt(document.getElementById('modal-driver-select').value);
+            const wasteType = document.getElementById('modal-waste-type').value;
+            const address = document.getElementById('modal-address').value;
+
+            if (!driverId) {
+                window.showToast('Please select a driver.', 'error');
+                return;
+            }
+
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Assigning…';
+            try {
+                await API.assignTask(complaintId, driverId, wasteType, address);
+                window.showToast('Driver assigned successfully!', 'success');
+                document.getElementById('assign-modal').classList.add('hidden');
+                loadAdminComplaints(); // refresh list
+            } catch (err) {
+                window.showToast(err.message || 'Assignment failed', 'error');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Assign';
+            }
+        });
+    }
 });
+
+/**
+ * Loads all complaints into the admin complaint management panel
+ * and populates the driver dropdown for assignment.
+ */
+async function loadAdminComplaints() {
+    const listEl = document.getElementById('complaints-list-admin');
+    if (!listEl) return;
+
+    try {
+        const [compData, driverData] = await Promise.all([
+            API.fetchAdminComplaints(),
+            API.fetchDrivers()
+        ]);
+
+        const complaints = compData.complaints || [];
+        const drivers = driverData.drivers || [];
+
+        // Populate driver dropdown for the modal
+        const driverSelect = document.getElementById('modal-driver-select');
+        if (driverSelect) {
+            driverSelect.innerHTML = drivers.length === 0
+                ? '<option value="">No drivers registered</option>'
+                : '<option value="">-- Select Driver --</option>' +
+                  drivers.map(d => `<option value="${d.id}">${d.name} (${d.email})</option>`).join('');
+        }
+
+        if (complaints.length === 0) {
+            listEl.innerHTML = '<p class="text-on-surface-variant text-sm py-4 text-center">No complaints submitted yet.</p>';
+            return;
+        }
+
+        listEl.innerHTML = complaints.map(c => {
+            const statusColors = {
+                PENDING:     'bg-error/10 text-error border-error/20',
+                IN_PROGRESS: 'bg-secondary-container text-on-secondary-container border-secondary/20',
+                RESOLVED:    'bg-surface-container text-on-surface-variant border-outline-variant',
+            };
+            const statusColor = statusColors[c.status] || statusColors.PENDING;
+
+            const canAssign = c.status === 'PENDING';
+            const assignBtn = canAssign
+                ? `<button
+                       onclick="openAssignModal(${c.id}, '${(c.waste_type || 'General').replace(/'/g, '')}', '${(c.area || 'Unknown').replace(/'/g, '')}')"
+                       class="px-4 py-2 bg-primary text-on-primary text-sm font-medium rounded-full active:scale-95 transition-transform">
+                       Assign Driver
+                   </button>`
+                : `<span class="text-xs text-on-surface-variant">${c.status === 'RESOLVED' ? 'Resolved' : 'Assigned'}</span>`;
+
+            return `
+            <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-full border ${statusColor}">${c.status}</span>
+                        <span class="text-xs text-on-surface-variant">#${c.id}</span>
+                    </div>
+                    <h4 class="font-medium text-on-surface truncate">${c.waste_type || 'General'} — ${c.area || 'Unknown Area'}</h4>
+                    <p class="text-xs text-on-surface-variant">${c.zone || ''} · ${c.created_at ? new Date(c.created_at).toLocaleString() : 'Unknown date'}</p>
+                </div>
+                <div class="shrink-0">${assignBtn}</div>
+            </div>`;
+        }).join('');
+
+    } catch (err) {
+        console.error('Failed to load admin complaints:', err);
+        if (listEl) listEl.innerHTML = `<p class="text-error text-sm p-4">Error loading complaints: ${err.message}</p>`;
+    }
+}
+
+/**
+ * Opens the assign-driver modal pre-filled for the selected complaint.
+ */
+function openAssignModal(complaintId, wasteType, address) {
+    document.getElementById('modal-complaint-id').value = complaintId;
+    document.getElementById('modal-waste-type').value = wasteType;
+    document.getElementById('modal-address').value = address;
+    document.getElementById('modal-complaint-desc').textContent =
+        `#${complaintId} · ${wasteType} in ${address}`;
+    document.getElementById('assign-modal').classList.remove('hidden');
+}
+
+window.openAssignModal = openAssignModal;

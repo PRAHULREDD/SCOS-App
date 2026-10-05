@@ -2,9 +2,11 @@ import os
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
 
-# Use async drivers
-default_url = "postgresql+asyncpg://postgres:password@localhost:5432/scos_db"
+# Default to SQLite for local development.
+# In production, set DATABASE_URL env var to postgresql+asyncpg://...
+default_url = "sqlite+aiosqlite:///./scos.db"
 DATABASE_URL = os.getenv("DATABASE_URL", default_url)
+
 
 # Convert sync URLs to async URLs if they exist in env
 if DATABASE_URL.startswith("postgresql://"):

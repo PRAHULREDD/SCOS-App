@@ -52,5 +52,7 @@ async def login(
         "token_type": "bearer",
         "role": user.role,
         "name": user.name,
-        "user_id": user.id
+        "user_id": user.id,
+        "eco_points": user.eco_points,
     }
+
