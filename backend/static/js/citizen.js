@@ -212,10 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = reportForm.querySelector('button[type="submit"]');
             const imageInput = document.getElementById('waste-image');
             
-            if (!imageInput || !imageInput.files[0]) {
-                window.showToast("Please capture or select an image", "error");
-                return;
-            }
+            // Image validation removed: Backend accepts JSON and photo is optional
 
             if (!currentLocation) {
                 currentLocation = { lat: 12.9716, lng: 77.5946 }; // Ensure fallback
