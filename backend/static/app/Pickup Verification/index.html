@@ -128,6 +128,9 @@
 <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md font-['Inter'] font-semibold text-lg docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
 <div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
 <div class="flex items-center gap-3">
+<button type="button" onclick="window.location.href='../Assigned Pickups/index.html'" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Back to tasks">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+</button>
 <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
 <span class="material-symbols-outlined text-white text-xl" data-icon="recycling">recycling</span>
 </div>
@@ -150,39 +153,29 @@
 <section class="bg-surface-container-low rounded-xl p-md shadow-sm border border-outline-variant/30">
 <div class="flex justify-between items-start mb-sm">
 <div>
-<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Current Task</span>
-<h1 class="font-headline-md text-headline-md text-on-surface">Bin #4429-B</h1>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Pickup Verification</span>
+<h1 id="pickup-bin-title" class="font-headline-md text-headline-md text-on-surface">Assigned Task</h1>
 <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
-<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
-                        Oak Ridge Residential Complex
+<span class="material-symbols-outlined text-sm" data-icon="task_alt">task_alt</span>
+                        Municipal Collection Point
                     </p>
 </div>
-<div class="bg-error-container text-on-error-container px-3 py-1 rounded-full font-label-lg text-label-lg flex items-center gap-1">
-<span class="material-symbols-outlined text-sm fill-icon" data-icon="warning">warning</span>
-                    95% Full
+<div class="bg-primary-container/20 text-primary px-3 py-1 rounded-full font-label-lg text-label-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-sm fill-icon" data-icon="verified">verified</span>
+                    Active Task
                 </div>
-</div>
-<div class="flex gap-md mt-md">
-<div class="flex-1 bg-white p-sm rounded-lg border border-outline-variant/20">
-<span class="block font-label-sm text-label-sm text-outline">Type</span>
-<span class="font-title-md text-title-md">Recyclables</span>
-</div>
-<div class="flex-1 bg-white p-sm rounded-lg border border-outline-variant/20">
-<span class="block font-label-sm text-label-sm text-outline">Scheduled</span>
-<span class="font-title-md text-title-md">09:45 AM</span>
-</div>
 </div>
 </section>
 <!-- Image Upload Section -->
 <section class="space-y-sm">
-<h2 class="font-title-md text-title-md px-1">Upload Proof</h2>
-<button class="w-full aspect-video bg-secondary-container/30 border-2 border-dashed border-primary/30 rounded-2xl flex flex-col items-center justify-center gap-md hover:bg-secondary-container/50 transition-all active:scale-[0.98]">
+<h2 class="font-title-md text-title-md px-1">Proof Photo</h2>
+<button type="button" class="w-full aspect-video bg-secondary-container/30 border-2 border-dashed border-primary/30 rounded-2xl flex flex-col items-center justify-center gap-md hover:bg-secondary-container/50 transition-all active:scale-[0.98]">
 <div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center shadow-md">
 <span class="material-symbols-outlined text-white text-3xl" data-icon="photo_camera" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
 </div>
 <div class="text-center">
 <p class="font-title-md text-title-md text-primary">Tap to Capture Photo</p>
-<p class="font-label-lg text-label-lg text-on-surface-variant">Required for verification</p>
+<p class="font-label-lg text-label-lg text-on-surface-variant">Attach photo for verification (optional)</p>
 </div>
 </button>
 <script>
@@ -198,88 +191,29 @@
         }
     });
 </script>
-<!-- Mock Thumbnail of Captured Image (Hidden state logic simulated) -->
-<div class="hidden grid-cols-2 gap-md mt-sm">
-<div class="relative rounded-xl overflow-hidden aspect-square border border-outline-variant shadow-sm">
-<img alt="Waste bin" class="w-full h-full object-cover" data-alt="Close-up of an overflowing green municipal recycling bin in an urban residential parking area during daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGw9Qq36Ts5VS5-qm8EjI9WIkCLZV-uKpWI5QMVn8tz7Q5y3YQgB_uL6lZHZdEL0_Obf3V3Jg2QmaztQI4b8w9Z1YPUlIFjmxTL7T1uIIOAWwV_Hv65rbQkO6SOy_OqDrp3dCy53ZEcb2imz7KRQsc-5hrg7ncewq7cYjybSZXkAJPjvWxhCmMUxW3wqBfP96Yr924uNloGaz-1yg_cn6JvtzVIzq2mXQA7gw33R45mnvHbh8WrW4ASakgt2chWthxNWtn7f6DJvdq"/>
-<button class="absolute top-2 right-2 bg-on-surface/80 text-surface p-1 rounded-full backdrop-blur-sm">
-<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
-</button>
-</div>
-</div>
 </section>
-<!-- Waste Level Selection -->
-<section class="space-y-sm">
-<h2 class="font-title-md text-title-md px-1">Current Waste Level</h2>
-<div class="grid grid-cols-3 gap-sm">
-<!-- Level: Empty -->
-<button class="flex flex-col items-center gap-sm p-md rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors">
-<div class="w-12 h-2 bg-slate-200 rounded-full overflow-hidden"></div>
-<span class="font-label-lg text-label-lg text-slate-500">Empty</span>
-</button>
-<!-- Level: Partial -->
-<button class="flex flex-col items-center gap-sm p-md rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors">
-<div class="w-12 h-2 bg-primary/20 rounded-full overflow-hidden">
-<div class="w-1/2 h-full bg-primary"></div>
-</div>
-<span class="font-label-lg text-label-lg text-slate-500">Partial</span>
-</button>
-<!-- Level: Full (Active State) -->
-<button class="flex flex-col items-center gap-sm p-md rounded-2xl border-2 border-primary bg-primary-container/10">
-<div class="w-12 h-2 bg-error/20 rounded-full overflow-hidden">
-<div class="w-full h-full bg-error"></div>
-</div>
-<span class="font-label-lg text-label-lg text-primary font-bold">Full</span>
-</button>
-</div>
-</section>
-<!-- Dropdown for Issues -->
-<section class="space-y-sm">
-<label class="font-title-md text-title-md px-1 block">Report an Issue (Optional)</label>
-<div class="relative">
-<select class="w-full h-14 pl-md pr-xl bg-surface border border-outline-variant rounded-xl appearance-none focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-md">
-<option>None / No issues</option>
-<option>Bin Damaged</option>
-<option>Contaminated Waste</option>
-<option>Area Blocked / No Access</option>
-<option>Illegal Dumping Nearby</option>
-</select>
-<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
-</div>
-</section>
+
 <!-- Confirm Action -->
 <div class="pt-lg">
 <button type="submit" class="w-full h-14 bg-primary text-on-primary rounded-full font-title-lg text-title-lg shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
 <span class="material-symbols-outlined fill-icon" data-icon="check_circle">check_circle</span>
                 Confirm Pickup
             </button>
-<p class="text-center font-label-sm text-label-sm text-outline mt-md">Verified GPS: 40.7128° N, 74.0060° W</p>
 </div>
 </form>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-6 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-6 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="../Driver Dashboard/index.html">
 <span class="material-symbols-outlined" data-icon="home">home</span>
 <span class="font-['Inter'] text-[12px] font-medium">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="map">map</span>
-<span class="font-['Inter'] text-[12px] font-medium">Map</span>
-</a>
-<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 scale-95 active:scale-90 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-6 py-1.5 scale-95 active:scale-90 transition-transform duration-200" href="../Assigned Pickups/index.html">
 <span class="material-symbols-outlined fill-icon" data-icon="assignment">assignment</span>
-<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
-<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+<span class="font-['Inter'] text-[12px] font-medium">Assigned Tasks</span>
 </a>
 </nav>
 <script src="../../js/toast.js"></script>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/driver.js"></script>
 </body></html>

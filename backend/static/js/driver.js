@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isDriverPage = window.location.pathname.includes('Driver Dashboard') ||
         window.location.pathname.includes('Pickup Verification') ||
-        window.location.pathname.includes('Assigned Pickups') ||
-        window.location.pathname.includes('Navigation Screen');
+        window.location.pathname.includes('Assigned Pickups');
 
     if (isDriverPage && localStorage.getItem('user_role') === 'DRIVER') {
         // ---- Real-time GPS Tracking ----
@@ -44,13 +43,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // ---- Real-time WebSocket Push Notifications ----
         const userId = localStorage.getItem('user_id');
         const wsToken = localStorage.getItem('token');
-        if (userId && wsToken) {
-            const protocol = window.location.protocol === 'https:' || window.location.href.includes('onrender') ? 'wss:' : 'ws:';
-            // Use local server for localhost dev; only fall back to Render for Capacitor/file://
-            const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
-            const wsBaseUrl = isNative ? 'scos-app.onrender.com' : window.location.host;
+            let wsUrl = null;
+            if (window.SCOS_CONFIG && typeof window.SCOS_CONFIG.getWsUrl === 'function') {
+                wsUrl = window.SCOS_CONFIG.getWsUrl(`/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`);
+            } else {
+                const protocol = window.location.protocol === 'https:' || window.location.href.includes('onrender') ? 'wss:' : 'ws:';
+                const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+                const wsBaseUrl = isNative ? 'scos-app.onrender.com' : window.location.host;
+                wsUrl = `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`;
+            }
 
-            const wsUrl = `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`;
+            if (!wsUrl) {
+                console.warn("[Driver] WebSocket connection skipped: backend URL is not configured.");
+                return;
+            }
+
             const ws = new WebSocket(wsUrl);
 
             ws.onmessage = async (event) => {
@@ -60,19 +67,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         try {
                             const { LocalNotifications } = window.Capacitor.Plugins;
                             const { Haptics, ImpactStyle } = window.Capacitor.Plugins;
-                            await Haptics.impact({ style: ImpactStyle.Heavy });
-                            await LocalNotifications.schedule({
-                                notifications: [{
-                                    title: "New Pickup Assigned! 🚨",
-                                    body: data.message,
-                                    id: new Date().getTime(),
-                                    schedule: { at: new Date(Date.now() + 100) },
-                                    sound: null,
-                                    attachments: null,
-                                    actionTypeId: "",
-                                    extra: null
-                                }]
-                            });
+                            if (Haptics) await Haptics.impact({ style: ImpactStyle.Heavy });
+                            if (LocalNotifications) {
+                                let perm = await LocalNotifications.checkPermissions();
+                                if (perm.display !== 'granted') {
+                                    perm = await LocalNotifications.requestPermissions();
+                                }
+                                if (perm.display === 'granted') {
+                                    await LocalNotifications.schedule({
+                                        notifications: [{
+                                            title: "New Pickup Assigned! 🚨",
+                                            body: data.message,
+                                            id: new Date().getTime(),
+                                            schedule: { at: new Date(Date.now() + 100) },
+                                            sound: null,
+                                            attachments: null,
+                                            actionTypeId: "",
+                                            extra: null
+                                        }]
+                                    });
+                                }
+                            }
                         } catch (e) {
                             console.error("Capacitor Native Alert Failed", e);
                         }
@@ -100,8 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadDriverDashboard();
     } else if (window.location.pathname.includes('Assigned Pickups')) {
         loadAssignedTasks();
-    } else if (window.location.pathname.includes('Navigation Screen')) {
-        setupNavigationScreen();
     } else if (window.location.pathname.includes('Pickup Verification')) {
         setupPickupVerification();
     }
@@ -159,7 +172,7 @@ async function loadDriverDashboard() {
                             </div>
                             <p class="text-body-md font-body-md text-on-surface-variant mt-1">Requires immediate dispatch.</p>
                             <div class="flex gap-2 mt-3">
-                                <button onclick="window.showToast('Incident acknowledged', 'success')" class="px-4 py-2 font-label-lg text-error hover:bg-error/10 rounded-lg transition-colors active:scale-95">Acknowledge</button>
+                                <button onclick="this.closest('.flex.items-start')?.remove(); window.showToast('Incident acknowledged', 'success')" class="px-4 py-2 font-label-lg text-error hover:bg-error/10 rounded-lg transition-colors active:scale-95">Acknowledge</button>
                             </div>
                         </div>
                     </div>
@@ -192,7 +205,6 @@ async function loadAssignedTasks() {
             tasksList.innerHTML = '<p class="text-center text-outline p-md font-body-md">No tasks assigned currently. Have a great day!</p>';
             return;
         }
-
 
         tasks.forEach(task => {
             let priorityClass = 'bg-surface-container-high text-on-surface-variant';
@@ -230,12 +242,9 @@ async function loadAssignedTasks() {
                         </div>
                     </div>
                     <div class="flex items-center gap-sm">
-                        <button class="flex-1 md:flex-none border border-outline px-md py-sm rounded-full font-label-lg text-label-lg text-primary hover:bg-surface-container transition-colors" onclick="window.showToast('Viewing details for task ${task.id}', 'info')">
-                            Details
-                        </button>
-                        <button class="flex-1 md:flex-none bg-primary text-on-primary px-lg py-sm rounded-full font-label-lg text-label-lg flex items-center justify-center gap-sm active:scale-95 transition-transform" onclick="window.location.href='../Navigation Screen/index.html?id=${task.complaint_id}'">
-                            <span class="material-symbols-outlined">navigation</span>
-                            Start Route
+                        <button class="flex-1 md:flex-none bg-primary text-on-primary px-lg py-sm rounded-full font-label-lg text-label-lg flex items-center justify-center gap-sm active:scale-95 transition-transform" onclick="window.location.href='../Pickup Verification/index.html?id=${task.complaint_id}'">
+                            <span class="material-symbols-outlined text-[18px]">verified</span>
+                            Verify Pickup
                         </button>
                     </div>
                 </div>
@@ -248,26 +257,6 @@ async function loadAssignedTasks() {
 }
 
 /**
- * Binds arrived button to navigate to pickup verification screen
- */
-function setupNavigationScreen() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const complaintId = urlParams.get('id');
-
-    const arrivedBtn = document.getElementById('btn-arrived');
-    if (arrivedBtn && complaintId) {
-        arrivedBtn.addEventListener('click', () => {
-            window.location.href = `../Pickup Verification/index.html?id=${complaintId}`;
-        });
-    } else if (arrivedBtn) {
-        // Fallback for mock demo without specific ID
-        arrivedBtn.addEventListener('click', () => {
-            window.location.href = `../Pickup Verification/index.html?id=1`;
-        });
-    }
-}
-
-/**
  * Completes the pickup transaction
  */
 function setupPickupVerification() {
@@ -276,6 +265,10 @@ function setupPickupVerification() {
     const complaintInput = document.getElementById('complaint-id');
     if (complaintInput && complaintId) {
         complaintInput.value = complaintId;
+    }
+    const titleEl = document.getElementById('pickup-bin-title');
+    if (titleEl && complaintId) {
+        titleEl.textContent = `Complaint #${complaintId}`;
     }
 
     const pickupForm = document.getElementById('pickup-verification-form');
@@ -339,13 +332,10 @@ function setupDriverBottomNav() {
                     e.preventDefault();
                     if (iconName === 'home') {
                         window.location.href = '../Driver Dashboard/index.html';
-                    } else if (iconName === 'assignment') {
+                    } else if (iconName === 'assignment' || iconName === 'task' || iconName === 'tasks') {
                         window.location.href = '../Assigned Pickups/index.html';
-                    } else if (iconName === 'map' || iconName === 'explore') {
-                        window.location.href = '../Navigation Screen/index.html';
                     } else {
-                        // Placeholder for unlinked stats/reports
-                        window.showToast('Feature coming soon!', 'info');
+                        window.location.href = '../Driver Dashboard/index.html';
                     }
                 });
             }
@@ -368,4 +358,13 @@ function setupDriverHeader() {
             }
         });
     }
+
+    document.querySelectorAll('header button').forEach(btn => {
+        const notifIcon = btn.querySelector('[data-icon="notifications"], .material-symbols-outlined');
+        if (notifIcon && (notifIcon.getAttribute('data-icon') === 'notifications' || notifIcon.textContent.trim() === 'notifications')) {
+            btn.addEventListener('click', () => {
+                window.showToast("You have no new notifications.", "info");
+            });
+        }
+    });
 }

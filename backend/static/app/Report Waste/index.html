@@ -128,7 +128,9 @@
 <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm docked full-width top-0 sticky z-50">
 <div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
 <div class="flex items-center gap-3">
+<button id="btn-back" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
 <span class="material-symbols-outlined text-emerald-700 dark:text-emerald-400">arrow_back</span>
+</button>
 <span class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300 font-['Inter']">SCOS</span>
 </div>
 <div class="flex items-center gap-4">
@@ -163,10 +165,10 @@
 </div>
 <div class="flex-1">
 <span class="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Current Location</span>
-<span class="block text-body-md font-body-md font-medium text-on-surface">Sector 42, Municipal Ward 12</span>
-<span class="block text-label-sm font-label-sm text-outline">28.5355° N, 77.3910° E</span>
+<span id="current-location-area" class="block text-body-md font-body-md font-medium text-on-surface">Sector 42, Municipal Ward 12</span>
+<span id="current-location-coords" class="block text-label-sm font-label-sm text-outline">28.5355° N, 77.3910° E</span>
 </div>
-<button class="text-primary font-label-lg px-2" type="button">Refine</button>
+<button id="btn-refine-gps" class="text-primary font-label-lg px-2 cursor-pointer" type="button">Refine</button>
 </div>
 <!-- Zone/Ward Selection -->
 <div class="space-y-sm">
@@ -218,7 +220,7 @@
 <!-- Additional Details -->
 <div class="space-y-sm">
 <label class="block text-label-lg font-label-lg text-on-surface ml-1">Issue Description (Optional)</label>
-<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-md py-3 text-body-lg font-body-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none" placeholder="Describe the problem..." rows="3"></textarea>
+<textarea id="description" class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-md py-3 text-body-lg font-body-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none" placeholder="Describe the problem..." rows="3"></textarea>
 </div>
 <!-- Submit Button -->
 <div class="pt-lg">
@@ -239,28 +241,29 @@
 </main>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">home</span>
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Citizen Dashboard/index.html">
+<span class="material-symbols-outlined" data-icon="home">home</span>
 <span class="font-['Inter'] text-[12px] font-medium">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">map</span>
-<span class="font-['Inter'] text-[12px] font-medium">Map</span>
+<!-- Report (Active) -->
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="../Report Waste/index.html">
+<span class="material-symbols-outlined pill-active" data-icon="add_circle">add_circle</span>
+<span class="font-['Inter'] text-[12px] font-bold">Report</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">assignment</span>
-<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
+<!-- My Reports -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Complaint History/index.html">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-['Inter'] text-[12px] font-medium">My Reports</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
-<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">leaderboard</span>
-<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+<!-- Rewards -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Rewards/index.html">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-['Inter'] text-[12px] font-medium">Rewards</span>
 </a>
 </nav>
 <script src="../../js/toast.js"></script>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/citizen.js"></script>
 </body></html>

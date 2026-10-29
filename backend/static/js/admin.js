@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        if (text.includes('Dispatch Team') || text.includes('Assign Fleet')) {
+        if (text.includes('Dispatch Team') || text.includes('Dispatching Team') || text.includes('Assign Fleet')) {
             btn.addEventListener('click', () => {
                 window.showToast('Dispatching rapid response unit...', 'warning');
             });
@@ -76,8 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 4. Universal Admin Navigation (Role Aware for shared Heatmaps)
-    const role = localStorage.getItem('user_role') || 'ADMIN';
+    // 4. Universal Admin Navigation
     const navAnchors = document.querySelectorAll('nav.fixed.bottom-0 a, nav.fixed.bottom-0 button');
     navAnchors.forEach(anchor => {
         const iconSpan = anchor.querySelector('.material-symbols-outlined');
@@ -89,24 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (iconName) {
             anchor.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (role === 'CITIZEN') {
-                    if (iconName === 'home') window.location.href = '../Citizen Dashboard/index.html';
-                    else if (iconName === 'map' || iconName === 'explore') window.location.href = '../Waste Heatmap/index.html';
-                    else if (iconName === 'assignment') window.location.href = '../Complaint History/index.html';
-                    else if (iconName === 'history') window.location.href = '../Report Waste/index.html';
-                    else if (iconName === 'leaderboard') window.location.href = '../Cleanliness Heatmap/index.html';
-                } else if (role === 'DRIVER') {
-                    if (iconName === 'home') window.location.href = '../Driver Dashboard/index.html';
-                    else if (iconName === 'assignment') window.location.href = '../Assigned Pickups/index.html';
-                    else if (iconName === 'map' || iconName === 'explore') window.location.href = '../Navigation Screen/index.html';
-                    else window.showToast('Feature coming soon!', 'info');
+                if (iconName === 'dashboard' || iconName === 'home') {
+                    window.location.href = '../Waste Heatmap/index.html';
+                } else if (iconName === 'warning' || iconName === 'assignment') {
+                    window.location.href = '../Illegal Dumping/index.html';
                 } else {
-                    // Admin defaults
-                    if (iconName === 'home') window.location.href = '../Waste Heatmap/index.html';
-                    else if (iconName === 'map' || iconName === 'explore') window.location.href = '../Waste Heatmap/index.html';
-                    else if (iconName === 'assignment') window.location.href = '../Illegal Dumping/index.html';
-                    else if (iconName === 'history') window.location.href = '../Cleanliness Heatmap/index.html';
-                    else if (iconName === 'leaderboard') window.showToast('Stats view loading...', 'info');
+                    window.location.href = '../Waste Heatmap/index.html';
                 }
             });
         }
@@ -130,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = window.location.pathname;
         
         try {
-            if (path.includes('Waste Heatmap') || path.includes('Cleanliness Heatmap')) {
+            if (path.includes('Waste Heatmap')) {
                 const stats = await API.fetchAdminOverview();
                 
                 const totalBins = document.getElementById('admin-total-bins');
@@ -142,9 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (criticalBins) criticalBins.textContent = stats.pending_complaints || 0;
                 if (efficiencyEl) efficiencyEl.textContent = `${stats.collection_rate || 0}%`;
                 if (efficiencyBar) efficiencyBar.style.width = `${stats.collection_rate || 0}%`;
-                
-                const heatmapData = await API.fetchAdminHeatmap();
-                // Optionally update heatmap UI if specific lists exist
             }
             
             if (path.includes('Illegal Dumping')) {

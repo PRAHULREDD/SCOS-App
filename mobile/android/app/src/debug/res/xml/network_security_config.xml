@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- DEBUG BUILD ONLY: Permits cleartext HTTP/WS for local development across emulator (10.0.2.2) and physical device LAN IPs.
+         This file is only packaged into debug builds. Release builds use src/main/res/xml/network_security_config.xml which enforces HTTPS-only. -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

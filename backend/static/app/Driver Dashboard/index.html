@@ -191,11 +191,6 @@
 <div class="space-y-3">
 <div class="flex items-center gap-2 text-label-lg">
 <span class="material-symbols-outlined text-[18px]">trending_up</span>
-<span>+4% from last week</span>
-</div>
-<button onclick="window.showToast('Loading detailed stats...', 'info')" class="w-full py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-label-lg font-label-lg transition-colors">
-                        View Detailed Stats
-                    </button>
 </div>
 </div>
 </div>
@@ -203,7 +198,7 @@
 <section class="space-y-4">
 <div class="flex items-center justify-between">
 <h3 class="text-title-md font-title-md text-on-surface">Live Alerts</h3>
-<span class="px-2 py-0.5 bg-error-container text-on-error-container rounded text-label-sm font-label-sm">2 Urgent</span>
+<span class="px-2 py-0.5 bg-error-container text-on-error-container rounded text-label-sm font-label-sm">Active</span>
 </div>
 <div id="driver-alerts-list" class="space-y-3">
     <div class="py-4 text-center opacity-50">
@@ -212,57 +207,22 @@
     </div>
 </div>
 </section>
-<!-- Current Route Preview (Glassmorphism Map Card) -->
-<section class="space-y-4">
-<h3 class="text-title-md font-title-md text-on-surface">Current Route</h3>
-<div class="h-64 rounded-2xl overflow-hidden relative shadow-lg group">
-<img class="w-full h-full object-cover" data-alt="A clean, minimalist 3D map interface showing urban grid streets in light gray tones with a vibrant green route line highlighting path" data-location="New York City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOo3Dctv_4vWwB3YLd5yyzBvFRLm54o1GFJpgg2WIm0PElBHqfGVycEYm0Gl5X1GJ0sPoxpBugKVg_LKx4mbdsHSxW5ZZ1dmy3aqwLpaoumX_6ij2z2ARMS1vP-AzI_vWne2x4Idbf_oNIFs4CRhyCzcSA_n367sWnXrvnDJ7V9AJ3RMQe8LjHzDmcJpE5mCE06Rf9_OC1QzoAl2pI63v18voX8cY5ryDATj6calnZQjIoyvlCQ5NMH0o_yuygq-0AdbY31-qRLK17"/>
-<div class="absolute inset-0 bg-black/5 pointer-events-none"></div>
-<div class="absolute bottom-4 left-4 right-4 bg-white/80 backdrop-blur-md p-4 rounded-xl flex items-center justify-between border border-white/20">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-<span class="material-symbols-outlined">navigation</span>
-</div>
-<div>
-<p class="text-label-sm font-label-sm text-on-surface-variant">Next Stop</p>
-<p class="text-title-md font-title-md text-on-surface">882 Riverside Dr.</p>
-</div>
-</div>
-<span class="text-title-lg font-title-lg text-primary">0.8 km</span>
-</div>
-</div>
-</section>
 </main>
-<!-- FAB: New Task/Report -->
-<button onclick="window.showToast('Opening quick task creation...', 'info')" class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform z-40 flex items-center justify-center">
-<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 0;">add_location_alt</span>
-</button>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-slate-200 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] pb-safe">
-<div class="flex justify-around items-center px-2 py-3 w-full">
-<a class="flex flex-col items-center justify-center bg-emerald-100 text-emerald-900 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<div class="flex justify-around items-center px-6 py-3 w-full max-w-md mx-auto">
+<a class="flex flex-col items-center justify-center bg-emerald-100 text-emerald-900 rounded-2xl px-6 py-1.5 transition-transform duration-200 active:scale-90" href="../Driver Dashboard/index.html">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Home</span>
+<span class="font-['Inter'] text-[12px] font-bold mt-1">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">map</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Map</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-6 py-1.5 transition-transform duration-200 active:scale-90" href="../Assigned Pickups/index.html">
 <span class="material-symbols-outlined">assignment</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Tasks</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">history</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Reports</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 hover:text-emerald-600 px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined">leaderboard</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Stats</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Assigned Tasks</span>
 </a>
 </div>
 </nav>
 <script src="../../js/toast.js"></script>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/driver.js"></script>
 </body></html>

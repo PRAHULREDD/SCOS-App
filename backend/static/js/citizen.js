@@ -26,14 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 if (iconName === 'home') {
                     window.location.href = '../Citizen Dashboard/index.html';
-                } else if (iconName === 'map' || iconName === 'explore') {
-                    window.location.href = '../Waste Heatmap/index.html';
+                } else if (iconName === 'add_circle' || iconName === 'report' || iconName === 'history') {
+                    window.location.href = '../Report Waste/index.html';
                 } else if (iconName === 'assignment') {
                     window.location.href = '../Complaint History/index.html';
-                } else if (iconName === 'history') {
-                    window.location.href = '../Report Waste/index.html';
-                } else if (iconName === 'leaderboard') {
-                    window.location.href = '../Cleanliness Heatmap/index.html';
+                } else if (iconName === 'stars' || iconName === 'redeem' || iconName === 'rewards') {
+                    window.location.href = '../Rewards/index.html';
                 }
             });
         }
@@ -87,10 +85,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const notifBtn = document.getElementById('btn-notifications');
-    if (notifBtn) {
-        notifBtn.addEventListener('click', () => {
-            window.showToast("You have no new notifications.", "info");
+    // Header Notification triggers
+    document.querySelectorAll('header button, #btn-notifications').forEach(btn => {
+        const notifIcon = btn.querySelector('[data-icon="notifications"], .material-symbols-outlined');
+        if (btn.id === 'btn-notifications' || (notifIcon && (notifIcon.getAttribute('data-icon') === 'notifications' || notifIcon.textContent.trim() === 'notifications'))) {
+            btn.addEventListener('click', () => {
+                window.showToast("You have no new notifications.", "info");
+            });
+        }
+    });
+
+    // Rewards action buttons
+    const viewAllRewardsBtn = document.querySelector('button.text-primary.font-label-lg');
+    if (viewAllRewardsBtn) {
+        viewAllRewardsBtn.addEventListener('click', () => {
+            const list = document.getElementById('rewards-list');
+            if (list) list.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+    const fullLeaderboardBtn = document.querySelector('button.w-full.mt-6.bg-secondary-container');
+    if (fullLeaderboardBtn) {
+        fullLeaderboardBtn.addEventListener('click', () => {
+            window.showToast("Leaderboard rankings are up to date.", "info");
         });
     }
 
@@ -192,11 +208,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reportForm) {
         let currentLocation = null;
 
+        const updateCoordsUI = (lat, lng) => {
+            const coordsEl = document.getElementById('current-location-coords');
+            if (coordsEl) {
+                coordsEl.textContent = `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
+            }
+        };
+
         // Geolocation callback
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    updateCoordsUI(pos.coords.latitude, pos.coords.longitude);
                 },
                 (err) => {
                     console.warn("Geolocation warning:", err);
@@ -207,26 +231,48 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLocation = { lat: 12.9716, lng: 77.5946 }; // Default fallback coordinates
         }
 
+        // Refine GPS button listener
+        const refineBtn = document.getElementById('btn-refine-gps');
+        if (refineBtn) {
+            refineBtn.addEventListener('click', () => {
+                if (navigator.geolocation) {
+                    refineBtn.textContent = 'Updating...';
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                            updateCoordsUI(pos.coords.latitude, pos.coords.longitude);
+                            refineBtn.textContent = 'Refine';
+                            window.showToast("GPS coordinates refined!", "success");
+                        },
+                        (err) => {
+                            refineBtn.textContent = 'Refine';
+                            window.showToast("GPS updated with municipal defaults", "info");
+                        }
+                    );
+                } else {
+                    window.showToast("Geolocation not available", "info");
+                }
+            });
+        }
+
         reportForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = reportForm.querySelector('button[type="submit"]');
-            const imageInput = document.getElementById('waste-image');
             
-            // Image validation removed: Backend accepts JSON and photo is optional
-
             if (!currentLocation) {
                 currentLocation = { lat: 12.9716, lng: 77.5946 }; // Ensure fallback
             }
 
             const zone = document.getElementById('zone')?.value || "Zone A";
             const area = (document.getElementById('area')?.value || "").trim();
+            const description = (document.getElementById('description')?.value || "").trim();
 
             if (!area) {
                 window.showToast("Please enter an area or locality", "error");
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
                 return;
             }
+
+            const combinedArea = (description ? `${area} (${description})` : area).slice(0, 100);
             
             // Get selected waste type from radio buttons
             const wasteTypeRadio = reportForm.querySelector('input[name="waste_type"]:checked');
@@ -244,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     body: JSON.stringify({
                         zone: zone,
-                        area: area,
+                        area: combinedArea,
                         lat: currentLocation.lat,
                         lng: currentLocation.lng,
                         waste_type: wasteType,

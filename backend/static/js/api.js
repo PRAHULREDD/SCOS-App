@@ -1,12 +1,18 @@
 /**
  * Central API Handler for SCOS Frontend
  */
-// For native Capacitor or file:// contexts there is no local backend,
-// so we fall back to the production deployment.
-// For localhost/127.0.0.1 we use the same origin (the local FastAPI server).
-const BASE_URL = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:'
-    ? 'https://scos-app.onrender.com'
-    : window.location.origin;
+// Centralized backend URL resolved via window.SCOS_CONFIG.
+// Precedence: dev override (localStorage) -> Native Capacitor (Render) -> Web (window.location.origin).
+// Running from file:// without an override produces a clear error rather than silently hitting Render.
+const getActiveBaseUrl = () => {
+    if (window.SCOS_CONFIG && typeof window.SCOS_CONFIG.getBackendUrl === 'function') {
+        return window.SCOS_CONFIG.getBackendUrl();
+    }
+    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        return 'https://scos-app.onrender.com';
+    }
+    return (window.location.protocol === 'file:') ? null : window.location.origin;
+};
 
 
 class API {
@@ -29,8 +35,13 @@ class API {
             headers['Content-Type'] = 'application/json';
         }
 
+        const baseUrl = getActiveBaseUrl();
+        if (!baseUrl) {
+            throw new Error("SCOS: Backend URL is not configured. Running directly via file:// is not supported. Please serve the application over HTTP or set SCOS_BACKEND_URL.");
+        }
+
         try {
-            const response = await fetch(`${BASE_URL}${endpoint}`, {
+            const response = await fetch(`${baseUrl}${endpoint}`, {
                 ...options,
                 headers
             });
@@ -39,7 +50,9 @@ class API {
                 // Token might be expired — clear and redirect to login.
                 // Use a path that works for both web (/app/...) and Capacitor (file:// or custom origin).
                 localStorage.removeItem('token');
-                const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+                const isNative = (window.SCOS_CONFIG && typeof window.SCOS_CONFIG.isNativePlatform === 'function')
+                    ? window.SCOS_CONFIG.isNativePlatform()
+                    : ((window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:');
                 if (isNative) {
                     window.location.href = '../Login Screen/index.html';
                 } else {

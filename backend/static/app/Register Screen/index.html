@@ -192,45 +192,18 @@
 <input class="w-full pl-xl pr-md py-md bg-surface-container-low border border-outline-variant rounded-xl focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-md text-body-md outline-none" id="password" placeholder="••••••••" type="password"/>
 </div>
 </div>
-<!-- Role Selection -->
-<div class="space-y-md">
-<label class="block font-label-lg text-label-lg text-on-surface-variant ml-xs">Select Role</label>
-<div class="grid grid-cols-3 gap-sm">
-<!-- Citizen -->
-<label class="cursor-pointer relative group">
-<input checked="" class="role-radio absolute opacity-0" name="role" type="radio" value="citizen"/>
-<div class="role-card flex flex-col items-center justify-center p-md border border-outline-variant rounded-xl bg-surface-container-lowest transition-all hover:border-primary group-hover:shadow-sm">
-<span class="material-symbols-outlined text-title-lg mb-xs" data-icon="group">group</span>
-<span class="font-label-lg text-label-lg">Citizen</span>
+<div class="p-3 bg-surface-container-low border border-outline-variant/30 rounded-xl flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]" data-icon="person">person</span>
 </div>
-</label>
-<!-- Driver -->
-<label class="cursor-pointer relative group">
-<input class="role-radio absolute opacity-0" name="role" type="radio" value="driver"/>
-<div class="role-card flex flex-col items-center justify-center p-md border border-outline-variant rounded-xl bg-surface-container-lowest transition-all hover:border-primary group-hover:shadow-sm">
-<span class="material-symbols-outlined text-title-lg mb-xs" data-icon="local_shipping">local_shipping</span>
-<span class="font-label-lg text-label-lg">Driver</span>
-</div>
-</label>
-<!-- Admin -->
-<label class="cursor-pointer relative group">
-<input class="role-radio absolute opacity-0" name="role" type="radio" value="admin"/>
-<div class="role-card flex flex-col items-center justify-center p-md border border-outline-variant rounded-xl bg-surface-container-lowest transition-all hover:border-primary group-hover:shadow-sm">
-<span class="material-symbols-outlined text-title-lg mb-xs" data-icon="admin_panel_settings">admin_panel_settings</span>
-<span class="font-label-lg text-label-lg">Admin</span>
-</div>
-</label>
+<div>
+<p class="font-title-sm text-sm font-semibold text-on-surface">Citizen Account</p>
+<p class="font-body-sm text-xs text-on-surface-variant">Report community waste issues and track cleanups</p>
 </div>
 </div>
-<!-- Terms -->
-<div class="flex items-start gap-md py-xs">
-<div class="flex items-center h-5 mt-1">
-<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" id="terms" type="checkbox"/>
-</div>
-<label class="font-body-md text-body-md text-on-surface-variant" for="terms">
-                        I agree to the <a class="text-primary font-medium hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-medium hover:underline" href="#">Privacy Policy</a> regarding municipal data usage.
-                    </label>
-</div>
+<p class="font-body-sm text-xs text-on-surface-variant px-1">
+By creating an account, you agree to municipal waste management and reporting guidelines.
+</p>
 <!-- Action Button -->
 <button class="w-full bg-primary text-on-primary py-md rounded-full font-title-md text-title-md shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-sm" type="submit">
                     Create Account
@@ -254,6 +227,7 @@
 <div class="absolute top-0 right-0 w-96 h-96 bg-primary-fixed/20 blur-[100px] rounded-full"></div>
 <div class="absolute bottom-0 left-0 w-64 h-64 bg-tertiary-fixed/20 blur-[80px] rounded-full"></div>
 </div>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/auth.js"></script>
 </body></html>

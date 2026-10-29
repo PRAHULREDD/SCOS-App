@@ -122,7 +122,7 @@
     <script src="../../js/mobile.js"></script>
     <style>body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }</style>
 </head>
-<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen pb-24">
 <!-- TopAppBar -->
 <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md docked full-width top-0 sticky z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm">
 <div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
@@ -130,7 +130,7 @@
 <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center active:opacity-70 transition-all">
 <img alt="User Profile" class="w-full h-full object-cover" data-alt="professional corporate headshot of a municipal officer in a clean office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7-nLWYMeo0AL-nGNO0yQIHODCPxM4-XpM6BHN0nqAfCLpYUKSWgrGHm6gLW5kfT-TlHHHLR08mSu_MFCx3ZSRc-BDDonz3B8WBJ0pW3u1sv6mMn30TjkjK1-sBBvPAWCdrvW9RkZgXS98Zk7B9rq1YJd4YWUKSUBW3e4OC9GDNC9WmOnetMdmuREDLI9ezDrQmgIX6UEIAMImHbmdNiilnSXMJ-lfRhFj1Zoecd5zLqxHSlN8pG8ULfJ4EZNQsnuovYQ5wS9jBxVt"/>
 </div>
-<h1 class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS</h1>
+<h1 class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">SCOS Admin</h1>
 </div>
 <div class="flex items-center gap-2">
 <button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:opacity-70 transition-all text-emerald-700 dark:text-emerald-400">
@@ -139,151 +139,113 @@
 </div>
 </div>
 </header>
-<main class="min-h-[calc(100vh-140px)] relative w-full overflow-hidden">
-<!-- Map Interface Background -->
-<div class="absolute inset-0 z-0">
-<div class="w-full h-full bg-slate-100 relative">
-<img alt="City Map" class="w-full h-full object-cover opacity-80" data-alt="clean top-down satellite view of an urban district with clearly defined streets and green spaces" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7BvO04AYSqMChxP2JNIicllIC0IC3jjo5jBxvlF--vU2xEoTrGSSGEU2uOwgCeT2n9Vtd9IXz10-XU_Ub_n4RjtiOhjL-bS_wlwBwaOi686TtAS92Thsqcfavh9HOHBD6TJnV3b05SAhjrBvQmYC7w_chFqyBCgbDmltJmNtmcbBRRQ0m49B43ddqm7bzheGHFJl1ImDTB8DIPGlL2LkFh-5HVl_U7XmD9h6RuMxCsn_ei0l6f46Q0XK8rr_FsZuk39eL55OJ3U6n"/>
-<!-- Map Markers (Clustered points) -->
-<!-- Critical Warning Marker -->
-<div class="absolute top-[30%] left-[45%] group cursor-pointer">
-<div class="relative flex items-center justify-center">
-<div class="absolute w-12 h-12 bg-error/20 rounded-full animate-ping"></div>
-<div class="w-10 h-10 bg-error border-2 border-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-white text-[20px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
-</div>
-</div>
-</div>
-<!-- Moderate Marker -->
-<div class="absolute top-[55%] left-[60%] group cursor-pointer">
-<div class="w-8 h-8 bg-primary border-2 border-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-white text-[16px]" data-icon="delete_sweep" style="font-variation-settings: 'FILL' 1;">delete_sweep</span>
-</div>
-</div>
-<!-- Clustered Marker -->
-<div class="absolute top-[40%] left-[25%] group cursor-pointer">
-<div class="w-12 h-12 bg-tertiary border-2 border-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-<span class="font-bold text-white text-sm">8+</span>
-</div>
-</div>
-</div>
-</div>
-<!-- UI Overlays -->
-<div class="relative z-10 p-4 md:p-8 flex flex-col gap-6 max-w-7xl mx-auto h-full pointer-events-none">
-<!-- Analysis Summary Floating Panel -->
-<div class="w-full md:w-96 pointer-events-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20">
-<div class="flex items-center justify-between mb-4">
-<h2 class="text-title-lg font-title-lg text-on-surface">Illegal Dumping AI</h2>
-<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-label-sm">LIVE MONITORING</span>
-</div>
-<div class="space-y-4">
-<div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
-<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Active Incidents</p>
-<div class="flex items-baseline gap-2">
-<span id="dumping-active-count" class="text-headline-md font-headline-md text-on-surface">--</span>
-<span class="text-error font-medium text-sm flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> Live
-                            </span>
-</div>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<div class="bg-surface-container p-3 rounded-2xl">
-<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">High Risk</p>
-<span id="dumping-high-risk" class="text-title-md font-title-md text-error">--</span>
-</div>
-<div class="bg-surface-container p-3 rounded-2xl">
-<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">Average Clear</p>
-<span id="dumping-avg-clear" class="text-title-md font-title-md text-primary">--</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Details Panel & Dispatch Tool (Bento Style) -->
-<div class="mt-auto grid grid-cols-1 md:grid-cols-3 gap-4 pointer-events-auto">
-<!-- Prediction Card -->
-<div class="col-span-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-5 shadow-lg border border-white/10">
-<div class="flex items-center gap-2 mb-4">
-<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
-<h3 class="text-title-md font-title-md">AI Prediction</h3>
-</div>
-<div class="space-y-3">
-<div class="flex justify-between items-center text-body-md font-body-md">
-<span class="text-on-surface-variant">Predicted Culprits:</span>
-<span class="font-semibold text-on-surface">Private Contractors</span>
-</div>
-<div class="flex justify-between items-center text-body-md font-body-md">
-<span class="text-on-surface-variant">Common Time:</span>
-<span class="font-semibold text-on-surface">02:00 AM - 04:00 AM</span>
-</div>
-<div class="h-2 w-full bg-surface-container rounded-full mt-2 overflow-hidden">
-<div class="h-full bg-primary w-[85%] rounded-full"></div>
-</div>
-<p class="text-[10px] text-on-surface-variant">85% Confidence in pattern matching</p>
-</div>
-</div>
-<!-- Frequency Heatmap Summary -->
-<div class="col-span-1 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-5 shadow-lg border border-white/10">
-<div class="flex items-center gap-2 mb-4">
-<span class="material-symbols-outlined text-tertiary" data-icon="calendar_month">calendar_month</span>
-<h3 class="text-title-md font-title-md">Weekly Frequency</h3>
-</div>
-<div class="flex items-end gap-2 h-20 px-2">
-<div class="flex-1 bg-surface-container rounded-t-lg h-[40%]"></div>
-<div class="flex-1 bg-surface-container rounded-t-lg h-[60%]"></div>
-<div class="flex-1 bg-primary rounded-t-lg h-[90%]"></div>
-<div class="flex-1 bg-error rounded-t-lg h-[100%]"></div>
-<div class="flex-1 bg-surface-container rounded-t-lg h-[50%]"></div>
-<div class="flex-1 bg-surface-container rounded-t-lg h-[30%]"></div>
-<div class="flex-1 bg-surface-container rounded-t-lg h-[45%]"></div>
-</div>
-<div class="flex justify-between mt-2 text-[10px] text-on-surface-variant px-1">
-<span>MON</span><span>WED</span><span>FRI</span><span>SUN</span>
-</div>
-</div>
-<!-- Dispatching Action Card -->
-<div class="col-span-1 bg-primary-container text-on-primary-container rounded-3xl p-5 shadow-lg border border-primary/20 flex flex-col justify-between">
-<div>
-<h3 class="text-title-lg font-title-lg mb-2">Cluster #412 Alert</h3>
-<p class="text-body-md opacity-90 leading-snug">Multiple unauthorized disposals detected at Mission District Perimeter. Critical block detected.</p>
-</div>
-<button class="mt-4 w-full bg-white text-primary font-bold py-3 px-6 rounded-full flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md">
-<span class="material-symbols-outlined" data-icon="send">send</span>
-                        Dispatching Team
-                    </button>
-</div>
-</div>
-</div>
+
+<main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+  <!-- Live Monitoring Summary Panel -->
+  <section class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-outline-variant/30">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <span class="text-label-sm font-semibold text-primary uppercase tracking-wider">AI Surveillance</span>
+        <h2 class="text-headline-md font-bold text-on-surface">Illegal Dumping Detection</h2>
+      </div>
+      <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">sensors</span> LIVE MONITORING
+      </span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
+        <p class="text-label-sm font-medium text-on-surface-variant uppercase tracking-wider mb-1">Active Incidents</p>
+        <div class="flex items-baseline gap-2">
+          <span id="dumping-active-count" class="text-3xl font-bold text-on-surface">--</span>
+          <span class="text-error font-medium text-sm flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> Live
+          </span>
+        </div>
+      </div>
+      <div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
+        <p class="text-label-sm font-medium text-on-surface-variant mb-1">High Risk</p>
+        <span id="dumping-high-risk" class="text-3xl font-bold text-error">--</span>
+      </div>
+      <div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
+        <p class="text-label-sm font-medium text-on-surface-variant mb-1">Average Clear Time</p>
+        <span id="dumping-avg-clear" class="text-3xl font-bold text-primary">--</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prediction & Frequency Cards (Bento Style) -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Prediction Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-sm border border-outline-variant/30">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+        <h3 class="text-title-md font-bold text-on-surface">AI Prediction</h3>
+      </div>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center text-body-md">
+          <span class="text-on-surface-variant">Predicted Culprits:</span>
+          <span class="font-semibold text-on-surface">Private Contractors</span>
+        </div>
+        <div class="flex justify-between items-center text-body-md">
+          <span class="text-on-surface-variant">Common Time:</span>
+          <span class="font-semibold text-on-surface">02:00 AM - 04:00 AM</span>
+        </div>
+        <div class="h-2 w-full bg-surface-container rounded-full mt-2 overflow-hidden">
+          <div class="h-full bg-primary w-[85%] rounded-full"></div>
+        </div>
+        <p class="text-[11px] text-on-surface-variant">85% Confidence in pattern matching</p>
+      </div>
+    </div>
+
+    <!-- Frequency Summary -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-sm border border-outline-variant/30">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-tertiary" data-icon="calendar_month">calendar_month</span>
+        <h3 class="text-title-md font-bold text-on-surface">Weekly Frequency</h3>
+      </div>
+      <div class="flex items-end gap-2 h-20 px-2">
+        <div class="flex-1 bg-surface-container rounded-t-lg h-[40%]"></div>
+        <div class="flex-1 bg-surface-container rounded-t-lg h-[60%]"></div>
+        <div class="flex-1 bg-primary rounded-t-lg h-[90%]"></div>
+        <div class="flex-1 bg-error rounded-t-lg h-[100%]"></div>
+        <div class="flex-1 bg-surface-container rounded-t-lg h-[50%]"></div>
+        <div class="flex-1 bg-surface-container rounded-t-lg h-[30%]"></div>
+        <div class="flex-1 bg-surface-container rounded-t-lg h-[45%]"></div>
+      </div>
+      <div class="flex justify-between mt-2 text-[10px] text-on-surface-variant px-1 font-semibold">
+        <span>MON</span><span>WED</span><span>FRI</span><span>SUN</span>
+      </div>
+    </div>
+
+    <!-- Dispatch Action Card -->
+    <div class="bg-primary-container text-on-primary-container rounded-3xl p-5 shadow-sm border border-primary/20 flex flex-col justify-between">
+      <div>
+        <h3 class="text-title-lg font-bold mb-2">Cluster Alert</h3>
+        <p class="text-body-md opacity-90 leading-snug">Multiple unauthorized disposals detected at municipal perimeter. Priority response recommended.</p>
+      </div>
+      <button class="mt-4 w-full bg-white text-primary font-bold py-3 px-6 rounded-full flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-sm">
+        <span class="material-symbols-outlined" data-icon="send">send</span>
+        Dispatch Team
+      </button>
+    </div>
+  </section>
 </main>
-<!-- FAB for Emergency -->
-<div class="fixed bottom-24 right-6 z-40 md:hidden">
-<button class="w-14 h-14 bg-error text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform">
-<span class="material-symbols-outlined text-[28px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
-</button>
-</div>
+
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="home">home</span>
-<span class="font-['Inter'] text-[12px] font-medium">Home</span>
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-6 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
+<!-- Operations -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-6 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Waste Heatmap/index.html">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[12px] font-medium">Operations</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
-<span class="font-['Inter'] text-[12px] font-medium">Map</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
-<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 scale-95 active:scale-90 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
-<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+<!-- Illegal Dumping (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-6 py-1.5 transition-transform duration-200 active:scale-90" href="../Illegal Dumping/index.html">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="font-['Inter'] text-[12px] font-bold">Illegal Dumping</span>
 </a>
 </nav>
 <script src="../../js/toast.js"></script>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/admin.js"></script>
 </body></html>

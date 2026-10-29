@@ -307,27 +307,29 @@
 </main>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50 rounded-t-2xl">
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Citizen Dashboard/index.html">
 <span class="material-symbols-outlined" data-icon="home">home</span>
 <span class="font-['Inter'] text-[12px] font-medium mt-1">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" data-icon="map">map</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Map</span>
+<!-- Report -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Report Waste/index.html">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">Report</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<!-- My Reports -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Complaint History/index.html">
 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Tasks</span>
+<span class="font-['Inter'] text-[12px] font-medium mt-1">My Reports</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Reports</span>
-</a>
-<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" data-icon="leaderboard" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
-<span class="font-['Inter'] text-[12px] font-medium mt-1">Stats</span>
+<!-- Rewards (Active) -->
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="../Rewards/index.html">
+<span class="material-symbols-outlined pill-active" data-icon="stars">stars</span>
+<span class="font-['Inter'] text-[12px] font-bold mt-1">Rewards</span>
 </a>
 </nav>
+<script src="../../js/toast.js"></script>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/citizen.js"></script>
 </body></html>

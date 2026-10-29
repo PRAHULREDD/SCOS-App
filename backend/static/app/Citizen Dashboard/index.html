@@ -197,16 +197,6 @@
     </div>
 </div>
 </div>
-<!-- Contextual Map Snippet -->
-<div class="md:col-span-12 mt-md rounded-2xl overflow-hidden h-48 relative border border-outline-variant/20">
-<img alt="Local Map" class="w-full h-full object-cover grayscale opacity-50 contrast-125" data-alt="Stylized clean minimalist map of a city neighborhood with emerald green park markers and soft gray streets" data-location="Stockholm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Mrm3Kd-IyJl86c3X3s4p9Al2iXYzBxXss1oWDCEp5RzGa1I4x_6KNRlBCDIB1lWeN76OH-dYYe9C76qusbxqPHF6M8z0DXDzrWnrKsQGLKCxKr6k8lNq2jU8tfK1HshOWTELRhoV5wnWjOG_dUI1Zw2zUKmbd1vHvV2GlMyT_QNkXYGDsWlpvalQ1LVkQf_mfkFxT3R6C4u3N1iohVeL6ys772KxWjIhs7FB1RTFkKKHFPYWL98AAyLPX4tSQN08lCe5a_G2eBN1"/>
-<div class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-surface/80 to-transparent">
-<button onclick="window.location.href='../Cleanliness Heatmap/index.html'" class="bg-white px-md py-sm rounded-full shadow-lg flex items-center gap-2 font-label-lg text-primary border border-primary/20 active:scale-95 transition-transform">
-<span class="material-symbols-outlined" data-icon="explore">explore</span>
-                        Explore Nearby Bins
-                    </button>
-</div>
-</div>
 </div>
 </main>
 <!-- Floating Action Button -->
@@ -217,32 +207,28 @@
 <!-- Bottom Navigation Bar -->
 <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 pb-safe bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(46,49,51,0.08)] z-50">
 <!-- Home (Active) -->
-<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-5 py-1.5 transition-transform duration-200 active:scale-90" href="../Citizen Dashboard/index.html">
 <span class="material-symbols-outlined pill-active" data-icon="home">home</span>
 <span class="font-['Inter'] text-[12px] font-medium">Home</span>
 </a>
-<!-- Map -->
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" data-icon="map">map</span>
-<span class="font-['Inter'] text-[12px] font-medium">Map</span>
+<!-- Report -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Report Waste/index.html">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Inter'] text-[12px] font-medium">Report</span>
 </a>
-<!-- Tasks -->
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
+<!-- My Reports -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Complaint History/index.html">
 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
-<span class="font-['Inter'] text-[12px] font-medium">Tasks</span>
+<span class="font-['Inter'] text-[12px] font-medium">My Reports</span>
 </a>
-<!-- Reports -->
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-['Inter'] text-[12px] font-medium">Reports</span>
-</a>
-<!-- Stats -->
-<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="#">
-<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
-<span class="font-['Inter'] text-[12px] font-medium">Stats</span>
+<!-- Rewards -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform duration-200 active:scale-90" href="../Rewards/index.html">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-['Inter'] text-[12px] font-medium">Rewards</span>
 </a>
 </nav>
 <script src="../../js/toast.js"></script>
+<script src="../../js/config.js"></script>
 <script src="../../js/api.js"></script>
 <script src="../../js/citizen.js"></script>
 </body></html>
