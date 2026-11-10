@@ -8,7 +8,7 @@ class RewardRepository(BaseRepository[Reward]):
     async def get_active(self, db: AsyncSession, skip: int = 0, limit: int = 100) -> List[Reward]:
         result = await db.execute(
             select(Reward)
-            .filter(Reward.is_active == 1)
+            .filter(Reward.is_active.is_(True))
             .offset(skip)
             .limit(limit)
         )

@@ -1,7 +1,8 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.domain import Reward, RewardRedemption, User
 from app.repositories.reward_repo import reward_repo
-from app.repositories.user_repo import user_repo
-from app.models.domain import Reward, RewardRedemption
 from typing import List, Dict, Any
 
 
@@ -11,23 +12,56 @@ class RewardService:
         return await reward_repo.get_active(db)
 
     @staticmethod
-    async def redeem_reward(db: AsyncSession, user_id: int, reward_id: int) -> Dict[str, Any]:
-        reward = await reward_repo.get(db, reward_id)
-        user = await user_repo.get(db, user_id)
+    async def redeem_reward(
+        db: AsyncSession, user_id: int, reward_id: int
+    ) -> Dict[str, Any]:
 
-        if not reward or not user:
+        # Lock order is always User first, then Reward.
+        # populate_existing refreshes potentially stale ORM objects.
+        user_result = await db.execute(
+            select(User)
+            .where(User.id == user_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        user = user_result.scalar_one_or_none()
+
+        if not user:
+            await db.rollback()
             return {"success": False, "message": "Reward or user not found"}
 
+        reward_result = await db.execute(
+            select(Reward)
+            .where(Reward.id == reward_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        reward = reward_result.scalar_one_or_none()
+
+        if not reward:
+            await db.rollback()
+            return {"success": False, "message": "Reward or user not found"}
+
+        if not reward.is_active:
+            await db.rollback()
+            return {
+                "success": False,
+                "message": "This reward is currently unavailable",
+            }
+
         if user.eco_points < reward.points_cost:
+            await db.rollback()
             return {"success": False, "message": "Not enough eco-points"}
 
-        # Deduct points and record redemption in a single transaction
-        reward_title = reward.title  # capture before commit expires the object
+        reward_title = reward.title
         user.eco_points -= reward.points_cost
-        db.add(user)
 
-        redemption = RewardRedemption(user_id=user_id, reward_id=reward_id)
-        db.add(redemption)
+        db.add(
+            RewardRedemption(
+                user_id=user_id,
+                reward_id=reward_id,
+            )
+        )
 
         await db.commit()
         await db.refresh(user)
@@ -39,6 +73,4 @@ class RewardService:
         }
 
 
-
 reward_service = RewardService()
-

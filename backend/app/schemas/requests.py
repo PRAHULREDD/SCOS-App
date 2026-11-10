@@ -32,17 +32,18 @@ class AdminCreateUser(BaseModel):
     @classmethod
     def validate_role(cls, v):
         upper = v.upper()
-        if upper not in VALID_ROLES:
-            raise ValueError(f"Role must be one of {VALID_ROLES}")
+        if upper != "DRIVER":
+            raise ValueError("Only DRIVER accounts can be created by admin")
         return upper
 
 class ReportIssueValidation(BaseModel):
     zone: str = Field(..., min_length=1, max_length=100)
     area: str = Field(..., min_length=1, max_length=100)
-    lat: float = Field(..., ge=-90.0, le=90.0)
-    lng: float = Field(..., ge=-180.0, le=180.0)
+    lat: Optional[float] = Field(default=None, ge=-90.0, le=90.0)
+    lng: Optional[float] = Field(default=None, ge=-180.0, le=180.0)
     waste_type: Optional[str] = Field(default="General", max_length=50)
     severity_level: Optional[str] = Field(default="MEDIUM", max_length=20)
+    description: Optional[str] = Field(default=None, max_length=1000)
 
 class CompletePickupValidation(BaseModel):
     complaint_id: int = Field(..., gt=0)

@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const isDriverPage = window.location.pathname.includes('Driver Dashboard') ||
-        window.location.pathname.includes('Pickup Verification') ||
-        window.location.pathname.includes('Assigned Pickups');
+    const isDriverPage = decodeURIComponent(window.location.pathname).includes('Driver Dashboard') ||
+        decodeURIComponent(window.location.pathname).includes('Pickup Verification') ||
+        decodeURIComponent(window.location.pathname).includes('Assigned Pickups');
 
     if (isDriverPage && localStorage.getItem('user_role') === 'DRIVER') {
         // ---- Real-time GPS Tracking ----
@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         window.showToast("🚨 New Pickup Assigned: " + data.message, "error");
                     }
-                    if (window.location.pathname.includes('Driver Dashboard')) loadDriverDashboard();
-                    if (window.location.pathname.includes('Assigned Pickups')) loadAssignedTasks();
+                    if (decodeURIComponent(window.location.pathname).includes('Driver Dashboard')) loadDriverDashboard();
+                    if (decodeURIComponent(window.location.pathname).includes('Assigned Pickups')) loadAssignedTasks();
                 }
             };
             ws.onopen = () => console.log("Live WebSocket connection established");
@@ -106,16 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 ws.close();
             });
         }
-    }
 
 
 
     // Route logic based on current page
-    if (window.location.pathname.includes('Driver Dashboard')) {
+    if (decodeURIComponent(window.location.pathname).includes('Driver Dashboard')) {
         loadDriverDashboard();
-    } else if (window.location.pathname.includes('Assigned Pickups')) {
+    } else if (decodeURIComponent(window.location.pathname).includes('Assigned Pickups')) {
         loadAssignedTasks();
-    } else if (window.location.pathname.includes('Pickup Verification')) {
+    } else if (decodeURIComponent(window.location.pathname).includes('Pickup Verification')) {
         setupPickupVerification();
     }
 
@@ -278,15 +277,16 @@ function setupPickupVerification() {
             const submitBtn = pickupForm.querySelector('button[type="submit"]');
 
             const imageInput = document.getElementById('proof-image');
-            const targetComplaintId = document.getElementById('complaint-id')?.value || complaintId || 1;
+            const inputVal = document.getElementById('complaint-id')?.value?.trim();
+            const targetComplaintId = inputVal || (complaintId ? complaintId.trim() : null);
 
             if (!targetComplaintId) {
-                window.showToast("No complaint ID found. Please navigate from the task list.", "error");
+                window.showToast("No complaint selected for verification. Please select an active task from Assigned Pickups.", "error");
                 return;
             }
 
             const formData = new FormData();
-            // Include photo if selected (optional — backend does not store it)
+            // Include proof photo if selected (validated and persisted on backend)
             if (imageInput && imageInput.files[0]) {
                 formData.append('proof_photo', imageInput.files[0]);
             }

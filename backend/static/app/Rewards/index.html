@@ -161,9 +161,6 @@
 <div class="lg:col-span-8 space-y-6">
 <div class="flex justify-between items-center">
 <h2 class="font-headline-md text-on-surface">Available Rewards</h2>
-<button class="text-primary font-label-lg flex items-center gap-1 hover:underline">
-                        View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
 </div>
 <div id="rewards-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <!-- Reward Card 1 -->
@@ -239,69 +236,19 @@
 <!-- Leaderboard Side Panel -->
 <div class="lg:col-span-4 bg-white border border-slate-100 rounded-3xl p-6 shadow-sm h-fit">
 <div class="flex items-center justify-between mb-6">
-<h2 class="font-title-lg font-bold">District Ranking</h2>
-<span class="font-label-sm px-3 py-1 bg-secondary-container text-secondary rounded-full">Riverside</span>
+<h2 class="font-title-lg font-bold">Community Leaderboard</h2>
+<span class="font-label-sm px-3 py-1 bg-secondary-container text-secondary rounded-full">Top Citizens</span>
 </div>
-<div class="space-y-4">
-<!-- Rank 1 -->
-<div class="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 flex items-center justify-center font-bold text-emerald-800">1</div>
-<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
-<img class="w-full h-full object-cover" data-alt="portrait of a confident woman with curly hair and professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYi0jmEehaHvPYrrMUc_k0GWXtfRnyHBHw87A9qceU6n274zWuMD08dXg_8T9z31Klp0UjR2QTk7BmPBtEGe_a4S0B3GpPP6OeOTvt2sMPcwkYagn3gaHcHm3vr9fExs5TSyW1pP06GE2f70Wk_g1b2MLsUl1bFwzI8k8hEYxhTjRuPM40iJb0bO_hQ3ZiZ6mDfjAto2d7dWwcQFDqdglFGQ5FG7GQy2wPqz4jqRObXLejJ0bVAnlf-9NdUN_Lg4-st3Vs2OUMrbGd"/>
+<div id="leaderboard-list" class="space-y-4">
+    <!-- Dynamically loaded by citizen.js from /api/citizen/leaderboard -->
+    <div class="p-4 text-center text-sm text-on-surface-variant">
+        <span class="material-symbols-outlined text-2xl animate-spin mb-1">sync</span>
+        <p>Loading community rankings...</p>
+    </div>
 </div>
-<div>
-<p class="font-title-md font-bold text-on-surface">Elena S.</p>
-<p class="font-label-sm text-on-surface-variant">2,410 pts</p>
-</div>
-</div>
-<span class="material-symbols-outlined text-yellow-500" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
-</div>
-<!-- Rank 2 -->
-<div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 flex items-center justify-center font-bold text-slate-400">2</div>
-<div class="w-10 h-10 rounded-full overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="portrait of a man with a friendly smile wearing casual business attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDugaMwz_nHj810wIH4j9fNm7-zNDZ6jSVe8wCLbvyR2HkmUJa2x2kfPimjcVUx0lKKkeVQabd7j8wLrVTyesLMgpqPCjw5-1qG8i0bZ8yiTBRiGdg9SiMxNf_6RLP9RZdapuwSAxbncM2AgDbCvWkWq7Jea0NzmuqKI1IBKAzlcBzzmaGLMyC-h_i3yUezMdm8Kv-U4UlVONEiZCjNHHdJsz0XBSnyWxeOjJXveB08M-2U3B27qRKDTj-3yn60vnhzEnXTvxha79ft"/>
-</div>
-<div>
-<p class="font-title-md font-bold text-on-surface">Marcus R.</p>
-<p class="font-label-sm text-on-surface-variant">2,185 pts</p>
-</div>
-</div>
-</div>
-<!-- Rank 3 -->
-<div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 flex items-center justify-center font-bold text-slate-400">3</div>
-<div class="w-10 h-10 rounded-full overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="close-up portrait of a woman in a bright office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATKfrQqBkDFe28reXzyaQgjxWOfQrg_fgXvAGmmn2aI6Nflx-r_hlmf_Kr3CeMHqfh16igUiS4FTGl39X2Sxwvv00w9WyktzdZQ3JPcekAp8eG8h2soY6E625BaK7_t5Mssri12vlwXNUkznX0K46ErOOKcnI2VgfySyhzWSAgHCGW42w_5j8hOVaivQ7E-3R6b7h09cHNobxHONMI3jl0uOLoX27IGJojIezvfjURDdK98wKeFkKHDMuxKyC-ERJrCCX6i9xXtnQ8"/>
-</div>
-<div>
-<p class="font-title-md font-bold text-on-surface">Sarah K.</p>
-<p class="font-label-sm text-on-surface-variant">1,940 pts</p>
-</div>
-</div>
-</div>
-<!-- User's Rank -->
-<div class="mt-4 pt-4 border-t border-slate-100">
-<div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 flex items-center justify-center font-bold text-emerald-700">12</div>
-<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-500">
-<img class="w-full h-full object-cover" data-alt="professional portrait of a smiling man in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU4KYj0-My0pbKZ7JkS6MOJ_NdepBoMfyB6lLh0M77gfHUtTXrd9Tsbw97vkolQ-0fF8GFICGTmgFry3iB5RK_kHcd5cJLxTZPSTevnF62A3jvwDhp7uu6qUCiRE6STCMANvIT0OiMCyOyZH2bXt0oa8FEhS2oC1m6v5bWLzqI4qN8dJu2Pbd69jzb8BaKPM5BzbQ5xMs05xY7I09VilslPHfHHZ5_79fWvfGcyi3Uhj-PmY643bjd_fgV0pBSKJeW_g1j8ipxrtLz"/>
-</div>
-<div>
-<p class="font-title-md font-bold text-on-surface">You</p>
-<p class="font-label-sm text-on-surface-variant">1,240 pts</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<button class="w-full mt-6 py-3 bg-secondary-container text-secondary font-label-lg rounded-2xl hover:opacity-90 transition-opacity">
-                    View Full Leaderboard
-                </button>
+<button id="btn-refresh-leaderboard" class="w-full mt-6 py-3 bg-secondary-container text-secondary font-label-lg rounded-2xl hover:opacity-90 transition-opacity">
+    Refresh Leaderboard
+</button>
 </div>
 </section>
 </main>

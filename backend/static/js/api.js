@@ -155,6 +155,12 @@ class API {
         });
     }
 
+    static async fetchLeaderboard() {
+        return this.request('/api/citizen/leaderboard', {
+            method: 'GET'
+        });
+    }
+
     static async redeemReward(rewardId) {
         return this.request('/api/citizen/redeem_reward', {
             method: 'POST',

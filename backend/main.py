@@ -26,6 +26,15 @@ async def lifespan(app: FastAPI):
     if "sqlite" in DATABASE_URL:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+            from sqlalchemy import text
+            for tbl in ["driver_tasks", "complaints"]:
+                try:
+                    res = await conn.execute(text(f"PRAGMA table_info({tbl})"))
+                    cols = [r[1] for r in res.fetchall()]
+                    if "proof_photo_url" not in cols:
+                        await conn.execute(text(f"ALTER TABLE {tbl} ADD COLUMN proof_photo_url VARCHAR"))
+                except Exception as ex:
+                    logger.warning(f"Could not ensure proof_photo_url on {tbl}: {ex}")
         logger.info("SQLite database tables ensured.")
     yield
     # shutdown: nothing to clean up currently
@@ -113,21 +122,17 @@ async def websocket_driver_endpoint(
         await websocket.close(code=4001, reason="Invalid or expired token")
         return
 
-    # Must be a DRIVER
-    if payload.get("role") != "DRIVER":
-        await websocket.close(code=4003, reason="Driver role required")
-        return
-
-    # Verify the connecting driver matches the requested driver_id.
-    # We do this by checking the sub (email) and fetching the user.
+    # Verify the user's current role from the database.
     from app.db.database import SessionLocal
     from app.repositories.user_repo import user_repo as _user_repo
     async with SessionLocal() as db:
         user = await _user_repo.get_by_email(db, payload.get("sub"))
-
-    if not user or user.id != driver_id:
-        await websocket.close(code=4003, reason="Driver ID mismatch — unauthorized")
-        return
+        if not user or user.role != "DRIVER" or user.id != driver_id:
+            await websocket.close(
+                code=4003,
+                reason="Driver authorization failed"
+            )
+            return
 
     await manager.connect(websocket, driver_id)
     logger.info(f"Driver {driver_id} WebSocket connected")
@@ -140,5 +145,5 @@ async def websocket_driver_endpoint(
             if data.strip() == "ping":
                 await websocket.send_text("pong")
     except WebSocketDisconnect:
-        manager.disconnect(driver_id)
+        manager.disconnect(driver_id, websocket)
         logger.info(f"Driver {driver_id} WebSocket disconnected")

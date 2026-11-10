@@ -421,14 +421,83 @@ async def test_admin_create_user_rejects_invalid_role(client):
 async def test_admin_create_user_rejects_duplicate_email(client):
     async with TestingSessionLocal() as db:
         await _create_user(db, email="admin@t.com", role="ADMIN")
-        await _create_user(db, email="existing@t.com", role="CITIZEN")
+        await _create_user(db, email="existing@t.com", role="DRIVER")
     headers = await _auth(client, "admin@t.com")
     resp = await client.post("/api/admin/create_user",
-                             json={"email": "existing@t.com", "password": "password", "name": "XY", "role": "CITIZEN"},
+                             json={"email": "existing@t.com", "password": "password", "name": "XY", "role": "DRIVER"},
                              headers=headers)
-
-
     assert resp.status_code == 400, f"Duplicate email should be rejected, got {resp.status_code}"
+
+
+@pytest.mark.asyncio
+async def test_admin_create_user_rejects_citizen_role(client):
+    async with TestingSessionLocal() as db:
+        await _create_user(db, email="admin@t.com", role="ADMIN")
+    headers = await _auth(client, "admin@t.com")
+    resp = await client.post("/api/admin/create_user",
+                             json={"email": "citizen_candidate@t.com", "password": "password", "name": "Citizen Candidate", "role": "CITIZEN"},
+                             headers=headers)
+    assert resp.status_code == 422, f"Admin must not create CITIZEN accounts, got {resp.status_code}"
+
+
+@pytest.mark.asyncio
+async def test_admin_create_user_rejects_admin_role(client):
+    async with TestingSessionLocal() as db:
+        await _create_user(db, email="admin@t.com", role="ADMIN")
+    headers = await _auth(client, "admin@t.com")
+    resp = await client.post("/api/admin/create_user",
+                             json={"email": "subadmin@t.com", "password": "password", "name": "Sub Admin", "role": "ADMIN"},
+                             headers=headers)
+    assert resp.status_code == 422, f"Admin must not create ADMIN accounts, got {resp.status_code}"
+
+
+@pytest.mark.asyncio
+async def test_admin_overview_omits_contractors(client):
+    async with TestingSessionLocal() as db:
+        await _create_user(db, email="admin@t.com", role="ADMIN")
+    headers = await _auth(client, "admin@t.com")
+    resp = await client.get("/api/admin/overview", headers=headers)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "top_contractors" not in data, "Contractor analytics must be removed from overview"
+    assert "total_complaints" in data
+    assert "pending_complaints" in data
+    assert "collection_rate" in data
+
+
+@pytest.mark.asyncio
+async def test_admin_illegal_dumping_omits_fake_clear_time(client):
+    async with TestingSessionLocal() as db:
+        await _create_user(db, email="admin@t.com", role="ADMIN")
+    headers = await _auth(client, "admin@t.com")
+    resp = await client.get("/api/admin/illegal_dumping", headers=headers)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "avg_clear_time" not in data, "Fake clearance time must be removed"
+    assert "avg_clear_hours" not in data, "Fake clearance time must be removed"
+    assert "active_count" in data
+    assert "incidents" in data
+
+
+@pytest.mark.asyncio
+async def test_admin_waste_heatmap_returns_complaint_coords(client):
+    async with TestingSessionLocal() as db:
+        await _create_user(db, email="admin@t.com", role="ADMIN")
+        c1 = Complaint(id=101, citizen_id=1, zone="North", area="Main St", waste_type="Plastic",
+                       severity_level="HIGH", status="PENDING", lat=12.9123, lng=77.5432)
+        c2 = Complaint(id=102, citizen_id=1, zone="South", area="Park Ave", waste_type="Organic",
+                       severity_level="MEDIUM", status="RESOLVED", lat=12.9456, lng=77.5876)
+        db.add_all([c1, c2])
+        await db.commit()
+
+    headers = await _auth(client, "admin@t.com")
+    resp = await client.get("/api/admin/waste_heatmap", headers=headers)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "heatmap_points" in data
+    assert data["total"] >= 2
+    points = data["heatmap_points"]
+    assert any(p["lat"] == 12.9123 and p["lng"] == 77.5432 for p in points)
 
 
 # ─────────────────────────────────────────────

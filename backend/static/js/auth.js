@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('user_role');
     
-    if (token && role && window.location.pathname.includes('Login Screen')) {
+    if (token && role && decodeURIComponent(window.location.pathname).includes('Login Screen')) {
         redirectBasedOnRole(role);
     }
 

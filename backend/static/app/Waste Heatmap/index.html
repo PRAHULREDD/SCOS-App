@@ -4,6 +4,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>SCOS Admin Operations</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -152,7 +154,7 @@
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/20">
-        <p class="text-label-sm text-on-surface-variant font-medium">Total Complaints (Simulated Bins)</p>
+        <p class="text-label-sm text-on-surface-variant font-medium">Total Complaints</p>
         <p id="admin-total-bins" class="text-3xl font-bold text-primary mt-1">--</p>
       </div>
       <div class="bg-error-container/30 p-4 rounded-xl border border-error/20">
@@ -168,6 +170,28 @@
           <div id="admin-collection-bar" class="bg-primary h-full rounded-full transition-all duration-500" style="width: 0%"></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Live Waste Heatmap Section -->
+  <section id="heatmap-section" class="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/30">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-semibold">Geographic Distribution</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface">Live Waste Heatmap</h2>
+      </div>
+      <span id="heatmap-status-badge" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">map</span> <span id="heatmap-points-count">Loading heatmap…</span>
+      </span>
+    </div>
+    <div id="admin-heatmap-container" class="w-full h-80 rounded-xl overflow-hidden border border-outline-variant/30 relative z-0"></div>
+    <div class="flex flex-wrap items-center justify-between gap-2 mt-3 text-xs text-on-surface-variant">
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Pending</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> In Progress</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span> Resolved</span>
+      </div>
+      <span class="text-slate-400">Plotted from live complaint coordinates</span>
     </div>
   </section>
 

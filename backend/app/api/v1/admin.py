@@ -1,16 +1,15 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
 from app.db.database import get_db
 from app.api.dependencies import verify_admin
-from app.services.analytics_service import analytics_service
 from app.schemas.requests import AdminCreateUser
 from app.repositories.user_repo import user_repo
-from app.repositories.analytics_repo import incident_repo, contractor_repo
+from app.repositories.analytics_repo import incident_repo
 from app.repositories.complaint_repo import complaint_repo
 from app.core.auth import get_password_hash
-from app.models.domain import User, Complaint, DumpingIncident, Contractor
+from app.models.domain import User, Complaint, DumpingIncident
 
 router = APIRouter()
 
@@ -24,7 +23,7 @@ async def get_overview(
     Admin overview endpoint. Returns stats used by admin.js:
     total_complaints, pending_complaints, collection_rate,
     active_incidents_count, average_ai_confidence,
-    top_contractors, recent_incidents.
+    recent_incidents.
     """
     # Count complaints
     total_result = await db.execute(select(func.count()).select_from(Complaint))
@@ -47,9 +46,6 @@ async def get_overview(
     total_incidents = len(incidents)
     avg_confidence = sum(i.confidence for i in incidents) / total_incidents if total_incidents > 0 else 0
 
-    # Contractors
-    contractors = await contractor_repo.get_all_ordered(db)
-
     return {
         "total_complaints": total_complaints,
         "pending_complaints": pending_complaints,
@@ -57,17 +53,6 @@ async def get_overview(
         "collection_rate": collection_rate,
         "active_incidents_count": total_incidents,
         "average_ai_confidence": round(avg_confidence, 2),
-        "top_contractors": [
-            {
-                "id": c.id,
-                "name": c.name,
-                "completion_rate": c.completion_rate,
-                "satisfaction_score": c.satisfaction_score,
-                "response_time_hours": c.response_time_hours,
-                "active_drivers": c.active_drivers,
-            }
-            for c in contractors[:5]
-        ],
         "recent_incidents": [
             {
                 "id": i.id,
@@ -122,13 +107,10 @@ async def get_illegal_dumping(
     incidents = await incident_repo.get_active(db)
     high_risk = [i for i in incidents if i.severity == "HIGH"]
 
-    # avg_clear_time is mocked since we don't track clear time
     return {
         "active_count": len(incidents),
         "active_incidents": len(incidents),
         "high_risk_count": len(high_risk),
-        "avg_clear_time": 2.4,
-        "avg_clear_hours": 2.4,
         "incidents": [
             {
                 "id": i.id,
@@ -244,27 +226,85 @@ async def assign_task(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(verify_admin)
 ):
-    # 1. Create the task in DB
-    new_task = DriverTask(
-        driver_id=req.driver_id,
-        complaint_id=req.complaint_id,
-        priority="HIGH",
-        waste_type=req.waste_type,
-        address=req.address,
-        status="ASSIGNED"
-    )
-    db.add(new_task)
-    await db.commit()
-    await db.refresh(new_task)
+    # 1. Validate driver
+    driver = await user_repo.get(db, req.driver_id)
 
-    # 2. Update complaint status to IN_PROGRESS
-    complaint = await complaint_repo.get(db, req.complaint_id)
-    if complaint:
+    if not driver:
+        raise HTTPException(
+            status_code=404,
+            detail="Driver not found"
+        )
+
+    if driver.role != "DRIVER":
+        raise HTTPException(
+            status_code=400,
+            detail="Selected user is not a driver"
+        )
+
+    # 2. Validate complaint
+    complaint_result = await db.execute(
+        select(Complaint)
+        .where(Complaint.id == req.complaint_id)
+        .with_for_update()
+    )
+    complaint = complaint_result.scalars().first()
+
+    if not complaint:
+        raise HTTPException(
+            status_code=404,
+            detail="Complaint not found"
+        )
+
+    if complaint.status != "PENDING":
+        raise HTTPException(
+            status_code=409,
+            detail=f"Complaint cannot be assigned in state '{complaint.status}'"
+        )
+
+    # 3. Prevent duplicate active assignments
+    existing_result = await db.execute(
+        select(DriverTask).where(
+            DriverTask.complaint_id == req.complaint_id,
+            DriverTask.status == "ASSIGNED"
+        )
+    )
+    existing_task = existing_result.scalars().first()
+
+    if existing_task:
+        raise HTTPException(
+            status_code=409,
+            detail="Complaint already has an assigned task"
+        )
+
+    # 4. Create task and update complaint atomically
+    try:
+        new_task = DriverTask(
+            driver_id=req.driver_id,
+            complaint_id=req.complaint_id,
+            priority="HIGH",
+            waste_type=req.waste_type,
+            address=req.address,
+            status="ASSIGNED"
+        )
+
+        db.add(new_task)
         complaint.status = "IN_PROGRESS"
         db.add(complaint)
+
         await db.commit()
+        await db.refresh(new_task)
 
-    # 3. Trigger WebSocket notification
-    await manager.notify_driver_new_task(req.driver_id, req.complaint_id)
+    except Exception:
+        await db.rollback()
+        raise
 
-    return {"message": "Task assigned and driver notified", "task_id": new_task.id}
+    # 5. Notify driver after successful commit
+    await manager.notify_driver_new_task(
+        req.driver_id,
+        req.complaint_id
+    )
+
+    return {
+        "message": "Task assigned successfully",
+        "task_id": new_task.id
+    }

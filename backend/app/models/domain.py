@@ -1,10 +1,10 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from datetime import datetime, timezone
 from app.db.database import Base
 
 def _utcnow():
-    """Timezone-aware UTC timestamp for SQLAlchemy Column defaults."""
-    return datetime.now(timezone.utc)
+    """Return a naive UTC timestamp for SQLAlchemy DateTime columns."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 class User(Base):
@@ -22,12 +22,14 @@ class Complaint(Base):
     citizen_id = Column(Integer)
     zone = Column(String)
     area = Column(String)
+    description = Column(String, nullable=True)
     waste_type = Column(String)
     severity_level = Column(String)
     status = Column(String, default="PENDING")
     lat = Column(Float)
     lng = Column(Float)
     created_at = Column(DateTime, default=_utcnow)
+    proof_photo_url = Column(String, nullable=True)
 
 class DriverLocation(Base):
     __tablename__ = "driver_locations"
@@ -45,7 +47,7 @@ class Reward(Base):
     category = Column(String)
     points_cost = Column(Integer)
     image_url = Column(String)
-    is_active = Column(Integer, default=1)
+    is_active = Column(Boolean, default=True)
 
 class RewardRedemption(Base):
     __tablename__ = "reward_redemptions"
@@ -67,6 +69,7 @@ class DriverTask(Base):
     status = Column(String, default="ASSIGNED")
     assigned_at = Column(DateTime, default=_utcnow)
     completed_at = Column(DateTime, nullable=True)
+    proof_photo_url = Column(String, nullable=True)
 
 class DumpingIncident(Base):
     __tablename__ = "dumping_incidents"

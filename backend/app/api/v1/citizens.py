@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, desc, func
 from pydantic import BaseModel
 
 from app.db.database import get_db
@@ -45,6 +46,7 @@ async def get_my_reports(
             "id": c.id,
             "zone": c.zone,
             "area": c.area,
+            "description": c.description,
             "waste_type": c.waste_type,
             "severity_level": c.severity_level,
             "status": c.status,
@@ -53,6 +55,56 @@ async def get_my_reports(
             "created_at": c.created_at.isoformat() if c.created_at else None,
         })
     return {"reports": result}
+
+
+@router.get("/leaderboard")
+async def get_citizen_leaderboard(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(verify_citizen)
+):
+    """
+    Returns authentic community leaderboard ranked by eco_points.
+    Only includes users with role == 'CITIZEN'. Excludes ADMIN and DRIVER.
+    """
+    stmt = (
+        select(User)
+        .where(User.role == "CITIZEN")
+        .order_by(desc(User.eco_points), User.name)
+        .limit(20)
+    )
+    result = await db.execute(stmt)
+    citizens = result.scalars().all()
+
+    leaderboard = []
+    user_rank = None
+    for rank, citizen in enumerate(citizens, start=1):
+        is_me = (citizen.id == current_user.id)
+        if is_me:
+            user_rank = rank
+        leaderboard.append({
+            "rank": rank,
+            "id": citizen.id,
+            "name": citizen.name or "Citizen",
+            "eco_points": citizen.eco_points or 0,
+            "is_current_user": is_me,
+        })
+
+    # If current user is not in top 20, calculate user's real ranking
+    if user_rank is None:
+        count_higher = await db.scalar(
+            select(func.count(User.id)).where(
+                User.role == "CITIZEN",
+                User.eco_points > (current_user.eco_points or 0)
+            )
+        )
+        user_rank = (count_higher or 0) + 1
+
+    return {
+        "leaderboard": leaderboard,
+        "user_rank": user_rank,
+        "user_points": current_user.eco_points or 0,
+        "user_name": current_user.name or "Citizen"
+    }
 
 
 @router.get("/dashboard")

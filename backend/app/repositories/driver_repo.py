@@ -14,7 +14,7 @@ class DriverLocationRepository(BaseRepository[DriverLocation]):
         if location:
             location.lat = lat
             location.lng = lng
-            location.updated_at = datetime.now(timezone.utc)
+            location.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
         else:
             location = DriverLocation(driver_id=driver_id, lat=lat, lng=lng)
 
@@ -40,7 +40,7 @@ class DriverTaskRepository(BaseRepository[DriverTask]):
         if task:
             task.status = status
             if status == "COMPLETED":
-                task.completed_at = datetime.now(timezone.utc)
+                task.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
             db.add(task)
             await db.commit()

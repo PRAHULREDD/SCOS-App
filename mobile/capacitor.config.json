@@ -1,5 +1,8 @@
 {
   "appId": "com.scos.app",
   "appName": "SCOS",
-  "webDir": "../backend/static"
+  "webDir": "../backend/static",
+  "server": {
+    "androidScheme": "http"
+  }
 }

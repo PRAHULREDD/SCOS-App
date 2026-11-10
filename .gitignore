@@ -53,3 +53,25 @@ Thumbs.db
 # Node
 node_modules/
 mobile/node_modules/
+
+# Testing and coverage artifacts
+.pytest_cache/
+backend/.pytest_cache/
+.coverage
+htmlcov/
+
+# Targeted backups and recovery files
+backend/static/js/*.bak
+backend/audit-backups/
+
+# Local test and browser verification scratch directory (anchored to root)
+/scratch/
+
+# Audit execution logs and generated artifacts (anchored to root, excluded from Git)
+/audit-results/
+/audit_*.txt
+backend/audit_*.py
+backend/audit_*.txt
+
+# Uploaded media and proof photos
+backend/uploads/
