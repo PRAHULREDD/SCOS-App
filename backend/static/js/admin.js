@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // ---- Notification Bell Trigger (Clearly labelled as Simulated/Demo) ----
+    // ---- Notification Bell Trigger ----
     const notifBtn = document.querySelector('header button');
     if (notifBtn) {
         notifBtn.addEventListener('click', async () => {
@@ -33,12 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pending = overview.pending_complaints || 0;
                 const activeIncidents = overview.active_incidents_count || 0;
                 if (pending > 0 || activeIncidents > 0) {
-                    window.showToast(`[Demo Notification] ${pending} pending complaint(s), ${activeIncidents} active incident(s) in system.`, 'warning');
+                    window.showToast(`${pending} pending complaint(s), ${activeIncidents} high-priority item(s) in system.`, 'warning');
                 } else {
-                    window.showToast('[Demo Notification] All monitored sectors clear. No pending complaints.', 'success');
+                    window.showToast('All monitored sectors clear. No pending complaints.', 'success');
                 }
             } catch (e) {
-                window.showToast('[Demo Notification] No active system alerts.', 'info');
+                window.showToast('No active system alerts.', 'info');
             }
         });
     }
@@ -212,6 +212,21 @@ async function loadWasteHeatmap() {
                     fillOpacity: 0.85
                 }).addTo(_adminMapInstance);
 
+                const proofPopupBtn = (p.status === 'RESOLVED' && p.proof_photo_url) ? `
+                    <div class="pt-1.5 border-t border-slate-200 mt-1">
+                        <button type="button"
+                                data-action="view-admin-proof"
+                                data-proof-url="${escapeHtml(p.proof_photo_url)}"
+                                data-complaint-id="${p.id || 0}"
+                                data-waste-type="${escapeHtml(p.waste_type || 'General')}"
+                                data-area="${escapeHtml(p.zone || 'Unknown')}"
+                                class="w-full text-center px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-[11px] flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all">
+                            <span class="material-symbols-outlined text-[13px]">photo_camera</span>
+                            <span>View Proof</span>
+                        </button>
+                    </div>
+                ` : '';
+
                 marker.bindPopup(`
                     <div class="text-xs space-y-1">
                         <strong class="text-sm font-semibold">${escapeHtml(p.waste_type || 'General')} Waste</strong>
@@ -219,6 +234,7 @@ async function loadWasteHeatmap() {
                         <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold text-white" style="background-color: ${color}">
                             ${escapeHtml(p.status)}
                         </span>
+                        ${proofPopupBtn}
                     </div>
                 `);
 
@@ -237,7 +253,7 @@ async function loadWasteHeatmap() {
 }
 
 /**
- * Loads real illegal dumping incidents and distinguishes AI predictions
+ * Loads high-priority complaints for municipal administrative review
  */
 async function loadIllegalDumping() {
     const listEl = document.getElementById('dumping-incidents-list');
@@ -250,10 +266,10 @@ async function loadIllegalDumping() {
         const incidents = dumpData.incidents || [];
 
         const activeCount = dumpData.active_count ?? incidents.length;
-        const highRiskCount = dumpData.high_risk_count ?? incidents.filter(i => i.severity === 'HIGH').length;
+        const highRiskCount = dumpData.high_risk_count ?? incidents.filter(i => i.severity === 'HIGH' || i.severity === 'CRITICAL').length;
 
-        // Count unique zones/clusters
-        const uniqueClusters = new Set(incidents.map(i => i.zone || i.cluster_id || 'Default')).size;
+        // Count unique zones/areas
+        const uniqueClusters = new Set(incidents.map(i => i.area || i.zone || 'Central')).size;
 
         if (activeEl) activeEl.textContent = activeCount;
         if (highRiskEl) highRiskEl.textContent = highRiskCount;
@@ -262,17 +278,18 @@ async function loadIllegalDumping() {
         if (!listEl) return;
 
         if (incidents.length === 0) {
-            listEl.innerHTML = '<p class="text-on-surface-variant text-sm py-8 text-center bg-slate-50 dark:bg-slate-800 rounded-2xl">No illegal dumping incidents reported currently.</p>';
+            listEl.innerHTML = '<p class="text-on-surface-variant text-sm py-8 text-center bg-slate-50 dark:bg-slate-800 rounded-2xl">No high-priority complaints pending review.</p>';
             return;
         }
 
         listEl.innerHTML = incidents.map(inc => {
             const severityStyles = {
+                CRITICAL: 'bg-error-container text-on-error-container border-error/30',
                 HIGH: 'bg-error-container text-on-error-container border-error/30',
                 MEDIUM: 'bg-amber-100 text-amber-800 border-amber-300',
                 LOW: 'bg-surface-container text-on-surface-variant border-outline-variant/30'
             };
-            const sevBadge = severityStyles[inc.severity] || severityStyles.MEDIUM;
+            const sevBadge = severityStyles[inc.severity] || severityStyles.HIGH;
 
             const detectedDate = inc.detected_at ? new Date(inc.detected_at).toLocaleString() : 'Recent';
 
@@ -281,43 +298,27 @@ async function loadIllegalDumping() {
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full border ${sevBadge}">${escapeHtml(inc.severity)} RISK</span>
-                            <span class="text-xs text-on-surface-variant font-mono">Cluster: ${escapeHtml(inc.cluster_id || inc.zone || 'A')}</span>
+                            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full border ${sevBadge}">${escapeHtml(inc.severity)} PRIORITY</span>
+                            <span class="text-xs text-on-surface-variant font-mono">Sector: ${escapeHtml(inc.area || inc.zone || 'Central')}</span>
                         </div>
-                        <h4 class="font-title-md font-bold text-on-surface">${escapeHtml(inc.description || 'Unauthorized waste dumping detected')}</h4>
-                        <p class="text-xs text-on-surface-variant mt-0.5">Location: ${escapeHtml(inc.zone || 'Municipal Perimeter')} · Detected: ${detectedDate}</p>
+                        <h4 class="font-title-md font-bold text-on-surface">${escapeHtml(inc.description || 'Priority waste collection required')}</h4>
+                        <p class="text-xs text-on-surface-variant mt-0.5">Location: ${escapeHtml(inc.zone || 'Municipal Perimeter')} · Reported: ${detectedDate}</p>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-primary/10 text-primary uppercase">${escapeHtml(inc.status || 'ACTIVE')}</span>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-primary/10 text-primary uppercase">${escapeHtml(inc.status || 'PENDING')}</span>
                 </div>
-
-                <!-- Explicitly labeled AI Prediction Section -->
-                <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50 text-xs space-y-1">
-                    <div class="flex items-center gap-1.5 text-primary font-semibold">
-                        <span class="material-symbols-outlined text-[16px]">psychology</span>
-                        <span>AI Pattern Prediction (Hypothesis)</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-on-surface-variant pt-1">
-                        <div>
-                            <span class="text-slate-400">Predicted Source:</span>
-                            <strong class="text-on-surface ml-1">${escapeHtml(inc.predicted_culprit || 'Under Investigation')}</strong>
-                        </div>
-                        ${inc.common_time ? `<div><span class="text-slate-400">Common Time Window:</span> <strong class="text-on-surface ml-1">${escapeHtml(inc.common_time)}</strong></div>` : ''}
-                    </div>
-                    ${typeof inc.confidence === 'number' ? `
-                    <div class="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
-                        <span>Pattern Match Confidence:</span>
-                        <div class="flex-1 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden max-w-[120px]">
-                            <div class="bg-primary h-full rounded-full" style="width: ${Math.round(inc.confidence * 100)}%"></div>
-                        </div>
-                        <span class="font-bold text-primary">${Math.round(inc.confidence * 100)}%</span>
-                    </div>` : ''}
+                <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
+                    <span class="text-on-surface-variant">Waste Type: <strong class="text-on-surface">${escapeHtml(inc.waste_type || 'General')}</strong></span>
+                    <a href="../Waste Heatmap/index.html" class="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+                        <span>Manage in Operations</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </a>
                 </div>
             </div>`;
         }).join('');
 
     } catch (err) {
-        console.error("Failed to load illegal dumping data:", err);
-        if (listEl) listEl.innerHTML = `<p class="text-error text-sm p-4">Error loading surveillance data: ${escapeHtml(err.message)}</p>`;
+        console.error("Failed to load priority complaints:", err);
+        if (listEl) listEl.innerHTML = `<p class="text-error text-sm p-4">Error loading priority complaints: ${escapeHtml(err.message)}</p>`;
     }
 }
 
@@ -364,13 +365,28 @@ async function loadAdminComplaints() {
             const safeWasteType = escapeHtml(c.waste_type || 'General');
             const safeArea = escapeHtml(c.area || 'Unknown Area');
 
-            const assignBtn = canAssign
-                ? `<button
+            let actionBtn = '';
+            if (canAssign) {
+                actionBtn = `<button
                        onclick="openAssignModal(${c.id}, '${safeWasteType}', '${safeArea}')"
                        class="px-4 py-2 bg-primary text-on-primary text-sm font-medium rounded-full active:scale-95 transition-transform">
                        Assign Driver
-                   </button>`
-                : `<span class="text-xs text-on-surface-variant font-medium">${c.status === 'RESOLVED' ? 'Resolved' : 'Assigned'}</span>`;
+                   </button>`;
+            } else if (c.status === 'RESOLVED' && c.proof_photo_url) {
+                actionBtn = `<button
+                       type="button"
+                       data-action="view-admin-proof"
+                       data-proof-url="${escapeHtml(c.proof_photo_url)}"
+                       data-complaint-id="${c.id}"
+                       data-waste-type="${safeWasteType}"
+                       data-area="${safeArea}"
+                       class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-full flex items-center gap-1 active:scale-95 transition-all shadow-sm">
+                       <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                       <span>View Proof</span>
+                   </button>`;
+            } else {
+                actionBtn = `<span class="text-xs text-on-surface-variant font-medium">${c.status === 'RESOLVED' ? 'Resolved' : 'Assigned'}</span>`;
+            }
 
             return `
             <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 flex items-center justify-between gap-4">
@@ -382,7 +398,7 @@ async function loadAdminComplaints() {
                     <h4 class="font-medium text-on-surface truncate">${safeWasteType} — ${safeArea}</h4>
                     <p class="text-xs text-on-surface-variant">${escapeHtml(c.zone || '')} · ${c.created_at ? new Date(c.created_at).toLocaleString() : 'Unknown date'}</p>
                 </div>
-                <div class="shrink-0">${assignBtn}</div>
+                <div class="shrink-0">${actionBtn}</div>
             </div>`;
         }).join('');
 
@@ -405,3 +421,192 @@ function openAssignModal(complaintId, wasteType, address) {
 }
 
 window.openAssignModal = openAssignModal;
+
+// ---- Collection Proof Photo Viewer Functions (Admin) ----
+let _adminProofObjectUrl = null;
+let _adminAbortController = null;
+let _adminRequestGen = 0;
+
+function ensureAdminProofModal() {
+    let modal = document.getElementById('admin-proof-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'admin-proof-modal';
+        modal.className = 'fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-600 text-2xl">photo_library</span>
+                <h3 class="font-title-md font-bold text-on-surface">Collection Proof Photo</h3>
+              </div>
+              <button id="admin-proof-modal-close" class="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+              </button>
+            </div>
+            <div id="admin-proof-info" class="text-xs text-on-surface-variant font-medium"></div>
+            <div class="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-outline-variant/30">
+              <div id="admin-proof-loading" class="flex flex-col items-center justify-center text-slate-400 gap-2">
+                <span class="material-symbols-outlined text-3xl animate-spin">sync</span>
+                <span class="text-xs font-medium">Retrieving collection proof photo...</span>
+              </div>
+              <div id="admin-proof-error" class="hidden flex flex-col items-center justify-center text-error p-4 text-center gap-2">
+                <span class="material-symbols-outlined text-3xl">broken_image</span>
+                <span id="admin-proof-error-msg" class="text-xs font-medium">Unable to load collection proof photo.</span>
+              </div>
+              <img id="admin-proof-img" class="w-full h-full object-contain hidden" alt="Collection Proof Photo">
+            </div>
+            <div class="flex justify-end pt-2">
+              <button id="admin-proof-modal-dismiss" class="px-5 py-2.5 bg-primary text-on-primary text-sm font-medium rounded-full active:scale-95 transition-transform">
+                Done
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    const closeBtn = document.getElementById('admin-proof-modal-close');
+    const dismissBtn = document.getElementById('admin-proof-modal-dismiss');
+    if (closeBtn && !closeBtn._bound) {
+        closeBtn._bound = true;
+        closeBtn.addEventListener('click', closeAdminProofModal);
+    }
+    if (dismissBtn && !dismissBtn._bound) {
+        dismissBtn._bound = true;
+        dismissBtn.addEventListener('click', closeAdminProofModal);
+    }
+    if (!modal._boundBackdrop) {
+        modal._boundBackdrop = true;
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeAdminProofModal();
+        });
+    }
+    return modal;
+}
+
+function closeAdminProofModal() {
+    _adminRequestGen++;
+    if (_adminAbortController) {
+        _adminAbortController.abort();
+        _adminAbortController = null;
+    }
+    const modal = document.getElementById('admin-proof-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    if (_adminProofObjectUrl) {
+        URL.revokeObjectURL(_adminProofObjectUrl);
+        _adminProofObjectUrl = null;
+    }
+    const imgEl = document.getElementById('admin-proof-img');
+    if (imgEl) {
+        imgEl.onload = null;
+        imgEl.onerror = null;
+        imgEl.removeAttribute('src');
+        imgEl.classList.add('hidden');
+    }
+}
+
+async function viewAdminProofPhoto(proofUrl, complaintId, wasteType, area) {
+    if (!proofUrl) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('No proof photo is available for this complaint.', 'info');
+        }
+        return;
+    }
+
+    const currentGen = ++_adminRequestGen;
+    if (_adminAbortController) {
+        _adminAbortController.abort();
+        _adminAbortController = null;
+    }
+    if (_adminProofObjectUrl) {
+        URL.revokeObjectURL(_adminProofObjectUrl);
+        _adminProofObjectUrl = null;
+    }
+
+    const modal = ensureAdminProofModal();
+    const infoEl = document.getElementById('admin-proof-info');
+    const loadingEl = document.getElementById('admin-proof-loading');
+    const errorEl = document.getElementById('admin-proof-error');
+    const errorMsgEl = document.getElementById('admin-proof-error-msg');
+    const imgEl = document.getElementById('admin-proof-img');
+
+    if (imgEl) {
+        imgEl.onload = null;
+        imgEl.onerror = null;
+        imgEl.removeAttribute('src');
+        imgEl.classList.add('hidden');
+    }
+
+    const taskId = proofUrl.split('/').filter(Boolean).pop();
+    if (infoEl) {
+        infoEl.textContent = `Complaint #${complaintId} (Task #${taskId}) · ${wasteType || 'General'} Waste in ${area || 'Municipal Area'}`;
+    }
+
+    loadingEl?.classList.remove('hidden');
+    errorEl?.classList.add('hidden');
+    modal.classList.remove('hidden');
+
+    _adminAbortController = new AbortController();
+
+    try {
+        const blob = await API.fetchProofPhotoBlob(proofUrl, { signal: _adminAbortController.signal });
+        if (currentGen !== _adminRequestGen) {
+            return;
+        }
+        _adminProofObjectUrl = URL.createObjectURL(blob);
+        if (imgEl) {
+            imgEl.onload = () => {
+                if (currentGen !== _adminRequestGen) return;
+                loadingEl?.classList.add('hidden');
+                imgEl.classList.remove('hidden');
+            };
+            imgEl.onerror = () => {
+                if (currentGen !== _adminRequestGen) return;
+                loadingEl?.classList.add('hidden');
+                errorEl?.classList.remove('hidden');
+                if (errorMsgEl) errorMsgEl.textContent = 'Failed to render retrieved image.';
+            };
+            imgEl.src = _adminProofObjectUrl;
+        }
+    } catch (err) {
+        if (currentGen !== _adminRequestGen || err.name === 'AbortError') {
+            return;
+        }
+        console.error('Failed to retrieve proof photo:', err);
+        loadingEl?.classList.add('hidden');
+        errorEl?.classList.remove('hidden');
+        if (errorMsgEl) {
+            errorMsgEl.textContent = err.message || 'Unable to retrieve proof photo.';
+        }
+    }
+}
+
+// Delegated click handler for admin proof buttons (both list and Leaflet popups)
+if (!window._adminProofDelegationBound) {
+    window._adminProofDelegationBound = true;
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action="view-admin-proof"]');
+        if (btn) {
+            e.stopPropagation();
+            const { proofUrl, complaintId, wasteType, area } = btn.dataset;
+            viewAdminProofPhoto(proofUrl, complaintId, wasteType, area);
+        }
+    });
+}
+
+window.viewAdminProofPhoto = viewAdminProofPhoto;
+window.closeAdminProofModal = closeAdminProofModal;
+window.addEventListener('beforeunload', () => {
+    _adminRequestGen++;
+    if (_adminAbortController) {
+        _adminAbortController.abort();
+        _adminAbortController = null;
+    }
+    if (_adminProofObjectUrl) {
+        URL.revokeObjectURL(_adminProofObjectUrl);
+        _adminProofObjectUrl = null;
+    }
+});

@@ -1,17 +1,26 @@
+import asyncio
 import os
 import uuid
 from pathlib import Path
 from typing import Optional
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, Form, File, UploadFile, HTTPException, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.db.database import get_db
 from app.api.dependencies import verify_driver, get_current_user
 from app.services.driver_service import driver_service
 from app.services.complaint_service import complaint_service
+from app.services.storage_service import (
+    get_storage_service,
+    BaseStorageService,
+    LocalStorageService,
+    StoredFile,
+    StorageFileNotFoundError,
+    StorageError,
+)
 from app.models.domain import User, DriverTask, Complaint
 
 router = APIRouter()
@@ -91,7 +100,6 @@ async def get_assigned_tasks(
             "priority": t.priority,
             "waste_type": t.waste_type,
             "address": t.address,
-            "bin_fill_percent": t.bin_fill_percent,
             "distance_km": t.distance_km,
             "status": t.status,
             "assigned_at": t.assigned_at.isoformat() if t.assigned_at else None,
@@ -152,7 +160,8 @@ async def complete_pickup(
     complaint_id: int = Form(...),
     proof_photo: Optional[UploadFile] = File(None),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(verify_driver)
+    current_user: User = Depends(verify_driver),
+    storage: BaseStorageService = Depends(get_storage_service)
 ):
     """
     Complete a pickup for the current driver.
@@ -171,7 +180,7 @@ async def complete_pickup(
     if not task:
         raise HTTPException(status_code=404, detail="No task found for this complaint assigned to you")
 
-    if task.status == "COMPLETED":
+    if task.status == "COMPLETED" or task.proof_photo_url is not None:
         raise HTTPException(status_code=409, detail="Pickup already completed")
 
     if task.status != "ASSIGNED":
@@ -184,48 +193,79 @@ async def complete_pickup(
     if not complaint:
         raise HTTPException(status_code=404, detail="Originating complaint not found")
 
-    saved_file_path: Optional[Path] = None
-    proof_url: Optional[str] = None
+    file_bytes: Optional[bytes] = None
+    verified_ext: Optional[str] = None
+    content_type: Optional[str] = None
 
     if proof_photo and proof_photo.filename:
         file_bytes = await proof_photo.read()
-        if len(file_bytes) > 0:
-            verified_ext = validate_proof_image(
-                file_bytes=file_bytes,
-                filename=proof_photo.filename,
-                content_type=proof_photo.content_type
+        # Always validate uploaded file bytes (rejects 0-byte files with HTTP 400)
+        verified_ext = validate_proof_image(
+            file_bytes=file_bytes,
+            filename=proof_photo.filename,
+            content_type=proof_photo.content_type
+        )
+        content_type = proof_photo.content_type or (
+            "image/jpeg" if verified_ext in (".jpg", ".jpeg")
+            else "image/png" if verified_ext == ".png"
+            else "image/webp"
+        )
+
+    # Establish exclusive ownership of this completion attempt before writing to storage
+    claim_stmt = (
+        update(DriverTask)
+        .where(
+            DriverTask.id == task.id,
+            DriverTask.status == "ASSIGNED",
+            DriverTask.proof_photo_url.is_(None)
+        )
+        .values(
+            status="COMPLETED",
+            completed_at=datetime.now(timezone.utc).replace(tzinfo=None)
+        )
+    )
+    claim_res = await db.execute(claim_stmt)
+    if claim_res.rowcount != 1:
+        raise HTTPException(status_code=409, detail="Pickup already completed")
+
+    created_storage_key: Optional[str] = None
+    proof_url: Optional[str] = None
+
+    if file_bytes is not None and verified_ext is not None:
+        storage_key = f"proofs/tasks/task_{task.id}{verified_ext}"
+        try:
+            await storage.save_file(
+                key=storage_key,
+                content=file_bytes,
+                content_type=content_type
             )
-            unique_filename = f"task_{task.id}_{complaint_id}_{uuid.uuid4().hex[:12]}{verified_ext}"
-            saved_file_path = STORAGE_DIR / unique_filename
-
-            try:
-                with open(saved_file_path, "wb") as f:
-                    f.write(file_bytes)
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Failed to persist proof photo: {e}")
-
+            created_storage_key = storage_key
             proof_url = f"/api/driver/proof/{task.id}"
+        except Exception as e:
+            await db.rollback()
+            raise HTTPException(status_code=500, detail=f"Failed to persist proof photo: {e}")
 
     try:
-        task.status = "COMPLETED"
-        task.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         if proof_url:
-            task.proof_photo_url = proof_url
+            await db.execute(
+                update(DriverTask)
+                .where(DriverTask.id == task.id)
+                .values(proof_photo_url=proof_url)
+            )
 
         complaint.status = "RESOLVED"
         if proof_url:
             complaint.proof_photo_url = proof_url
 
-        db.add(task)
         db.add(complaint)
         await db.commit()
         await db.refresh(task)
         await db.refresh(complaint)
     except Exception as e:
         await db.rollback()
-        if saved_file_path and saved_file_path.exists():
+        if created_storage_key:
             try:
-                saved_file_path.unlink()
+                await storage.delete_file(created_storage_key)
             except Exception:
                 pass
         raise HTTPException(status_code=500, detail=f"Database commit failed during pickup completion: {e}")
@@ -246,7 +286,8 @@ async def complete_pickup(
 async def get_proof_photo(
     task_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    storage: BaseStorageService = Depends(get_storage_service)
 ):
     """
     Authorized retrieval of completed pickup proof photo.
@@ -275,27 +316,64 @@ async def get_proof_photo(
     else:
         raise HTTPException(status_code=403, detail="Forbidden: Unauthorized role")
 
+    # Only serve proof if database record actually references a proof photo
     if not task.proof_photo_url:
         raise HTTPException(status_code=404, detail="No proof photo uploaded for this task")
 
-    matching = list(STORAGE_DIR.glob(f"task_{task_id}_*"))
-    if not matching or not matching[0].exists():
+    stored_file: Optional[StoredFile] = None
+
+    # Step 1: Storage abstraction lookup with deterministic key
+    for ext in (".jpg", ".jpeg", ".png", ".webp"):
+        candidate_key = f"proofs/tasks/task_{task_id}{ext}"
+        try:
+            if await storage.exists(candidate_key):
+                stored_file = await storage.get_file(candidate_key)
+                break
+        except StorageError as e:
+            raise HTTPException(status_code=500, detail=f"Storage provider error: {e}")
+
+    # Step 2: Legacy local-file compatibility fallback
+    if stored_file is None:
+        legacy_dir = (
+            storage.storage_root
+            if isinstance(storage, LocalStorageService)
+            else STORAGE_DIR
+        )
+        legacy_matches = []
+        if legacy_dir and legacy_dir.is_dir():
+            candidates = list(legacy_dir.glob(f"task_{task_id}_*"))
+            legacy_matches = [
+                p for p in candidates
+                if p.is_file() and not p.name.endswith(".meta.json") and not p.name.startswith(".tmp")
+            ]
+
+        if len(legacy_matches) == 1:
+            target_file = legacy_matches[0]
+            try:
+                content = await asyncio.to_thread(target_file.read_bytes)
+                ext = target_file.suffix.lower()
+                media_map = {
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".png": "image/png",
+                    ".webp": "image/webp"
+                }
+                media_type = media_map.get(ext, "application/octet-stream")
+                stored_file = StoredFile(content=content, content_type=media_type)
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Failed to read legacy proof photo: {e}")
+        elif len(legacy_matches) > 1:
+            raise HTTPException(
+                status_code=409,
+                detail=f"Ambiguous legacy proof photos found for task {task_id}; manual reconciliation required"
+            )
+
+    if stored_file is None:
         raise HTTPException(status_code=404, detail="Proof photo file not found on disk")
 
-    target_file = matching[0]
-    ext = target_file.suffix.lower()
-    media_map = {
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".png": "image/png",
-        ".webp": "image/webp"
-    }
-    media_type = media_map.get(ext, "application/octet-stream")
-
-    return FileResponse(
-        path=str(target_file),
-        media_type=media_type,
-        filename=target_file.name
+    return StreamingResponse(
+        stored_file.to_stream(),
+        media_type=stored_file.content_type
     )
 
 

@@ -26,7 +26,7 @@ async def report_issue(
         data=report_data.model_dump()
     )
     return {
-        "message": "Issue reported successfully. Image analysis queued.",
+        "message": "Issue reported successfully. Awaiting municipal review.",
         "id": result["id"],
         "points": result["points"],
     }
@@ -53,6 +53,7 @@ async def get_my_reports(
             "lat": c.lat,
             "lng": c.lng,
             "created_at": c.created_at.isoformat() if c.created_at else None,
+            "proof_photo_url": c.proof_photo_url,
         })
     return {"reports": result}
 

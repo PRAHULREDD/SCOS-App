@@ -149,7 +149,7 @@
         <h2 class="font-headline-md text-headline-md text-on-surface">Live Insights</h2>
       </div>
       <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-semibold flex items-center gap-1">
-        <span class="material-symbols-outlined text-sm">sensors</span> Active
+        <span class="material-symbols-outlined text-sm">location_on</span> Live Map
       </span>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -230,6 +230,38 @@
       <button id="modal-confirm-btn"
               class="flex-1 bg-primary text-on-primary px-4 py-3 rounded-full font-label-lg active:scale-95 transition-transform">
         Assign
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- View Collection Proof Modal -->
+<div id="admin-proof-modal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm">
+  <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl border border-slate-100 dark:border-slate-800">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-emerald-600 text-2xl">photo_library</span>
+        <h3 class="font-title-md font-bold text-on-surface">Collection Proof Photo</h3>
+      </div>
+      <button id="admin-proof-modal-close" class="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
+    </div>
+    <div id="admin-proof-info" class="text-xs text-on-surface-variant font-medium"></div>
+    <div class="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-outline-variant/30">
+      <div id="admin-proof-loading" class="flex flex-col items-center justify-center text-slate-400 gap-2">
+        <span class="material-symbols-outlined text-3xl animate-spin">sync</span>
+        <span class="text-xs font-medium">Retrieving collection proof photo...</span>
+      </div>
+      <div id="admin-proof-error" class="hidden flex flex-col items-center justify-center text-error p-4 text-center gap-2">
+        <span class="material-symbols-outlined text-3xl">broken_image</span>
+        <span id="admin-proof-error-msg" class="text-xs font-medium">Unable to load collection proof photo.</span>
+      </div>
+      <img id="admin-proof-img" class="w-full h-full object-contain hidden" alt="Collection Proof Photo">
+    </div>
+    <div class="flex justify-end pt-2">
+      <button id="admin-proof-modal-dismiss" class="px-5 py-2.5 bg-primary text-on-primary text-sm font-medium rounded-full active:scale-95 transition-transform">
+        Done
       </button>
     </div>
   </div>

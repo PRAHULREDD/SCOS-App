@@ -22,7 +22,7 @@ async def get_overview(
     """
     Admin overview endpoint. Returns stats used by admin.js:
     total_complaints, pending_complaints, collection_rate,
-    active_incidents_count, average_ai_confidence,
+    active_incidents_count,
     recent_incidents.
     """
     # Count complaints
@@ -44,7 +44,6 @@ async def get_overview(
     # Incidents
     incidents = await incident_repo.get_active(db)
     total_incidents = len(incidents)
-    avg_confidence = sum(i.confidence for i in incidents) / total_incidents if total_incidents > 0 else 0
 
     return {
         "total_complaints": total_complaints,
@@ -52,7 +51,6 @@ async def get_overview(
         "resolved_complaints": resolved_complaints,
         "collection_rate": collection_rate,
         "active_incidents_count": total_incidents,
-        "average_ai_confidence": round(avg_confidence, 2),
         "recent_incidents": [
             {
                 "id": i.id,
@@ -60,9 +58,6 @@ async def get_overview(
                 "cluster_id": i.cluster_id,
                 "description": i.description,
                 "severity": i.severity,
-                "predicted_culprit": i.predicted_culprit,
-                "common_time": i.common_time,
-                "confidence": i.confidence,
                 "lat": i.lat,
                 "lng": i.lng,
                 "status": i.status,
@@ -86,11 +81,13 @@ async def get_waste_heatmap(
     return {
         "heatmap_points": [
             {
+                "id": c.id,
                 "lat": c.lat,
                 "lng": c.lng,
                 "zone": c.zone,
                 "waste_type": c.waste_type,
                 "status": c.status,
+                "proof_photo_url": c.proof_photo_url,
             }
             for c in complaints
         ],
@@ -103,29 +100,41 @@ async def get_illegal_dumping(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(verify_admin)
 ):
-    """Returns illegal dumping incidents for the admin illegal dumping view."""
-    incidents = await incident_repo.get_active(db)
-    high_risk = [i for i in incidents if i.severity == "HIGH"]
+    """
+    Returns high-priority complaints for the admin high-priority complaints / illegal dumping view.
+    Filters Complaint records with high severity (HIGH/CRITICAL) excluding resolved complaints.
+    """
+    stmt = (
+        select(Complaint)
+        .filter(Complaint.severity_level.in_(["HIGH", "CRITICAL"]))
+        .filter(Complaint.status != "RESOLVED")
+        .order_by(desc(Complaint.created_at))
+    )
+    result = await db.execute(stmt)
+    high_priority_complaints = result.scalars().all()
+
+    items = []
+    for c in high_priority_complaints:
+        items.append({
+            "id": c.id,
+            "zone": c.zone or "General",
+            "area": c.area or "Unknown Area",
+            "description": c.description or f"High Priority {c.waste_type or 'General'} Waste Report",
+            "severity": c.severity_level or "HIGH",
+            "waste_type": c.waste_type or "General",
+            "status": c.status,
+            "lat": c.lat,
+            "lng": c.lng,
+            "detected_at": c.created_at.isoformat() if c.created_at else None,
+        })
+
+    high_risk_count = sum(1 for item in items if item["severity"] in ("HIGH", "CRITICAL"))
 
     return {
-        "active_count": len(incidents),
-        "active_incidents": len(incidents),
-        "high_risk_count": len(high_risk),
-        "incidents": [
-            {
-                "id": i.id,
-                "zone": i.zone,
-                "description": i.description,
-                "severity": i.severity,
-                "predicted_culprit": i.predicted_culprit,
-                "confidence": i.confidence,
-                "lat": i.lat,
-                "lng": i.lng,
-                "status": i.status,
-                "detected_at": i.detected_at.isoformat() if i.detected_at else None,
-            }
-            for i in incidents
-        ],
+        "active_count": len(items),
+        "active_incidents": len(items),
+        "high_risk_count": high_risk_count,
+        "incidents": items,
     }
 
 
@@ -155,6 +164,7 @@ async def list_complaints(
                 "lat": c.lat,
                 "lng": c.lng,
                 "created_at": c.created_at.isoformat() if c.created_at else None,
+                "proof_photo_url": c.proof_photo_url,
             }
             for c in complaints
         ]

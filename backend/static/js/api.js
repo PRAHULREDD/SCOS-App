@@ -20,6 +20,20 @@ class API {
         return localStorage.getItem('token');
     }
 
+    static clearAuthSession() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('user_id');
+    }
+
+    static handleSessionExpired() {
+        this.clearAuthSession();
+        window.location.href = '../Login Screen/index.html';
+        const error = new Error("Session expired. Please login again.");
+        error.status = 401;
+        throw error;
+    }
+
     static async request(endpoint, options = {}) {
         const headers = {
             ...options.headers
@@ -47,24 +61,22 @@ class API {
             });
 
             if (response.status === 401) {
-                // Token might be expired — clear and redirect to login.
-                // Use a path that works for both web (/app/...) and Capacitor (file:// or custom origin).
-                localStorage.removeItem('token');
-                const isNative = (window.SCOS_CONFIG && typeof window.SCOS_CONFIG.isNativePlatform === 'function')
-                    ? window.SCOS_CONFIG.isNativePlatform()
-                    : ((window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:');
-                if (isNative) {
-                    window.location.href = '../Login Screen/index.html';
-                } else {
-                    window.location.href = '/app/Login%20Screen/index.html';
-                }
-                throw new Error("Session expired. Please login again.");
+                this.handleSessionExpired();
             }
 
-            const data = await response.json();
+            let data = null;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                // Non-JSON response or empty body
+            }
             
             if (!response.ok) {
-                throw new Error(data.detail || 'An API error occurred');
+                const detail = (data && data.detail) ? data.detail : `An API error occurred (${response.status})`;
+                const error = new Error(detail);
+                error.status = response.status;
+                error.data = data;
+                throw error;
             }
 
             return data;
@@ -210,6 +222,54 @@ class API {
             }),
             headers: { 'Content-Type': 'application/json' }
         });
+    }
+
+    static async fetchProofPhotoBlob(proofUrl, options = {}) {
+        if (!proofUrl) {
+            throw new Error("No proof photo URL provided.");
+        }
+        const token = this.getToken();
+        const headers = { ...options.headers };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        const baseUrl = getActiveBaseUrl();
+        if (!baseUrl) {
+            throw new Error("SCOS: Backend URL is not configured. Running directly via file:// is not supported. Please serve the application over HTTP or set SCOS_BACKEND_URL.");
+        }
+        const endpoint = proofUrl.startsWith('/') ? proofUrl : `/${proofUrl}`;
+        const fetchOptions = {
+            method: 'GET',
+            headers
+        };
+        if (options.signal) {
+            fetchOptions.signal = options.signal;
+        }
+
+        const response = await fetch(`${baseUrl}${endpoint}`, fetchOptions);
+
+        if (response.status === 401) {
+            this.handleSessionExpired();
+        }
+
+        if (!response.ok) {
+            let errorMsg = `Failed to load proof photo (${response.status})`;
+            try {
+                const errData = await response.json();
+                if (errData && errData.detail) errorMsg = errData.detail;
+            } catch (_) {}
+            const err = new Error(errorMsg);
+            err.status = response.status;
+            throw err;
+        }
+
+        const contentType = (response.headers.get('content-type') || '').toLowerCase().split(';')[0].trim();
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(contentType)) {
+            throw new Error(`Invalid proof image format: ${contentType || 'unknown'}. Expected image/jpeg, image/png, or image/webp.`);
+        }
+
+        return await response.blob();
     }
 
 }

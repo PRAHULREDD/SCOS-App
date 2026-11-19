@@ -22,3 +22,4 @@ alembic
 asyncpg
 aiosqlite
 greenlet
+boto3

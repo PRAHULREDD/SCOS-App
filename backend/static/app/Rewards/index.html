@@ -114,20 +114,14 @@
 <div class="relative z-10">
 <h2 class="font-label-lg text-label-lg uppercase tracking-wider opacity-90">Current EcoPoints</h2>
 <div class="flex items-baseline gap-2 mt-2">
-<span id="eco-points-display" class="font-display-lg text-6xl font-bold">1,240</span>
+<span id="eco-points-display" class="font-display-lg text-6xl font-bold">--</span>
 <span class="font-title-md opacity-80">pts</span>
 </div>
 </div>
-<div class="mt-12 relative z-10">
-<div class="flex justify-between items-end mb-3">
+<div class="mt-8 relative z-10">
 <div>
-<p class="font-title-md font-semibold text-white">Elite Recycler Tier</p>
-<p class="font-body-md opacity-80">260 points to Champion</p>
-</div>
-<span class="font-title-md font-bold">82%</span>
-</div>
-<div class="w-full h-3 bg-black/20 rounded-full overflow-hidden">
-<div class="h-full bg-white rounded-full w-[82%]"></div>
+<p class="font-title-md font-semibold text-white">Citizen Green Rewards</p>
+<p class="font-body-md opacity-80 mt-1">Redeem points for local vouchers, transit passes, and civic benefits</p>
 </div>
 </div>
 <!-- Decorative element -->
@@ -140,17 +134,17 @@
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
 </div>
 <div>
-<p class="font-label-sm text-on-surface-variant">CO2 Saved</p>
-<p class="font-title-lg font-bold">42.5 kg</p>
+<p class="font-label-sm text-on-surface-variant">Reports Filed</p>
+<p id="rewards-reports-filed" class="font-title-lg font-bold">--</p>
 </div>
 </div>
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 rounded-2xl bg-tertiary-fixed-dim flex items-center justify-center text-tertiary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">delete_sweep</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">task_alt</span>
 </div>
 <div>
-<p class="font-label-sm text-on-surface-variant">Waste Sorted</p>
-<p class="font-title-lg font-bold">184 kg</p>
+<p class="font-label-sm text-on-surface-variant">Resolved Issues</p>
+<p id="rewards-reports-resolved" class="font-title-lg font-bold">--</p>
 </div>
 </div>
 </div>
@@ -163,74 +157,10 @@
 <h2 class="font-headline-md text-on-surface">Available Rewards</h2>
 </div>
 <div id="rewards-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-<!-- Reward Card 1 -->
-<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
-<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="vibrant local coffee shop interior with warm wooden tables and green plants in hanging pots" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsMnCTZR9dq1_Dffs3O-4vc_Ae-UjP19BnWlJpAEvBNXWCY89M-CYOeu1srWAXsWyCt98q_X0aYUTCerhrRXOf4mv-kSd73BZPvMKOXG5_aj_y2HCd9D6ctqjQx6W8nWtffwKbJpatjZcrrezGWxypflYSjeXLEWoIjErc1s3RH8W1A9F4DU18YTzw1y2BeN0oJYzwdwcKFSfI0SyTPxmg3QjuvkFqM_e5ZpUY0bJs9-jQb9N58U4gJObpNSZZFEQZkrB3C0wuYz0x"/>
-</div>
-<div class="flex flex-col justify-between py-1">
-<div>
-<p class="font-label-sm text-primary uppercase font-bold">Local Shop</p>
-<h3 class="font-title-md font-bold leading-tight">Free Oat Latte</h3>
-<p class="font-body-md text-on-surface-variant mt-1">The Green Bean</p>
-</div>
-<div class="flex items-center gap-1 text-emerald-700 font-bold">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
-<span class="text-sm">450 pts</span>
-</div>
-</div>
-</div>
-<!-- Reward Card 2 -->
-<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
-<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="lush urban park with green grass and modern wooden benches under a bright blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGJg8R-5zq-5XjFD8eqhidXrfI8VW0Rv7DgQSA8zH8wPFM7o9a_roDWLaUK3wAm7-FJ1n7vy2-EkyohXVHXc1Jf6td69d1bABwbU8NSbpUjEF43W4WTq676ejrdFX2_ivULWrnNC12OfeR6OUVRtk-if0fY_OOUTDVp3gGMmyZh3z-MSiG6hBqkfq21_xaNqycPCpbx6-Awfh19s-XiiaFV94ZYX0L_G7AYX5hfPKlQe_3ooopglGnuje5nT6dQTG15qZ5WX-MiZ3u"/>
-</div>
-<div class="flex flex-col justify-between py-1">
-<div>
-<p class="font-label-sm text-primary uppercase font-bold">Public Service</p>
-<h3 class="font-title-md font-bold leading-tight">Botanic Garden Pass</h3>
-<p class="font-body-md text-on-surface-variant mt-1">City Parks Dept</p>
-</div>
-<div class="flex items-center gap-1 text-emerald-700 font-bold">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
-<span class="text-sm">800 pts</span>
-</div>
-</div>
-</div>
-<!-- Reward Card 3 -->
-<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
-<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="close-up of fresh organic vegetables in a rustic wooden crate at a community market" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6-D8_U6KC8anRi_dhyBmXhNo0aXlXD7sXt5q8RPpPG9z3Ghq3zojIqSdlydPFFVxibzIdw8IekbYK4c2z2OoxNzPTm2LiKfZn2lcJB2W3yqI2j4KiuVLn9fnf-y8ER8ZycNAIzxZMekhz0kFKN2HZi_ANdQcvsGbZ25mWTsslT2RuST4U9I-EQgVIsGSUzgCnTYLVH1L11feUXm63cf90o3E10hvZvromfSr6etcKyTXJT3fjcxSyeUZnXuRiSLpgKAEy24q32cL0"/>
-</div>
-<div class="flex flex-col justify-between py-1">
-<div>
-<p class="font-label-sm text-primary uppercase font-bold">Discount</p>
-<h3 class="font-title-md font-bold leading-tight">15% Off Organic Box</h3>
-<p class="font-body-md text-on-surface-variant mt-1">Farm-to-Door</p>
-</div>
-<div class="flex items-center gap-1 text-emerald-700 font-bold">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
-<span class="text-sm">300 pts</span>
-</div>
-</div>
-</div>
-<!-- Reward Card 4 -->
-<div class="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 hover:shadow-md transition-shadow">
-<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="modern city bus at a sunlit terminal with clean glass architecture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGBq2DVPMh8YCOjlZyzmoeh3cKijdTqqLwIh3AWwN-8_eqSw075TI7lH4J6eFRqjOzmJsL-OxxiUFNf-dQIGi-mVwhEoZZVT53FWR1v7-mK53j_VJ_Fw07aAwqwOQ5FOelojJYK_5uSOBopJJjoA5UBF9mrAo3Tvy8jrvKvMnPx-X5UKlBbfCREiBBQYRGD35Ogph7kRQgDy6IojY_UOHueyg0IWnM1sh5XOfUy5isQpwSRQOJr8NTqabjcFw60Z-CSlB7qpL7NrMp"/>
-</div>
-<div class="flex flex-col justify-between py-1">
-<div>
-<p class="font-label-sm text-primary uppercase font-bold">Transport</p>
-<h3 class="font-title-md font-bold leading-tight">Weekly Transit Pass</h3>
-<p class="font-body-md text-on-surface-variant mt-1">Metro Transit</p>
-</div>
-<div class="flex items-center gap-1 text-emerald-700 font-bold">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
-<span class="text-sm">1,500 pts</span>
-</div>
-</div>
-</div>
+    <div class="col-span-full py-8 flex flex-col items-center justify-center text-center opacity-50">
+        <span class="material-symbols-outlined text-4xl animate-spin mb-2" data-icon="sync">sync</span>
+        <p class="text-sm">Loading available rewards...</p>
+    </div>
 </div>
 </div>
 <!-- Leaderboard Side Panel -->

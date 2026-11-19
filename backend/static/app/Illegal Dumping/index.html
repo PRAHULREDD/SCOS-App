@@ -3,7 +3,7 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>SCOS - Illegal Dumping Detection</title>
+<title>SCOS - High-Priority Complaints</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -141,49 +141,49 @@
 </header>
 
 <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
-  <!-- Live Monitoring Summary Panel -->
+  <!-- Live Priority Complaints Summary Panel -->
   <section class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-outline-variant/30">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <span class="text-label-sm font-semibold text-primary uppercase tracking-wider">AI Surveillance</span>
-        <h2 class="text-headline-md font-bold text-on-surface">Illegal Dumping Detection</h2>
+        <span class="text-label-sm font-semibold text-primary uppercase tracking-wider">Priority Escalations</span>
+        <h2 class="text-headline-md font-bold text-on-surface">High-Priority Complaints</h2>
       </div>
       <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-sm font-semibold flex items-center gap-1">
-        <span class="material-symbols-outlined text-sm">sensors</span> LIVE MONITORING
+        <span class="material-symbols-outlined text-sm">priority_high</span> Municipal Review
       </span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
-        <p class="text-label-sm font-medium text-on-surface-variant uppercase tracking-wider mb-1">Active Incidents</p>
+        <p class="text-label-sm font-medium text-on-surface-variant uppercase tracking-wider mb-1">Active Complaints</p>
         <div class="flex items-baseline gap-2">
           <span id="dumping-active-count" class="text-3xl font-bold text-on-surface">--</span>
           <span class="text-error font-medium text-sm flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> Live
+            <span class="material-symbols-outlined text-[14px]" data-icon="report">report</span> Active
           </span>
         </div>
       </div>
       <div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
-        <p class="text-label-sm font-medium text-on-surface-variant mb-1">High Risk</p>
+        <p class="text-label-sm font-medium text-on-surface-variant mb-1">High Severity</p>
         <span id="dumping-high-risk" class="text-3xl font-bold text-error">--</span>
       </div>
       <div class="bg-surface-container p-4 rounded-2xl border border-outline-variant/30">
-        <p class="text-label-sm font-medium text-on-surface-variant mb-1">Monitored Clusters</p>
+        <p class="text-label-sm font-medium text-on-surface-variant mb-1">Affected Sectors</p>
         <span id="dumping-clusters-count" class="text-3xl font-bold text-primary">--</span>
       </div>
     </div>
   </section>
 
-  <!-- Verified Illegal Dumping Incidents Panel -->
+  <!-- Verified High-Priority Complaints Panel -->
   <section class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-outline-variant/30 space-y-4">
     <div class="flex items-center justify-between mb-2">
       <div>
-        <span class="text-label-sm font-semibold text-primary uppercase tracking-wider">Surveillance Registry</span>
-        <h3 class="text-title-lg font-bold text-on-surface">Active Dumping Incidents</h3>
+        <span class="text-label-sm font-semibold text-primary uppercase tracking-wider">Escalation Queue</span>
+        <h3 class="text-title-lg font-bold text-on-surface">High-Priority Complaints</h3>
       </div>
-      <span class="text-xs text-on-surface-variant font-medium">Real Incidents & AI Pattern Predictions</span>
+      <span class="text-xs text-on-surface-variant font-medium">Verified Citizen & Municipal Reports</span>
     </div>
     <div id="dumping-incidents-list" class="space-y-3">
-      <p class="text-on-surface-variant text-sm py-4 text-center">Loading verified incidents…</p>
+      <p class="text-on-surface-variant text-sm py-4 text-center">Loading high-priority complaints…</p>
     </div>
   </section>
 </main>
@@ -195,10 +195,10 @@
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span class="font-['Inter'] text-[12px] font-medium">Operations</span>
 </a>
-<!-- Illegal Dumping (ACTIVE) -->
+<!-- Priority Complaints (ACTIVE) -->
 <a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-100 rounded-2xl px-6 py-1.5 transition-transform duration-200 active:scale-90" href="../Illegal Dumping/index.html">
 <span class="material-symbols-outlined" data-icon="warning">warning</span>
-<span class="font-['Inter'] text-[12px] font-bold">Illegal Dumping</span>
+<span class="font-['Inter'] text-[12px] font-bold">Priority Tasks</span>
 </a>
 </nav>
 <script src="../../js/toast.js"></script>

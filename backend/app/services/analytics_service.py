@@ -9,11 +9,9 @@ class AnalyticsService:
         
         # Aggregate logic
         total_incidents = len(incidents)
-        avg_confidence = sum(i.confidence for i in incidents) / total_incidents if total_incidents > 0 else 0
         
         return {
             "active_incidents_count": total_incidents,
-            "average_ai_confidence": round(avg_confidence, 2),
             "recent_incidents": incidents[:10]
         }
 

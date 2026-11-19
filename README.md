@@ -73,7 +73,7 @@ graph TD
    - The backend pushes a silent WebSocket event to the driver's specific connection pool.
    - The app's JavaScript catches the payload and fires a **native vibration and banner drop-down** using Capacitor's injected bridges.
    - The driver's map updates with the incident location.
-4. **Admin Command Center (Web):** The municipal admin monitors complaints and assigns tasks in real-time. (Note: The current implementation features a static visual representation of the heatmap UI, while the backend API provides real coordinate data for future dynamic plotting).
+4. **Admin Command Center (Web):** The municipal admin monitors complaints and assigns tasks in real-time, reviewing complaint clusters and live statuses via an interactive Leaflet map.
 
 ---
 

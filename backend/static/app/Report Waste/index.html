@@ -128,13 +128,15 @@
 <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm docked full-width top-0 sticky z-50">
 <div class="flex justify-between items-center px-4 py-3 w-full max-w-7xl mx-auto">
 <div class="flex items-center gap-3">
-<button id="btn-back" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
+<button id="btn-back" onclick="window.location.href='../Citizen Dashboard/index.html'" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
 <span class="material-symbols-outlined text-emerald-700 dark:text-emerald-400">arrow_back</span>
 </button>
 <span class="text-xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300 font-['Inter']">SCOS</span>
 </div>
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-colors">notifications</span>
+<button class="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors p-2 rounded-full active:opacity-70 transition-all text-emerald-700 dark:text-emerald-400" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
 <div class="w-8 h-8 rounded-full overflow-hidden bg-emerald-100">
 <img class="w-full h-full object-cover" data-alt="professional male portrait with friendly expression in clean studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn_r2FPVcn3JZkD9R_a54sT_lrXnRvQgr0LSWZMxx11VqQ-136xmNeYp6PyrCmfot9GfiDCo24YoXT9pyBngVlO1yJgHvLqASLHDCSz65tANrWkSnoj1LrVJAJqPbt-uCHSf7XErDRmpsucWAA-5BxlXLXrnne0FbPHhz0G8NR1VTRZoXmT6qjUUaIGIh4dPKnLTnJREhScWUq9Q0PDwSRzhzTcQGz1MiB9Ovktmm4kVUHtwcZxV85PSLiHPOhFeXoVaMBqiWgd_3y"/>
 </div>
@@ -147,15 +149,14 @@
 <p class="text-body-md font-body-md text-on-surface-variant mt-1">Submit waste management requests for municipal review.</p>
 </div>
 <form id="report-waste-form" class="space-y-lg">
-<!-- Image Upload Section -->
-<div class="relative group">
-<div class="w-full h-48 bg-surface-container rounded-xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary transition-colors overflow-hidden relative">
-<input type="file" id="waste-image" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
-<div class="bg-primary-container p-3 rounded-full text-white">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">camera_alt</span>
+<!-- Verification Protocol Banner -->
+<div class="w-full py-5 px-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex items-center gap-4">
+<div class="bg-primary/10 text-primary p-3 rounded-full flex-shrink-0">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">verified</span>
 </div>
-<span class="text-label-lg font-label-lg text-primary">Upload Image</span>
-<p class="text-label-sm font-label-sm text-on-surface-variant">Capture or select evidence</p>
+<div>
+<h4 class="text-label-lg font-semibold text-on-surface">Municipal Dispatch Protocol</h4>
+<p class="text-label-sm text-on-surface-variant mt-0.5">Assigned collection crews capture and submit on-site photographic proof upon completing collection.</p>
 </div>
 </div>
 <!-- GPS Location Display -->

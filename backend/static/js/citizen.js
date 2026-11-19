@@ -99,10 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ---- Header Notification Triggers (Clearly Labelled as Demo Notification) ----
-    document.querySelectorAll('header button, #btn-notifications').forEach(btn => {
-        const notifIcon = btn.querySelector('[data-icon="notifications"], .material-symbols-outlined');
-        if (btn.id === 'btn-notifications' || (notifIcon && (notifIcon.getAttribute('data-icon') === 'notifications' || notifIcon.textContent.trim() === 'notifications'))) {
+    // ---- Header Notification Triggers ----
+    document.querySelectorAll('header button, #btn-notifications, header [data-icon="notifications"]').forEach(btn => {
+        const notifIcon = btn.querySelector ? btn.querySelector('[data-icon="notifications"], .material-symbols-outlined') : null;
+        const isNotif = btn.id === 'btn-notifications' ||
+            btn.getAttribute('data-icon') === 'notifications' ||
+            (notifIcon && (notifIcon.getAttribute('data-icon') === 'notifications' || notifIcon.textContent.trim() === 'notifications'));
+        if (isNotif) {
             btn.addEventListener('click', async () => {
                 try {
                     const response = await API.fetchComplaints().catch(() => ({ reports: [] }));
@@ -110,14 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const pending = reports.filter(r => r.status === 'PENDING').length;
                     const resolved = reports.filter(r => r.status === 'RESOLVED').length;
                     if (pending > 0) {
-                        window.showToast(`[Demo Notification] You have ${pending} waste report(s) under review.`, "info");
+                        window.showToast(`You have ${pending} waste report(s) under review.`, "info");
                     } else if (resolved > 0) {
-                        window.showToast(`[Demo Notification] All ${resolved} of your reports have been resolved!`, "success");
+                        window.showToast(`All ${resolved} of your reports have been resolved!`, "success");
                     } else {
-                        window.showToast("[Demo Notification] You have no active notifications.", "info");
+                        window.showToast("You have no active notifications.", "info");
                     }
                 } catch (err) {
-                    window.showToast("[Demo Notification] Notification services are active.", "info");
+                    window.showToast("Notification services are active.", "info");
                 }
             });
         }
@@ -180,6 +183,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="font-body-sm text-xs text-on-surface-variant text-left mt-1 line-clamp-2">${escapeHtml(c.description)}</p>
                     ` : '';
 
+                    const hasProof = c.status === "RESOLVED" && Boolean(c.proof_photo_url);
+                    const safeProofUrl = hasProof ? escapeHtml(c.proof_photo_url) : '';
+                    const safeWasteType = escapeHtml(c.waste_type || "General");
+                    const safeArea = escapeHtml(c.area || "Area");
+
+                    const proofActionHtml = hasProof ? `
+                        <div class="mt-2">
+                            <button type="button"
+                                    data-action="view-citizen-proof"
+                                    data-proof-url="${safeProofUrl}"
+                                    data-complaint-id="${c.id}"
+                                    data-waste-type="${safeWasteType}"
+                                    data-area="${safeArea}"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full text-xs font-semibold transition-all active:scale-95 shadow-sm">
+                                <span class="material-symbols-outlined text-[15px]">photo_camera</span>
+                                <span>View Collection Proof</span>
+                            </button>
+                        </div>
+                    ` : '';
+
                     return `
                         <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-md flex items-center justify-between group hover:shadow-md transition-all">
                             <div class="flex items-center gap-md">
@@ -187,9 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <span class="material-symbols-outlined text-secondary" data-icon="delete_outline">delete_outline</span>
                                 </div>
                                 <div class="max-w-[200px] sm:max-w-md">
-                                    <h4 class="font-title-md text-on-surface text-left font-semibold">${escapeHtml(c.waste_type || "General")} Waste - ${escapeHtml(c.area || "Area")}</h4>
+                                    <h4 class="font-title-md text-on-surface text-left font-semibold">${safeWasteType} Waste - ${safeArea}</h4>
                                     ${descHtml}
                                     <p class="font-body-md text-xs text-on-surface-variant text-left mt-0.5">${c.created_at ? new Date(c.created_at).toLocaleDateString() : 'Recent'}</p>
+                                    ${proofActionHtml}
                                 </div>
                             </div>
                             <div class="flex items-center gap-md">
@@ -328,8 +352,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const loadRewardsMetrics = async () => {
+        try {
+            const data = await API.fetchCitizenDashboard();
+            const filedEl = document.getElementById('rewards-reports-filed');
+            const resolvedEl = document.getElementById('rewards-reports-resolved');
+            if (filedEl) filedEl.textContent = data.total_reports ?? 0;
+            if (resolvedEl) resolvedEl.textContent = data.resolved_reports ?? 0;
+            const pointsEl = document.getElementById('eco-points-display');
+            if (pointsEl) pointsEl.textContent = Number(data.eco_points || 0).toLocaleString();
+        } catch (err) {
+            console.warn("Failed to load rewards metrics:", err);
+        }
+    };
+
     if (decodeURIComponent(window.location.pathname).includes('Rewards')) {
         loadLeaderboard();
+        loadRewardsMetrics();
     }
 
     // ---- Report Waste Form Submit & Geolocation Handling ----
@@ -540,4 +579,193 @@ document.addEventListener('DOMContentLoaded', () => {
             window.showToast(err.message || "Failed to redeem reward.", "error");
         }
     };
+});
+
+// ---- Collection Proof Photo Viewer Functions ----
+let _citizenProofObjectUrl = null;
+let _citizenAbortController = null;
+let _citizenRequestGen = 0;
+
+function ensureCitizenProofModal() {
+    let modal = document.getElementById('citizen-proof-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'citizen-proof-modal';
+        modal.className = 'fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 hidden backdrop-blur-sm';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-2xl">photo_library</span>
+                <h3 class="font-title-md font-bold text-on-surface">Collection Proof Photo</h3>
+              </div>
+              <button id="citizen-proof-modal-close" class="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+              </button>
+            </div>
+            <div id="citizen-proof-info" class="text-xs text-on-surface-variant font-medium"></div>
+            <div class="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-outline-variant/30">
+              <div id="citizen-proof-loading" class="flex flex-col items-center justify-center text-slate-400 gap-2">
+                <span class="material-symbols-outlined text-3xl animate-spin">sync</span>
+                <span class="text-xs font-medium">Retrieving collection proof photo...</span>
+              </div>
+              <div id="citizen-proof-error" class="hidden flex flex-col items-center justify-center text-error p-4 text-center gap-2">
+                <span class="material-symbols-outlined text-3xl">broken_image</span>
+                <span id="citizen-proof-error-msg" class="text-xs font-medium">Unable to load proof photo.</span>
+              </div>
+              <img id="citizen-proof-img" class="w-full h-full object-contain hidden" alt="Collection Proof Photo">
+            </div>
+            <div class="flex justify-end pt-2">
+              <button id="citizen-proof-modal-dismiss" class="px-5 py-2.5 bg-primary text-on-primary text-sm font-medium rounded-full active:scale-95 transition-transform">
+                Done
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    const closeBtn = document.getElementById('citizen-proof-modal-close');
+    const dismissBtn = document.getElementById('citizen-proof-modal-dismiss');
+    if (closeBtn && !closeBtn._bound) {
+        closeBtn._bound = true;
+        closeBtn.addEventListener('click', closeCitizenProofModal);
+    }
+    if (dismissBtn && !dismissBtn._bound) {
+        dismissBtn._bound = true;
+        dismissBtn.addEventListener('click', closeCitizenProofModal);
+    }
+    if (!modal._boundBackdrop) {
+        modal._boundBackdrop = true;
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCitizenProofModal();
+        });
+    }
+    return modal;
+}
+
+function closeCitizenProofModal() {
+    _citizenRequestGen++;
+    if (_citizenAbortController) {
+        _citizenAbortController.abort();
+        _citizenAbortController = null;
+    }
+    const modal = document.getElementById('citizen-proof-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    if (_citizenProofObjectUrl) {
+        URL.revokeObjectURL(_citizenProofObjectUrl);
+        _citizenProofObjectUrl = null;
+    }
+    const imgEl = document.getElementById('citizen-proof-img');
+    if (imgEl) {
+        imgEl.onload = null;
+        imgEl.onerror = null;
+        imgEl.removeAttribute('src');
+        imgEl.classList.add('hidden');
+    }
+}
+
+async function viewCitizenProofPhoto(proofUrl, complaintId, wasteType, area) {
+    if (!proofUrl) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('No proof photo is available for this report.', 'info');
+        }
+        return;
+    }
+
+    const currentGen = ++_citizenRequestGen;
+    if (_citizenAbortController) {
+        _citizenAbortController.abort();
+        _citizenAbortController = null;
+    }
+    if (_citizenProofObjectUrl) {
+        URL.revokeObjectURL(_citizenProofObjectUrl);
+        _citizenProofObjectUrl = null;
+    }
+
+    const modal = ensureCitizenProofModal();
+    const infoEl = document.getElementById('citizen-proof-info');
+    const loadingEl = document.getElementById('citizen-proof-loading');
+    const errorEl = document.getElementById('citizen-proof-error');
+    const errorMsgEl = document.getElementById('citizen-proof-error-msg');
+    const imgEl = document.getElementById('citizen-proof-img');
+
+    if (imgEl) {
+        imgEl.onload = null;
+        imgEl.onerror = null;
+        imgEl.removeAttribute('src');
+        imgEl.classList.add('hidden');
+    }
+
+    const taskId = proofUrl.split('/').filter(Boolean).pop();
+    if (infoEl) {
+        infoEl.textContent = `Report #${complaintId} (Task #${taskId}) · ${wasteType || 'General'} Waste in ${area || 'Municipal Area'}`;
+    }
+
+    loadingEl?.classList.remove('hidden');
+    errorEl?.classList.add('hidden');
+    modal.classList.remove('hidden');
+
+    _citizenAbortController = new AbortController();
+
+    try {
+        const blob = await API.fetchProofPhotoBlob(proofUrl, { signal: _citizenAbortController.signal });
+        if (currentGen !== _citizenRequestGen) {
+            return;
+        }
+        _citizenProofObjectUrl = URL.createObjectURL(blob);
+        if (imgEl) {
+            imgEl.onload = () => {
+                if (currentGen !== _citizenRequestGen) return;
+                loadingEl?.classList.add('hidden');
+                imgEl.classList.remove('hidden');
+            };
+            imgEl.onerror = () => {
+                if (currentGen !== _citizenRequestGen) return;
+                loadingEl?.classList.add('hidden');
+                errorEl?.classList.remove('hidden');
+                if (errorMsgEl) errorMsgEl.textContent = 'Failed to render retrieved image.';
+            };
+            imgEl.src = _citizenProofObjectUrl;
+        }
+    } catch (err) {
+        if (currentGen !== _citizenRequestGen || err.name === 'AbortError') {
+            return;
+        }
+        console.error('Failed to retrieve proof photo:', err);
+        loadingEl?.classList.add('hidden');
+        errorEl?.classList.remove('hidden');
+        if (errorMsgEl) {
+            errorMsgEl.textContent = err.message || 'Unable to retrieve proof photo.';
+        }
+    }
+}
+
+// Delegated click handler for citizen proof buttons
+if (!window._citizenProofDelegationBound) {
+    window._citizenProofDelegationBound = true;
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action="view-citizen-proof"]');
+        if (btn) {
+            e.stopPropagation();
+            const { proofUrl, complaintId, wasteType, area } = btn.dataset;
+            viewCitizenProofPhoto(proofUrl, complaintId, wasteType, area);
+        }
+    });
+}
+
+window.viewCitizenProofPhoto = viewCitizenProofPhoto;
+window.closeCitizenProofModal = closeCitizenProofModal;
+window.addEventListener('beforeunload', () => {
+    _citizenRequestGen++;
+    if (_citizenAbortController) {
+        _citizenAbortController.abort();
+        _citizenAbortController = null;
+    }
+    if (_citizenProofObjectUrl) {
+        URL.revokeObjectURL(_citizenProofObjectUrl);
+        _citizenProofObjectUrl = null;
+    }
 });

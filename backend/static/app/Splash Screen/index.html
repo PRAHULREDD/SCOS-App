@@ -204,9 +204,18 @@
 </div>
 <script src="../../js/config.js"></script>
 <script>
-    // Automatically transition from static splash screen to Login Screen after 3 seconds
+    // Automatically transition to role dashboard if authenticated, else to Login Screen
     setTimeout(function() {
-        window.location.href = "../Login Screen/index.html";
-    }, 3000);
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('user_role');
+        if (token && role) {
+            if (role === 'CITIZEN') window.location.href = "../Citizen Dashboard/index.html";
+            else if (role === 'DRIVER') window.location.href = "../Driver Dashboard/index.html";
+            else if (role === 'ADMIN') window.location.href = "../Waste Heatmap/index.html";
+            else window.location.href = "../Login Screen/index.html";
+        } else {
+            window.location.href = "../Login Screen/index.html";
+        }
+    }, 2000);
 </script>
 </body></html>

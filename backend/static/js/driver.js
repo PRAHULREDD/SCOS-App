@@ -1,6 +1,408 @@
 /**
  * Driver Logic (Dashboard, Tasks, GPS Tracking & Pickup Verification)
  */
+
+/**
+ * Phase 5: Singleton WebSocket Connection Controller for Driver
+ * Handles automatic reconnect with exponential backoff & jitter,
+ * connection stability reset, lifecycle pause/resume,
+ * authoritative REST probe auth recovery, BFCache restoration,
+ * task reconciliation on connect, and idempotent cleanup.
+ */
+const DriverSocketController = {
+    ws: null,
+    retryTimer: null,
+    stabilityTimer: null,
+    retryCount: 0,
+    isConnecting: false,
+    isExplicitClose: false,
+    isAuthForbidden: false,
+    activeAuthProbePromise: null,
+    activeReconnectPromise: null,
+
+    getWsUrl() {
+        const userId = localStorage.getItem('user_id');
+        const wsToken = (typeof API !== 'undefined' && typeof API.getToken === 'function')
+            ? API.getToken()
+            : localStorage.getItem('token');
+
+        if (!userId || !wsToken) {
+            return null;
+        }
+
+        if (window.SCOS_CONFIG && typeof window.SCOS_CONFIG.getWsUrl === 'function') {
+            return window.SCOS_CONFIG.getWsUrl(`/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`);
+        }
+
+        const protocol = (window.location.protocol === 'https:' || window.location.href.includes('onrender')) ? 'wss:' : 'ws:';
+        const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
+        const wsBaseUrl = isNative ? 'scos-app.onrender.com' : window.location.host;
+        return `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`;
+    },
+
+    connect() {
+        if (this.isExplicitClose || this.isAuthForbidden) {
+            return;
+        }
+
+        if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
+
+        if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+        }
+
+        const wsUrl = this.getWsUrl();
+        if (!wsUrl) {
+            console.warn("[DriverSocket] Missing credentials or backend URL; connection skipped.");
+            return;
+        }
+
+        this.isConnecting = true;
+        try {
+            const socket = new WebSocket(wsUrl);
+            this.ws = socket;
+
+            socket.onopen = () => {
+                if (this.ws !== socket) return;
+
+                console.log("[DriverSocket] Live WebSocket connection established");
+                this.isConnecting = false;
+
+                // Stability timer: only reset retryCount if the connection remains open for 5 seconds
+                if (this.stabilityTimer) {
+                    clearTimeout(this.stabilityTimer);
+                    this.stabilityTimer = null;
+                }
+                this.stabilityTimer = setTimeout(() => {
+                    if (this.ws === socket && socket.readyState === WebSocket.OPEN) {
+                        console.log("[DriverSocket] Connection stable for 5s; resetting retry counter.");
+                        this.retryCount = 0;
+                    }
+                    this.stabilityTimer = null;
+                }, 5000);
+
+                // Reconnect reconciliation: reload assigned tasks & dashboard without duplicating entries or notifications
+                this.reconcileTasks();
+            };
+
+            socket.onmessage = async (event) => {
+                if (this.ws !== socket) return;
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'NEW_TASK') {
+                        if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+                            try {
+                                const { LocalNotifications } = window.Capacitor.Plugins;
+                                const { Haptics, ImpactStyle } = window.Capacitor.Plugins;
+                                if (Haptics) await Haptics.impact({ style: ImpactStyle.Heavy });
+                                if (LocalNotifications) {
+                                    let perm = await LocalNotifications.checkPermissions();
+                                    if (perm.display !== 'granted') {
+                                        perm = await LocalNotifications.requestPermissions();
+                                    }
+                                    if (perm.display === 'granted') {
+                                        await LocalNotifications.schedule({
+                                            notifications: [{
+                                                title: "New Pickup Assigned! 🚨",
+                                                body: data.message,
+                                                id: new Date().getTime(),
+                                                schedule: { at: new Date(Date.now() + 100) },
+                                                sound: null,
+                                                attachments: null,
+                                                actionTypeId: "",
+                                                extra: null
+                                            }]
+                                        });
+                                    }
+                                }
+                            } catch (e) {
+                                console.error("[DriverSocket] Capacitor Native Alert Failed", e);
+                            }
+                        } else {
+                            if (typeof window.showToast === 'function') {
+                                window.showToast("🚨 New Pickup Assigned: " + data.message, "error");
+                            }
+                        }
+
+                        this.reconcileTasks();
+                    }
+                } catch (e) {
+                    console.error("[DriverSocket] Error parsing WebSocket message:", e);
+                }
+            };
+
+            socket.onerror = (e) => {
+                console.log("[DriverSocket] WebSocket error observed", e);
+            };
+
+            socket.onclose = async (event) => {
+                if (this.ws !== socket) return;
+
+                console.log(`[DriverSocket] WebSocket closed (code: ${event.code}, wasClean: ${event.wasClean})`);
+                this.ws = null;
+                this.isConnecting = false;
+
+                if (this.stabilityTimer) {
+                    clearTimeout(this.stabilityTimer);
+                    this.stabilityTimer = null;
+                }
+
+                if (this.isExplicitClose || this.isAuthForbidden) {
+                    return;
+                }
+
+                // Following abnormal closure (e.g. 1006): do not infer auth failure from close code.
+                // Schedule backoff reconnect, checking auth authoritatively via REST probe.
+                this.scheduleReconnect();
+            };
+        } catch (err) {
+            console.error("[DriverSocket] Failed to create WebSocket instance:", err);
+            this.ws = null;
+            this.isConnecting = false;
+            if (this.stabilityTimer) {
+                clearTimeout(this.stabilityTimer);
+                this.stabilityTimer = null;
+            }
+            this.scheduleReconnect();
+        }
+    },
+
+    reconcileTasks() {
+        try {
+            const path = decodeURIComponent(window.location.pathname);
+            if (path.includes('Driver Dashboard') && typeof loadDriverDashboard === 'function') {
+                loadDriverDashboard();
+            }
+            if (path.includes('Assigned Pickups') && typeof loadAssignedTasks === 'function') {
+                loadAssignedTasks();
+            }
+        } catch (err) {
+            console.error("[DriverSocket] Error reconciling tasks:", err);
+        }
+    },
+
+    scheduleReconnect() {
+        if (this.isExplicitClose || this.isAuthForbidden) {
+            return;
+        }
+
+        if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+        }
+
+        // Pause retry while document is hidden / backgrounded
+        if (document.hidden) {
+            console.log("[DriverSocket] Document hidden; pausing reconnect timer.");
+            return;
+        }
+
+        // Exponential backoff with jitter, strictly capped at 30,000 ms:
+        // Math.min(1000 * Math.pow(1.5, retryCount) + Math.random() * 500, 30000)
+        const delay = Math.min(1000 * Math.pow(1.5, this.retryCount) + Math.random() * 500, 30000);
+        this.retryCount++;
+
+        console.log(`[DriverSocket] Scheduling reconnect attempt #${this.retryCount} in ${Math.round(delay)}ms`);
+
+        this.retryTimer = setTimeout(async () => {
+            this.retryTimer = null;
+            await this.reconnectWithAuthCheck();
+        }, delay);
+    },
+
+    async reconnectWithAuthCheck() {
+        if (this.isExplicitClose || this.isAuthForbidden) {
+            return;
+        }
+
+        if (document.hidden) {
+            return;
+        }
+
+        if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
+
+        // Single-flight reconnect lock: coalesce concurrent reconnect requests
+        if (this.activeReconnectPromise) {
+            return this.activeReconnectPromise;
+        }
+
+        // Cancel any pending timer since we are initiating immediate reconnect check
+        if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+        }
+
+        let currentReconnectPromise = null;
+        currentReconnectPromise = (async () => {
+            try {
+                // Authoritative authentication recovery check using GET /api/driver/dashboard:
+                const probeStatus = await this.probeAuth();
+
+                // If this reconnect attempt was cancelled or superseded while probe was in-flight, abort immediately
+                if (this.activeReconnectPromise !== currentReconnectPromise) {
+                    return;
+                }
+
+                // If explicit close occurred while probe was in-flight, abort immediately
+                if (this.isExplicitClose) {
+                    return;
+                }
+
+                if (probeStatus === 'EXPIRED') {
+                    this.isExplicitClose = true;
+                    return;
+                }
+
+                if (probeStatus === 'FORBIDDEN') {
+                    this.isAuthForbidden = true;
+                    if (typeof window.showToast === 'function') {
+                        window.showToast("Driver authorization required. Live connection disabled.", "error");
+                    }
+                    return;
+                }
+
+                // Check document.hidden AFTER probe resolves and immediately before connecting:
+                // If page was backgrounded while probe was in flight, defer until foreground event.
+                if (document.hidden) {
+                    console.log("[DriverSocket] Document became hidden during auth probe; deferring reconnect until foreground.");
+                    return;
+                }
+
+                if (this.isExplicitClose || this.isAuthForbidden) {
+                    return;
+                }
+
+                // Double check if another socket connected while probe was in-flight
+                if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+                    return;
+                }
+
+                // Either probe succeeded (valid auth) or was transient network failure: proceed to connect
+                this.connect();
+            } finally {
+                // Identity-checked cleanup: only clear if activeReconnectPromise still points to this exact promise
+                if (this.activeReconnectPromise === currentReconnectPromise) {
+                    this.activeReconnectPromise = null;
+                }
+            }
+        })();
+
+        this.activeReconnectPromise = currentReconnectPromise;
+        return currentReconnectPromise;
+    },
+
+    async probeAuth() {
+        // Single-flight authentication probe: coalesce concurrent callers
+        if (this.activeAuthProbePromise) {
+            return this.activeAuthProbePromise;
+        }
+
+        let currentProbePromise = null;
+        currentProbePromise = (async () => {
+            try {
+                if (typeof API !== 'undefined' && typeof API.fetchDriverDashboard === 'function') {
+                    await API.fetchDriverDashboard();
+                    return 'SUCCESS';
+                }
+                return 'SUCCESS';
+            } catch (err) {
+                // Classify HTTP status reliably:
+                // 1. HTTP 401 / Session Expired
+                if (err && (err.status === 401 || (err.message && err.message.includes("Session expired")))) {
+                    return 'EXPIRED';
+                }
+                // 2. HTTP 403 / Authorization Failure
+                if (err && (err.status === 403 || (err.message && (err.message.includes("authorization required") || err.message.includes("Forbidden"))))) {
+                    return 'FORBIDDEN';
+                }
+                // 3. Transient Network Failure or other non-auth error
+                return 'NETWORK_FAILURE';
+            } finally {
+                // Identity-checked cleanup: only clear if activeAuthProbePromise still points to this exact promise
+                if (this.activeAuthProbePromise === currentProbePromise) {
+                    this.activeAuthProbePromise = null;
+                }
+            }
+        })();
+
+        this.activeAuthProbePromise = currentProbePromise;
+        return currentProbePromise;
+    },
+
+    disconnect(isExplicit = false) {
+        if (isExplicit) {
+            this.isExplicitClose = true;
+        }
+        if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+        }
+        if (this.stabilityTimer) {
+            clearTimeout(this.stabilityTimer);
+            this.stabilityTimer = null;
+        }
+        if (this.ws) {
+            try {
+                const socket = this.ws;
+                this.ws = null;
+                socket.onopen = null;
+                socket.onmessage = null;
+                socket.onerror = null;
+                socket.onclose = null;
+                socket.close(1000, isExplicit ? "Driver session logged out" : "Page teardown");
+            } catch (e) {
+                // Ignore socket closing error on teardown
+            }
+        }
+        this.isConnecting = false;
+        this.activeAuthProbePromise = null;
+        this.activeReconnectPromise = null;
+    }
+};
+
+window.DriverSocketController = DriverSocketController;
+
+// ---- Application Lifecycle Handlers ----
+// Visibility change: pause retries when backgrounded; reconnect when returning to foreground
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        if (DriverSocketController.retryTimer) {
+            clearTimeout(DriverSocketController.retryTimer);
+            DriverSocketController.retryTimer = null;
+        }
+    } else {
+        if (!DriverSocketController.isExplicitClose && !DriverSocketController.isAuthForbidden) {
+            if (!DriverSocketController.ws || DriverSocketController.ws.readyState === WebSocket.CLOSED || DriverSocketController.ws.readyState === WebSocket.CLOSING) {
+                DriverSocketController.reconnectWithAuthCheck();
+            }
+        }
+    }
+});
+
+// BFCache restoration handling: pageshow with event.persisted
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        console.log("[DriverSocket] Page restored from BFCache; checking connection status.");
+        if (!DriverSocketController.isExplicitClose && !DriverSocketController.isAuthForbidden) {
+            if (!DriverSocketController.ws || DriverSocketController.ws.readyState === WebSocket.CLOSED || DriverSocketController.ws.readyState === WebSocket.CLOSING) {
+                DriverSocketController.reconnectWithAuthCheck();
+            }
+        }
+    }
+});
+
+// Clean up socket and pending timers on page hide & before unload without permanent explicit closure
+const handlePageTeardown = () => {
+    DriverSocketController.disconnect(false);
+};
+window.addEventListener('pagehide', handlePageTeardown);
+window.addEventListener('beforeunload', handlePageTeardown);
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // ---- Auth guard: redirect non-drivers to login ----
@@ -8,8 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const _role  = localStorage.getItem('user_role');
     if (!_token || _role !== 'DRIVER') {
         localStorage.clear();
-        const _isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
-        window.location.href = _isNative ? '../Login Screen/index.html' : '/app/Login%20Screen/index.html';
+        window.location.href = '../Login Screen/index.html';
         return;
     }
 
@@ -40,74 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(gpsInterval);
         });
         
-        // ---- Real-time WebSocket Push Notifications ----
-        const userId = localStorage.getItem('user_id');
-        const wsToken = localStorage.getItem('token');
-            let wsUrl = null;
-            if (window.SCOS_CONFIG && typeof window.SCOS_CONFIG.getWsUrl === 'function') {
-                wsUrl = window.SCOS_CONFIG.getWsUrl(`/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`);
-            } else {
-                const protocol = window.location.protocol === 'https:' || window.location.href.includes('onrender') ? 'wss:' : 'ws:';
-                const isNative = (window.Capacitor && window.Capacitor.isNativePlatform()) || window.location.protocol === 'file:';
-                const wsBaseUrl = isNative ? 'scos-app.onrender.com' : window.location.host;
-                wsUrl = `${protocol}//${wsBaseUrl}/api/ws/driver/${userId}?token=${encodeURIComponent(wsToken)}`;
-            }
-
-            if (!wsUrl) {
-                console.warn("[Driver] WebSocket connection skipped: backend URL is not configured.");
-                return;
-            }
-
-            const ws = new WebSocket(wsUrl);
-
-            ws.onmessage = async (event) => {
-                const data = JSON.parse(event.data);
-                if (data.type === 'NEW_TASK') {
-                    if (window.Capacitor && window.Capacitor.isNativePlatform()) {
-                        try {
-                            const { LocalNotifications } = window.Capacitor.Plugins;
-                            const { Haptics, ImpactStyle } = window.Capacitor.Plugins;
-                            if (Haptics) await Haptics.impact({ style: ImpactStyle.Heavy });
-                            if (LocalNotifications) {
-                                let perm = await LocalNotifications.checkPermissions();
-                                if (perm.display !== 'granted') {
-                                    perm = await LocalNotifications.requestPermissions();
-                                }
-                                if (perm.display === 'granted') {
-                                    await LocalNotifications.schedule({
-                                        notifications: [{
-                                            title: "New Pickup Assigned! 🚨",
-                                            body: data.message,
-                                            id: new Date().getTime(),
-                                            schedule: { at: new Date(Date.now() + 100) },
-                                            sound: null,
-                                            attachments: null,
-                                            actionTypeId: "",
-                                            extra: null
-                                        }]
-                                    });
-                                }
-                            }
-                        } catch (e) {
-                            console.error("Capacitor Native Alert Failed", e);
-                        }
-                    } else {
-                        window.showToast("🚨 New Pickup Assigned: " + data.message, "error");
-                    }
-                    if (decodeURIComponent(window.location.pathname).includes('Driver Dashboard')) loadDriverDashboard();
-                    if (decodeURIComponent(window.location.pathname).includes('Assigned Pickups')) loadAssignedTasks();
-                }
-            };
-            ws.onopen = () => console.log("Live WebSocket connection established");
-            ws.onerror = (e) => console.log("WebSocket error", e);
-
-            // Close WebSocket cleanly on page hide
-            window.addEventListener('pagehide', () => {
-                ws.close();
-            });
-        }
-
-
+        // ---- Phase 5: Real-time WebSocket Push Notifications with Resilience ----
+        DriverSocketController.connect();
+    }
 
     // Route logic based on current page
     if (decodeURIComponent(window.location.pathname).includes('Driver Dashboard')) {
@@ -152,6 +488,13 @@ async function loadDriverDashboard() {
         // Update progress bar
         const progressBar = document.getElementById('driver-progress-bar');
         if (progressBar) progressBar.style.width = `${percentage}%`;
+
+        // Update genuine operational task metrics
+        const pendingEl = document.getElementById('driver-pending-tasks');
+        if (pendingEl) pendingEl.textContent = Math.max(0, (stats.total_tasks || 0) - (stats.completed_today || 0));
+
+        const completedEl = document.getElementById('driver-completed-today');
+        if (completedEl) completedEl.textContent = stats.completed_today || 0;
 
         // Load Alerts
         const alertsList = document.getElementById('driver-alerts-list');
@@ -200,9 +543,16 @@ async function loadAssignedTasks() {
         const assignedCountEl = document.getElementById('assigned-count');
         if (assignedCountEl) assignedCountEl.textContent = tasks.length;
 
+        const nextPickupEl = document.getElementById('next-pickup-header');
+        const routeInfoEl = document.getElementById('route-vehicle-info');
         if (tasks.length === 0) {
+            if (nextPickupEl) nextPickupEl.textContent = 'All Pickups Complete';
+            if (routeInfoEl) routeInfoEl.textContent = 'No pending pickups assigned';
             tasksList.innerHTML = '<p class="text-center text-outline p-md font-body-md">No tasks assigned currently. Have a great day!</p>';
             return;
+        } else {
+            if (nextPickupEl) nextPickupEl.textContent = `Next Pickup: ${tasks[0].distance_km} km`;
+            if (routeInfoEl) routeInfoEl.textContent = `${tasks.length} active assignment(s) on route`;
         }
 
         tasks.forEach(task => {
@@ -235,8 +585,8 @@ async function loadAssignedTasks() {
                             </div>
                             <h3 class="font-title-md text-title-md text-on-surface mb-xs">${task.address}</h3>
                             <div class="flex items-center gap-base text-on-surface-variant">
-                                <span class="material-symbols-outlined text-[18px]">inventory_2</span>
-                                <span class="font-body-md text-body-md">Bin • ${task.bin_fill_percent}% Full</span>
+                                <span class="material-symbols-outlined text-[18px]">schedule</span>
+                                <span class="font-body-md text-body-md">Status: ${task.status || 'ASSIGNED'}</span>
                             </div>
                         </div>
                     </div>
@@ -262,12 +612,13 @@ function setupPickupVerification() {
     const urlParams = new URLSearchParams(window.location.search);
     const complaintId = urlParams.get('id');
     const complaintInput = document.getElementById('complaint-id');
-    if (complaintInput && complaintId) {
-        complaintInput.value = complaintId;
-    }
     const titleEl = document.getElementById('pickup-bin-title');
-    if (titleEl && complaintId) {
-        titleEl.textContent = `Complaint #${complaintId}`;
+    if (complaintId) {
+        if (complaintInput) complaintInput.value = complaintId;
+        if (titleEl) titleEl.textContent = `Complaint #${complaintId}`;
+    } else {
+        if (complaintInput) complaintInput.value = '';
+        if (titleEl) titleEl.textContent = 'No Active Task Selected';
     }
 
     const pickupForm = document.getElementById('pickup-verification-form');
@@ -352,6 +703,9 @@ function setupDriverHeader() {
         profileImg.style.cursor = 'pointer';
         profileImg.addEventListener('click', () => {
             if (confirm("Logout from Driver account?")) {
+                if (window.DriverSocketController && typeof window.DriverSocketController.disconnect === 'function') {
+                    window.DriverSocketController.disconnect(true);
+                }
                 localStorage.removeItem('token');
                 localStorage.removeItem('user_role');
                 window.location.href = '../Login Screen/index.html';
