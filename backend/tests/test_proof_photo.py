@@ -737,6 +737,8 @@ async def test_19_legacy_compatibility_no_db_proof_url_never_serves_legacy_file(
 @pytest.mark.asyncio
 async def test_20_test_isolation_verifies_app_uploads_untouched():
     """20. Confirms backend/uploads/proof_photos/ contains exactly 84 files and zero test pollution."""
+    if os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true":
+        pytest.skip("Local seed proof_photos directory is not tracked in Git and is absent in CI.")
     app_uploads = Path(__file__).resolve().parent.parent / "uploads" / "proof_photos"
     files = list(app_uploads.glob("*"))
     assert len(files) == 84
