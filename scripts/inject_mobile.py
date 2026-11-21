@@ -1,7 +1,7 @@
 import os
 import glob
 
-app_dir = r'c:\Users\rr001\Downloads\SCOS\backend\static\app'
+app_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend', 'static', 'app'))
 html_files = glob.glob(os.path.join(app_dir, '*', 'index.html'))
 
 print(f"Found {len(html_files)} files to process.")

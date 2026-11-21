@@ -18,6 +18,89 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+async def _bootstrap_demo_accounts():
+    """
+    Bootstrap demo ADMIN and DRIVER accounts during application startup
+    if environment variables are configured (e.g. on Render ephemeral SQLite).
+    """
+    env_keys = [
+        "SCOS_DEMO_ADMIN_EMAIL",
+        "SCOS_DEMO_ADMIN_PASSWORD",
+        "SCOS_DEMO_DRIVER_EMAIL",
+        "SCOS_DEMO_DRIVER_PASSWORD",
+    ]
+    raw_vals = {k: os.getenv(k) for k in env_keys}
+    present = {k: v for k, v in raw_vals.items() if v and v.strip()}
+
+    if not present:
+        return
+
+    if len(present) < 4:
+        missing = [k for k in env_keys if k not in present]
+        logger.warning(
+            f"Demo account bootstrap skipped: incomplete configuration. Missing: {', '.join(missing)}"
+        )
+        return
+
+    from app.db.database import SessionLocal
+    from app.repositories.user_repo import user_repo
+    from app.core.auth import get_password_hash
+
+    accounts = [
+        {
+            "role": "ADMIN",
+            "name": "SCOS Demo Admin",
+            "email": raw_vals["SCOS_DEMO_ADMIN_EMAIL"].strip(),
+            "password": raw_vals["SCOS_DEMO_ADMIN_PASSWORD"],
+        },
+        {
+            "role": "DRIVER",
+            "name": "SCOS Demo Driver",
+            "email": raw_vals["SCOS_DEMO_DRIVER_EMAIL"].strip(),
+            "password": raw_vals["SCOS_DEMO_DRIVER_PASSWORD"],
+        },
+    ]
+
+    async with SessionLocal() as db:
+        for acc in accounts:
+            try:
+                existing_user = await user_repo.get_by_email(db, acc["email"])
+                if existing_user:
+                    if existing_user.role == acc["role"]:
+                        logger.info(
+                            f"Demo {acc['role']} account already exists for {acc['email']}; skipping creation."
+                        )
+                    else:
+                        logger.warning(
+                            f"Cannot provision demo {acc['role']} account: user with email {acc['email']} "
+                            f"already exists with role '{existing_user.role}'. Existing account was not modified."
+                        )
+                    continue
+
+                hashed_password = get_password_hash(acc["password"])
+                await user_repo.create(
+                    db,
+                    obj_in={
+                        "name": acc["name"],
+                        "email": acc["email"],
+                        "password_hash": hashed_password,
+                        "role": acc["role"],
+                        "eco_points": 0,
+                    },
+                )
+                logger.info(f"Demo {acc['role']} account provisioned successfully for {acc['email']}.")
+            except Exception as ex:
+                try:
+                    await db.rollback()
+                except Exception as rollback_ex:
+                    logger.warning(
+                        f"Rollback failed for demo {acc['role']} account ({rollback_ex.__class__.__name__})."
+                    )
+                logger.error(
+                    f"Error provisioning demo {acc['role']} account ({ex.__class__.__name__})."
+                )
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """R6: Modern lifespan replaces deprecated @app.on_event('startup')."""
@@ -36,6 +119,7 @@ async def lifespan(app: FastAPI):
                 except Exception as ex:
                     logger.warning(f"Could not ensure proof_photo_url on {tbl}: {ex}")
         logger.info("SQLite database tables ensured.")
+    await _bootstrap_demo_accounts()
     yield
     # shutdown: nothing to clean up currently
 

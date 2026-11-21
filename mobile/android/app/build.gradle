@@ -16,10 +16,56 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            def releaseStorePath = System.getenv("SCOS_KEYSTORE_PATH")
+            def releaseStorePassword = System.getenv("SCOS_KEYSTORE_PASSWORD")
+            def releaseKeyAlias = System.getenv("SCOS_KEY_ALIAS")
+            def releaseKeyPassword = System.getenv("SCOS_KEY_PASSWORD")
+
+            if (releaseStorePath && releaseStorePassword && releaseKeyAlias && releaseKeyPassword) {
+                if (file(releaseStorePath).exists()) {
+                    storeFile file(releaseStorePath)
+                    storePassword releaseStorePassword
+                    keyAlias releaseKeyAlias
+                    keyPassword releaseKeyPassword
+                }
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (signingConfigs.release.storeFile != null) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    boolean isReleaseTask = taskGraph.allTasks.any { task ->
+        task.name.equalsIgnoreCase("assembleRelease") ||
+        task.name.equalsIgnoreCase("packageRelease") ||
+        task.name.equalsIgnoreCase("bundleRelease")
+    }
+
+    if (isReleaseTask) {
+        def missing = []
+        if (!System.getenv("SCOS_KEYSTORE_PATH")) missing.add("SCOS_KEYSTORE_PATH")
+        if (!System.getenv("SCOS_KEYSTORE_PASSWORD")) missing.add("SCOS_KEYSTORE_PASSWORD")
+        if (!System.getenv("SCOS_KEY_ALIAS")) missing.add("SCOS_KEY_ALIAS")
+        if (!System.getenv("SCOS_KEY_PASSWORD")) missing.add("SCOS_KEY_PASSWORD")
+
+        if (!missing.isEmpty()) {
+            throw new GradleException("Release build failed: Missing required signing environment variable(s): ${missing.join(', ')}. All four environment variables (SCOS_KEYSTORE_PATH, SCOS_KEYSTORE_PASSWORD, SCOS_KEY_ALIAS, SCOS_KEY_PASSWORD) are required to build a signed release APK.")
+        }
+
+        def ksFile = file(System.getenv("SCOS_KEYSTORE_PATH"))
+        if (!ksFile.exists()) {
+            throw new GradleException("Release build failed: Keystore file does not exist at SCOS_KEYSTORE_PATH: ${System.getenv('SCOS_KEYSTORE_PATH')}")
         }
     }
 }

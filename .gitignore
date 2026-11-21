@@ -54,6 +54,14 @@ Thumbs.db
 node_modules/
 mobile/node_modules/
 
+# Android build artifacts
+.gradle/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/local.properties
+mobile/android/capacitor-cordova-android-plugins/
+
 # Testing and coverage artifacts
 .pytest_cache/
 backend/.pytest_cache/
@@ -75,3 +83,9 @@ backend/audit_*.txt
 
 # Uploaded media and proof photos
 backend/uploads/
+
+# Android release signing credentials (never commit)
+*.jks
+*.keystore
+key.properties
+keystore.properties

@@ -1,58 +1,130 @@
 # Contributing to SCOS
 
-First off, thank you for considering contributing to SCOS (Smart Waste Collection Optimization System)! It's people like you that make SCOS such a great tool for modern municipal waste management.
+Thank you for considering contributing to the **Smart Waste Collection and Management System (SCOS)**! This guide outlines how to set up your environment, contribute code, run tests, and submit pull requests.
 
-## Where do I go from here?
+For an overview of the system architecture and project scope, please review the [README.md](README.md).
 
-If you've noticed a bug or have a feature request, make one! It's generally best if you get confirmation of your bug or approval for your feature request this way before starting to code.
+---
 
-## Fork & create a branch
+## Getting Started
 
-If this is something you think you can fix, then fork SCOS and create a branch with a descriptive name.
+1. **Check existing issues and discussions:** Before starting substantial work, open an issue or check existing tickets to discuss proposed changes or bug fixes.
+2. **Review project boundaries:** SCOS focuses strictly on its three designated roles (`CITIZEN`, `ADMIN`, `DRIVER`). Changes should preserve existing workflow semantics and security controls.
 
-A good branch name would be (where issue #325 is the ticket you're working on):
+---
 
-```bash
-git checkout -b 325-fix-citizen-login
+## Development Workflow
+
+### 1. Fork & Clone
+
+1. Fork the repository on GitHub: [https://github.com/PRAHULREDD/SCOS-App](https://github.com/PRAHULREDD/SCOS-App)
+2. Clone your personal fork locally:
+
+   ```bash
+   git clone https://github.com/<your-username>/SCOS-App.git
+   cd SCOS-App
+   ```
+
+3. Add the canonical repository as the `upstream` remote:
+
+   ```bash
+   git remote add upstream https://github.com/PRAHULREDD/SCOS-App.git
+   ```
+
+4. Create a topic branch with a descriptive name (example):
+
+   ```bash
+   git checkout -b fix-citizen-login
+   ```
+
+---
+
+### 2. Environment Setup & Running Tests
+
+Ensure you have Python 3.10 or later installed.
+
+From the repository root:
+
+```powershell
+# Create and activate virtual environment
+python -m venv backend/venv
+.\backend\venv\Scripts\Activate.ps1
+# (On Linux / macOS: source backend/venv/bin/activate)
+
+# Install dependencies
+python -m pip install --upgrade pip
+pip install -r backend/requirements.txt
 ```
 
-## Get the test suite running
+#### Run the Automated Test Suite
 
-Make sure you're using Python 3.10+ and a virtual environment.
-Run the backend server locally to verify your changes:
+Before making any changes, verify that the existing tests pass:
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```powershell
+python -m pytest backend/tests -o pythonpath=backend -q
 ```
 
-## Implement your fix or feature
+*(Or from the `backend/` directory: `cd backend; pytest`)*
 
-At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first.
+#### Run the Local Development Server
 
-## Make a Pull Request
+To run the FastAPI server locally:
 
-At this point, you should switch back to your master branch and make sure it's up to date with SCOS's master branch:
-
-```bash
-git remote add upstream https://github.com/yourusername/SCOS.git
-git checkout master
-git pull upstream master
+```powershell
+uvicorn main:app --app-dir backend --host 127.0.0.1 --port 8000 --reload
 ```
 
-Then update your feature branch from your local copy of master, and push it!
+Access the application in your browser at [http://127.0.0.1:8000/app/index.html](http://127.0.0.1:8000/app/index.html) or [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+
+---
+
+### 3. Implement Your Changes
+
+- Keep modifications minimal and focused on the issue being addressed.
+- Maintain existing coding conventions and asynchronous patterns (`SQLAlchemy 2.0 async`, `FastAPI`).
+- Do not commit sensitive files, credentials, local `.env` files, or database binaries (`scos.db`).
+- Add or update tests in `backend/tests/` to cover new logic or regressions.
+
+---
+
+### 4. Submitting a Pull Request
+
+1. Fetch the latest changes from `upstream/main` and rebase your branch:
+
+   ```bash
+   git checkout main
+   git fetch upstream
+   git merge upstream/main
+   git checkout fix-citizen-login
+   git rebase main
+   ```
+
+2. Run the test suite and verify code hygiene:
+
+   ```bash
+   python -m pytest backend/tests -o pythonpath=backend -q
+   flake8 backend --count --select=E9,F63,F7,F82 --show-source --statistics
+   ```
+
+3. Push your feature branch to your GitHub fork:
+
+   ```bash
+   git push -u origin fix-citizen-login
+   ```
+
+4. Open a Pull Request on GitHub against the `main` branch of `PRAHULREDD/SCOS-App`.
+5. Provide a clear summary of your changes, referencing any relevant issue numbers.
+
+---
+
+## Keeping Your PR Updated
+
+If new commits land on `main` before your PR is merged, update your branch:
 
 ```bash
-git checkout 325-fix-citizen-login
-git rebase master
-git push --set-upstream origin 325-fix-citizen-login
+git fetch upstream
+git rebase upstream/main
+git push --force-with-lease origin fix-citizen-login
 ```
 
-Finally, go to GitHub and make a Pull Request.
-
-## Keeping your Pull Request updated
-
-If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
-
-Thank you for contributing!
+Thank you for helping improve SCOS!
